@@ -1,5 +1,6 @@
 import Phaser from 'phaser'
 import { Grid } from '~/core/Grid'
+import { Player } from '~/core/Player'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { PlayerConstants } from '~/utils/PlayerConstants'
@@ -7,6 +8,7 @@ import { PlayerConstants } from '~/utils/PlayerConstants'
 export default class Game extends Phaser.Scene {
   public tileMap!: Phaser.Tilemaps.Tilemap
   public grid!: Grid
+  public player!: Player
   public cameraPanEvent: Phaser.Time.TimerEvent | null = null
   private static _instance: Game
 
@@ -93,16 +95,7 @@ export default class Game extends Phaser.Scene {
   }
 
   initPlayer() {
-    const playerConfigs = PlayerConstants.START_CONFIG
-    const playerUnits: Phaser.GameObjects.Sprite[] = []
-    playerConfigs.forEach((player) => {
-      const rowColPos = player.rowColPos
-      const cell = this.grid.getCellAtRowCol(rowColPos[0], rowColPos[1])
-      const sprite = this.add.sprite(cell.centerX, cell.centerY, player.texture)
-      playerUnits.push(sprite)
-    })
-    const playerUnit = playerUnits[0]
-    this.cameras.main.centerOn(playerUnit.x, playerUnit.y)
+    this.player = new Player(this)
   }
 
   initTilemap() {

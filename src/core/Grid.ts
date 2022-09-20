@@ -12,10 +12,12 @@ export class Grid {
   private game: Game
   public grid: Cell[][] = []
   public graphics: Phaser.GameObjects.Graphics
+  public cellSize: number
 
   constructor(game: Game, config: GridConfig) {
     this.game = game
     this.graphics = this.game.add.graphics()
+    this.cellSize = config.cellSize
     this.initGrid(config)
   }
 
@@ -51,11 +53,26 @@ export class Grid {
     }
   }
 
+  get numRows() {
+    return this.grid.length
+  }
+
+  get numCols() {
+    return this.grid[0].length
+  }
+
   hideGrid() {
     this.graphics.clear()
   }
 
   getCellAtRowCol(row: number, col: number) {
-    return this.grid[col][row]
+    return this.grid[row][col]
+  }
+
+  getCellAtWorldPosition(x: number, y: number): Cell {
+    const row = Math.floor(y / this.cellSize)
+    const col = Math.floor(x / this.cellSize)
+    console.log(row, col)
+    return this.grid[row][col]
   }
 }

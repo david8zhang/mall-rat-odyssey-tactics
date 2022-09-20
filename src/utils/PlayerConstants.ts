@@ -1,15 +1,15 @@
 export class PlayerConstants {
   public static readonly START_CONFIG = [
     {
-      rowColPos: [12, 24],
+      rowColPos: [24, 12],
       texture: 'rat1',
     },
     {
-      rowColPos: [11, 24],
+      rowColPos: [24, 11],
       texture: 'rat1',
     },
     {
-      rowColPos: [13, 24],
+      rowColPos: [24, 13],
       texture: 'rat1',
     },
   ]

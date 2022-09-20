@@ -8,6 +8,7 @@ export class Preload extends Phaser.Scene {
     this.load.image('rat2', 'rat2.png')
     this.load.tilemapTiledJSON('sample-map', 'sample-map.json')
     this.load.image('tilemap_packed', 'tilemap_packed.png')
+    this.load.image('cursor', 'cursor.png')
   }
 
   create() {
