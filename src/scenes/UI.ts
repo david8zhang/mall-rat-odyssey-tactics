@@ -18,7 +18,7 @@ export class UI extends Phaser.Scene {
   }
 
   create() {
-    this.initCameraScrollRectangles()
+    // this.initCameraScrollRectangles()
   }
 
   initCameraScrollRectangles() {

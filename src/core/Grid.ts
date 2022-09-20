@@ -72,7 +72,6 @@ export class Grid {
   getCellAtWorldPosition(x: number, y: number): Cell {
     const row = Math.floor(y / this.cellSize)
     const col = Math.floor(x / this.cellSize)
-    console.log(row, col)
     return this.grid[row][col]
   }
 }
