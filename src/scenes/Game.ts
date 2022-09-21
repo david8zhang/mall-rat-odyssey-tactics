@@ -3,7 +3,6 @@ import { Grid } from '~/core/Grid'
 import { Player } from '~/core/Player'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
-import { PlayerConstants } from '~/utils/PlayerConstants'
 
 export default class Game extends Phaser.Scene {
   public tileMap!: Phaser.Tilemaps.Tilemap
