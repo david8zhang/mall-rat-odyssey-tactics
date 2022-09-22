@@ -49,8 +49,8 @@ export class Player {
         }
         case 'Space': {
           if (this.selectedUnit) {
-            this.selectedUnit.dehighlight()
             this.movePlayerToCursorPosition()
+            this.selectedUnit.dehighlight()
             this.selectedUnit = null
           } else {
             const playerAtCursor = this.getPlayerAtCursor()
@@ -66,7 +66,10 @@ export class Player {
 
   movePlayerToCursorPosition() {
     const gridRowCol = this.cursor.gridRowColPosition
-    if (this.selectedUnit) {
+    if (
+      this.selectedUnit &&
+      this.selectedUnit.isSquareWithinMoveableSquares(gridRowCol.row, gridRowCol.col)
+    ) {
       this.selectedUnit.moveToRowColPosition(gridRowCol.row, gridRowCol.col)
     }
   }

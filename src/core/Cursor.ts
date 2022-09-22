@@ -18,7 +18,7 @@ export class Cursor {
   constructor(game: Game, defaultPosition: { x: number; y: number }) {
     this.game = game
     this.position = defaultPosition
-    this.sprite = this.game.add.sprite(this.position.x, this.position.y, 'cursor')
+    this.sprite = this.game.add.sprite(this.position.x, this.position.y, 'cursor').setDepth(100)
     const cell: Cell = this.game.grid.getCellAtWorldPosition(this.position.x, this.position.y)
     this.gridRowColPosition = {
       row: cell.gridRow,

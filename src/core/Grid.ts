@@ -74,4 +74,8 @@ export class Grid {
     const col = Math.floor(x / this.cellSize)
     return this.grid[row][col]
   }
+
+  withinBounds(row: number, col: number) {
+    return row < this.numRows && row >= 0 && col < this.numCols && col >= 0
+  }
 }

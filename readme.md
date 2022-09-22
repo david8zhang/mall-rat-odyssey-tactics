@@ -6,8 +6,7 @@ A tactical strategy game about a bunch of rats at the mall
 
 ### Easy Wins
 
-- Restrict movement range of rat
-- Highlight movement range of rat (don't highlight blocked tiles)
+- Prevent rat from going through walls and other obstacles
 
 ### Harder Stuff
 
