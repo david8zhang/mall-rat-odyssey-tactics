@@ -58,7 +58,7 @@ export class Unit {
     }
     for (let i = 0; i < seen.length; i++) {
       for (let j = 0; j < seen[0].length; j++) {
-        if (seen[i][j]) {
+        if (seen[i][j] && !this.wallTileAtPosition(i, j)) {
           const cell = this.game.grid.getCellAtRowCol(i, j)
           const newRect = this.game.add
             .rectangle(
@@ -74,6 +74,14 @@ export class Unit {
         }
       }
     }
+  }
+
+  wallTileAtPosition(row: number, col: number) {
+    const tile = this.game.tileMap.getTileAt(col, row)
+    if (!tile) {
+      return false
+    }
+    return tile.layer.name === 'Walls'
   }
 
   public dehighlight() {

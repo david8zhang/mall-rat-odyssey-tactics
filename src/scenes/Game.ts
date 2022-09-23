@@ -102,7 +102,8 @@ export default class Game extends Phaser.Scene {
       key: 'sample-map',
     })
     const tileset = this.tileMap.addTilesetImage('tilemap_packed', 'tilemap_packed')
-    this.createLayer('Layer1', tileset)
+    this.createLayer('Ground', tileset)
+    this.createLayer('Walls', tileset)
   }
 
   createLayer(layerName: string, tileset: Phaser.Tilemaps.Tileset) {
