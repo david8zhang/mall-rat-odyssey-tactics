@@ -36,18 +36,18 @@ export class Unit {
   highlightMoveableSquares() {
     const cell = this.game.grid.getCellAtWorldPosition(this.sprite.x, this.sprite.y)
     const currCoordinates = [cell.gridRow, cell.gridCol, 0]
-    const stack = [currCoordinates]
+    const queue = [currCoordinates]
     const seen = new Array(this.game.grid.numRows)
       .fill(false)
       .map(() => new Array(this.game.grid.numCols).fill(false))
-    while (stack.length > 0) {
+    while (queue.length > 0) {
       const directions = [
         [0, 1],
         [0, -1],
         [1, 0],
         [-1, 0],
       ]
-      const currNode = stack.pop()
+      const currNode = queue.shift()
       if (currNode && !seen[currNode[0]][currNode[1]]) {
         seen[currNode[0]][currNode[1]] = true
         directions.forEach((dir) => {
@@ -55,14 +55,16 @@ export class Unit {
           const newCol = currNode[1] + dir[1]
           const newDistance = currNode[2] + 1
           if (this.game.grid.withinBounds(newRow, newCol) && newDistance <= this.moveRange) {
-            stack.push([newRow, newCol, newDistance])
+            if (!this.wallTileAtPosition(newRow, newCol)) {
+              queue.push([newRow, newCol, newDistance])
+            }
           }
         })
       }
     }
     for (let i = 0; i < seen.length; i++) {
       for (let j = 0; j < seen[0].length; j++) {
-        if (seen[i][j] && !this.wallTileAtPosition(i, j) && !this.unitAtPosition(i, j)) {
+        if (seen[i][j] && !this.unitAtPosition(i, j)) {
           const cell = this.game.grid.getCellAtRowCol(i, j)
           const newRect = this.game.add
             .rectangle(
