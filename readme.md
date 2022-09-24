@@ -6,8 +6,6 @@ A tactical strategy game about a bunch of rats at the mall
 
 ### Easy Wins
 
-- Prevent rat from going through walls and other obstacles
-
 ### Harder Stuff
 
 - Add CPU controlled units

@@ -59,6 +59,7 @@ export class Cursor {
   moveToRowCol(row: number, col: number) {
     const cell = this.game.grid.getCellAtRowCol(row, col)
     this.sprite.setPosition(cell.centerX, cell.centerY)
+    console.log(`Moved cursor to: ${row}, ${col}`)
     this.gridRowColPosition = { row, col }
   }
 

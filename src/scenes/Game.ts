@@ -1,14 +1,18 @@
 import Phaser from 'phaser'
+import { CPU } from '~/core/CPU'
 import { Grid } from '~/core/Grid'
 import { Player } from '~/core/Player'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
+import { Side } from '~/utils/Side'
 
 export default class Game extends Phaser.Scene {
   public tileMap!: Phaser.Tilemaps.Tilemap
   public grid!: Grid
   public player!: Player
+  public cpu!: CPU
   public cameraPanEvent: Phaser.Time.TimerEvent | null = null
+  public currTurn: Side = Side.PLAYER
   private static _instance: Game
 
   constructor() {
@@ -25,6 +29,7 @@ export default class Game extends Phaser.Scene {
     this.initTilemap()
     this.initGrid()
     this.initPlayer()
+    this.initCPU()
   }
 
   initCamera() {
@@ -97,6 +102,10 @@ export default class Game extends Phaser.Scene {
     this.player = new Player(this)
   }
 
+  initCPU() {
+    this.cpu = new CPU(this)
+  }
+
   initTilemap() {
     this.tileMap = this.make.tilemap({
       key: 'sample-map',
@@ -108,5 +117,12 @@ export default class Game extends Phaser.Scene {
 
   createLayer(layerName: string, tileset: Phaser.Tilemaps.Tileset) {
     this.tileMap.createLayer(layerName, tileset)
+  }
+
+  setTurn(side: Side) {
+    this.currTurn = side
+    if (side === Side.CPU) {
+      this.cpu.moveUnits()
+    }
   }
 }

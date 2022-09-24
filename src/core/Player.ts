@@ -1,21 +1,22 @@
 import Game from '~/scenes/Game'
 import { Direction } from '~/utils/Directions'
 import { PlayerConstants } from '~/utils/PlayerConstants'
+import { Side } from '~/utils/Side'
 import { Cursor } from './Cursor'
 import { Unit } from './Unit'
 
 export class Player {
   private game: Game
   private cursor: Cursor
-  public playerUnits: Unit[] = []
+  public units: Unit[] = []
   public selectedUnit: Unit | null = null
 
   constructor(game: Game) {
     this.game = game
     this.initUnits()
     this.cursor = new Cursor(this.game, {
-      x: this.playerUnits[0].x,
-      y: this.playerUnits[1].y,
+      x: this.units[0].x,
+      y: this.units[1].y,
     })
     this.initKeyboardListener()
     this.initMouseClickListener()
@@ -48,15 +49,23 @@ export class Player {
           break
         }
         case 'Space': {
-          if (this.selectedUnit) {
-            this.movePlayerToCursorPosition()
-            this.selectedUnit.dehighlight()
-            this.selectedUnit = null
-          } else {
-            const playerAtCursor = this.getPlayerAtCursor()
-            if (playerAtCursor) {
-              playerAtCursor.highlight()
-              this.selectedUnit = playerAtCursor
+          if (this.game.currTurn === Side.PLAYER) {
+            if (this.selectedUnit) {
+              if (this.canMovePlayerToCursorPosition()) {
+                this.movePlayerToCursorPosition()
+                this.selectedUnit.dehighlight()
+                this.selectedUnit.setHasMoved(true)
+                this.selectedUnit = null
+                if (this.hasLastUnitMoved()) {
+                  this.switchTurn()
+                }
+              }
+            } else {
+              if (this.canHighlightPlayerForMovement()) {
+                const playerAtCursor = this.getPlayerAtCursor()
+                playerAtCursor!.highlight()
+                this.selectedUnit = playerAtCursor
+              }
             }
           }
         }
@@ -64,18 +73,52 @@ export class Player {
     })
   }
 
+  hasLastUnitMoved() {
+    for (let i = 0; i < this.units.length; i++) {
+      const unit = this.units[i]
+      if (!unit.hasMoved) {
+        return false
+      }
+    }
+    return true
+  }
+
+  switchTurn() {
+    this.game.setTurn(Side.CPU)
+  }
+
+  unitAtPosition(row: number, col: number, selectedUnit: Unit) {
+    for (let i = 0; i < this.units.length; i++) {
+      const unit = this.units[i]
+      const rowCol = unit.getRowCol()
+      if (rowCol.row === row && rowCol.col === col && unit !== selectedUnit) {
+        return true
+      }
+    }
+    return false
+  }
+
   movePlayerToCursorPosition() {
     const gridRowCol = this.cursor.gridRowColPosition
-    if (
-      this.selectedUnit &&
-      this.selectedUnit.isSquareWithinMoveableSquares(gridRowCol.row, gridRowCol.col)
-    ) {
-      this.selectedUnit.moveToRowColPosition(gridRowCol.row, gridRowCol.col)
-    }
+    this.selectedUnit!.moveToRowColPosition(gridRowCol.row, gridRowCol.col)
+  }
+
+  canHighlightPlayerForMovement() {
+    const playerAtCursor = this.getPlayerAtCursor()
+    return playerAtCursor != null && !playerAtCursor.hasMoved
+  }
+
+  canMovePlayerToCursorPosition(): boolean {
+    const gridRowCol = this.cursor.gridRowColPosition
+    return (
+      this.selectedUnit != null &&
+      this.selectedUnit.isSquareWithinMoveableSquares(gridRowCol.row, gridRowCol.col) &&
+      !this.unitAtPosition(gridRowCol.row, gridRowCol.col, this.selectedUnit)
+    )
   }
 
   getPlayerAtCursor() {
-    const playerAtCursor = this.playerUnits.find((playerUnit: Unit) => {
+    const playerAtCursor = this.units.find((playerUnit: Unit) => {
       const { row, col } = playerUnit.getRowCol()
       const gridRowCol = this.cursor.gridRowColPosition
       return row === gridRowCol.row && col === gridRowCol.col
@@ -95,11 +138,10 @@ export class Player {
         },
         texture: playerConfig.texture,
         moveRange: 4,
-        player: this,
       })
-      this.playerUnits.push(playerUnit)
+      this.units.push(playerUnit)
     })
-    const playerUnitToFocusOn = this.playerUnits[0]
+    const playerUnitToFocusOn = this.units[0]
     this.game.cameras.main.centerOn(playerUnitToFocusOn.x, playerUnitToFocusOn.y)
   }
 }
