@@ -95,6 +95,7 @@ export class Player {
         },
         texture: playerConfig.texture,
         moveRange: 4,
+        player: this,
       })
       this.playerUnits.push(playerUnit)
     })

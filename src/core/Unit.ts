@@ -1,5 +1,6 @@
 import Game from '~/scenes/Game'
 import { GameConstants } from '~/utils/GameConstants'
+import { Player } from './Player'
 
 export interface UnitConfig {
   texture: string
@@ -8,6 +9,7 @@ export interface UnitConfig {
     y: number
   }
   moveRange: number
+  player: Player
 }
 
 export class Unit {
@@ -15,12 +17,14 @@ export class Unit {
   private game: Game
   private moveRange: number
   public moveableSquares: Phaser.GameObjects.Rectangle[] = []
+  public player: Player
 
   constructor(game: Game, unitConfig: UnitConfig) {
     this.game = game
     this.sprite = this.game.add
       .sprite(unitConfig.position.x, unitConfig.position.y, unitConfig.texture)
       .setDepth(5)
+    this.player = unitConfig.player
     this.moveRange = unitConfig.moveRange
   }
 
@@ -58,7 +62,7 @@ export class Unit {
     }
     for (let i = 0; i < seen.length; i++) {
       for (let j = 0; j < seen[0].length; j++) {
-        if (seen[i][j] && !this.wallTileAtPosition(i, j)) {
+        if (seen[i][j] && !this.wallTileAtPosition(i, j) && !this.unitAtPosition(i, j)) {
           const cell = this.game.grid.getCellAtRowCol(i, j)
           const newRect = this.game.add
             .rectangle(
@@ -74,6 +78,17 @@ export class Unit {
         }
       }
     }
+  }
+
+  unitAtPosition(row: number, col: number) {
+    for (let i = 0; i < this.player.playerUnits.length; i++) {
+      const unit = this.player.playerUnits[i]
+      const rowCol = unit.getRowCol()
+      if (rowCol.row === row && rowCol.col === col && unit !== this) {
+        return true
+      }
+    }
+    return false
   }
 
   wallTileAtPosition(row: number, col: number) {
