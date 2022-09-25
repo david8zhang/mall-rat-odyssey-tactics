@@ -1,10 +1,12 @@
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
+import { Side } from '~/utils/Side'
 import Game from './Game'
 
 export class UI extends Phaser.Scene {
   public static readonly SCROLL_RECT_HEIGHT = 192
   public static readonly SCROLL_RECT_WIDTH = 32
+  private static _instance: UI
 
   public isScrollingCamera: boolean = false
 
@@ -13,12 +15,72 @@ export class UI extends Phaser.Scene {
   public upCamScrollRect!: Phaser.GameObjects.Rectangle
   public downCamScrollRect!: Phaser.GameObjects.Rectangle
 
+  public transitionText!: Phaser.GameObjects.Text
+  public transitionRect!: Phaser.GameObjects.Rectangle
+
   constructor() {
     super('ui')
+    UI._instance = this
+  }
+
+  public static get instance() {
+    return UI._instance
   }
 
   create() {
     // this.initCameraScrollRectangles()
+    this.initTransitionUI()
+  }
+
+  initTransitionUI() {
+    this.transitionRect = this.add
+      .rectangle(
+        GameConstants.WINDOW_WIDTH / 2,
+        GameConstants.WINDOW_HEIGHT / 2,
+        GameConstants.WINDOW_WIDTH,
+        GameConstants.WINDOW_HEIGHT,
+        0x000000,
+        0.4
+      )
+      .setVisible(false)
+    this.transitionText = this.add
+      .text(GameConstants.WINDOW_WIDTH / 2, GameConstants.WINDOW_HEIGHT / 2, '')
+      .setVisible(false)
+      .setDepth(1000)
+  }
+
+  transitionTurn(onEndCb: Function) {
+    this.transitionText.setText('Player Turn')
+    if (Game.instance.currTurn === Side.CPU) {
+      this.transitionText.setText('CPU Turn')
+    }
+    this.transitionText.setPosition(
+      GameConstants.WINDOW_WIDTH / 2 - this.transitionText.displayWidth / 2,
+      GameConstants.WINDOW_HEIGHT / 2 - this.transitionText.displayHeight / 2
+    )
+    this.add.tween({
+      targets: this.transitionRect,
+      alpha: { from: 0, to: 0.8 },
+      onStart: () => {
+        this.transitionRect.setVisible(true)
+      },
+      onComplete: () => {
+        onEndCb()
+      },
+      duration: 750,
+      hold: 500,
+      yoyo: true,
+    })
+    this.add.tween({
+      targets: this.transitionText,
+      alpha: { from: 0, to: 1 },
+      onStart: () => {
+        this.transitionText.setVisible(true)
+      },
+      duration: 750,
+      hold: 500,
+      yoyo: true,
+    })
   }
 
   initCameraScrollRectangles() {

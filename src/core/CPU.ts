@@ -27,6 +27,10 @@ export class CPU {
     })
   }
 
+  startTurn() {
+    this.moveUnits()
+  }
+
   moveUnits() {
     // TODO: Add logic to move CPU units
     // For now, just switch turn back to player

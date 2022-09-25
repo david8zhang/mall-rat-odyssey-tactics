@@ -73,6 +73,12 @@ export class Player {
     })
   }
 
+  startTurn() {
+    this.units.forEach((unit) => {
+      unit.setHasMoved(false)
+    })
+  }
+
   hasLastUnitMoved() {
     for (let i = 0; i < this.units.length; i++) {
       const unit = this.units[i]

@@ -5,6 +5,7 @@ import { Player } from '~/core/Player'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
+import { UI } from './UI'
 
 export default class Game extends Phaser.Scene {
   public tileMap!: Phaser.Tilemaps.Tilemap
@@ -121,8 +122,12 @@ export default class Game extends Phaser.Scene {
 
   setTurn(side: Side) {
     this.currTurn = side
-    if (side === Side.CPU) {
-      this.cpu.moveUnits()
-    }
+    UI.instance.transitionTurn(() => {
+      if (side === Side.CPU) {
+        this.cpu.startTurn()
+      } else if (side === Side.PLAYER) {
+        this.player.startTurn()
+      }
+    })
   }
 }
