@@ -5,7 +5,7 @@ import { Unit } from './Unit'
 
 export class CPU {
   private game: Game
-  private units: Unit[] = []
+  public units: Unit[] = []
   constructor(game: Game) {
     this.game = game
     this.initUnits()
@@ -22,6 +22,7 @@ export class CPU {
         },
         texture: unitConfig.texture,
         moveRange: 4,
+        attackRange: 1,
       })
       this.units.push(playerUnit)
     })

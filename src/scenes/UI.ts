@@ -1,3 +1,4 @@
+import { Unit } from '~/core/Unit'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
@@ -18,6 +19,10 @@ export class UI extends Phaser.Scene {
   public transitionText!: Phaser.GameObjects.Text
   public transitionRect!: Phaser.GameObjects.Rectangle
 
+  public attackModal!: Phaser.GameObjects.Rectangle
+  public attackerSprite!: Phaser.GameObjects.Sprite
+  public defenderSprite!: Phaser.GameObjects.Sprite
+
   constructor() {
     super('ui')
     UI._instance = this
@@ -30,6 +35,68 @@ export class UI extends Phaser.Scene {
   create() {
     // this.initCameraScrollRectangles()
     this.initTransitionUI()
+    this.initAttackUI()
+  }
+
+  initAttackUI() {
+    this.attackModal = this.add
+      .rectangle(
+        GameConstants.WINDOW_WIDTH / 2,
+        GameConstants.WINDOW_HEIGHT / 2,
+        GameConstants.WINDOW_WIDTH * 0.75,
+        GameConstants.WINDOW_HEIGHT * 0.5,
+        0xffffff
+      )
+      .setVisible(false)
+    this.attackerSprite = this.add
+      .sprite(this.attackModal.x - 50, this.attackModal.y, '')
+      .setVisible(false)
+      .setDepth(1000)
+    this.defenderSprite = this.add
+      .sprite(this.attackModal.x + 50, this.attackModal.y, '')
+      .setFlipX(true)
+      .setVisible(false)
+      .setDepth(1000)
+  }
+
+  playAttackAnimation(attacker: Unit, defender: Unit, onEndCb: Function) {
+    this.attackModal.setVisible(true).setOrigin(0)
+    this.tweens.add({
+      targets: this.attackModal,
+      width: { from: 0, to: GameConstants.WINDOW_WIDTH * 0.75 },
+      height: { from: 0, to: GameConstants.WINDOW_HEIGHT * 0.5 },
+      duration: 500,
+      onUpdate: (tween, target, param) => {
+        target.setPosition(
+          GameConstants.WINDOW_WIDTH / 2 - target.displayWidth / 2,
+          GameConstants.WINDOW_HEIGHT / 2 - target.displayHeight / 2
+        )
+      },
+      onComplete: () => {
+        this.attackerSprite.setVisible(true).setTexture(attacker.texture)
+        this.defenderSprite.setVisible(true).setTexture(defender.texture)
+        this.tweens.add({
+          delay: 2000,
+          targets: this.attackModal,
+          width: { to: 0, from: GameConstants.WINDOW_WIDTH * 0.75 },
+          height: { to: 0, from: GameConstants.WINDOW_HEIGHT * 0.5 },
+          duration: 500,
+          onStart: () => {
+            this.attackerSprite.setVisible(false)
+            this.defenderSprite.setVisible(false)
+          },
+          onUpdate: (tween, target, param) => {
+            target.setPosition(
+              GameConstants.WINDOW_WIDTH / 2 - target.displayWidth / 2,
+              GameConstants.WINDOW_HEIGHT / 2 - target.displayHeight / 2
+            )
+          },
+          onComplete: () => {
+            onEndCb()
+          },
+        })
+      },
+    })
   }
 
   initTransitionUI() {
@@ -40,9 +107,10 @@ export class UI extends Phaser.Scene {
         GameConstants.WINDOW_WIDTH,
         GameConstants.WINDOW_HEIGHT,
         0x000000,
-        0.4
+        1
       )
       .setVisible(false)
+      .setDepth(999)
     this.transitionText = this.add
       .text(GameConstants.WINDOW_WIDTH / 2, GameConstants.WINDOW_HEIGHT / 2, '')
       .setVisible(false)
@@ -60,7 +128,7 @@ export class UI extends Phaser.Scene {
     )
     this.add.tween({
       targets: this.transitionRect,
-      alpha: { from: 0, to: 0.8 },
+      alpha: { from: 0, to: 0.5 },
       onStart: () => {
         this.transitionRect.setVisible(true)
       },

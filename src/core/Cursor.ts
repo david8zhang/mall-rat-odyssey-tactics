@@ -3,6 +3,12 @@ import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { Cell } from './Cell'
 
+export enum CursorState {
+  MOVE = 'Move',
+  ATTACK = 'Attack',
+  SCROLL = 'Scroll',
+}
+
 export class Cursor {
   private game: Game
   private position: {
@@ -13,6 +19,7 @@ export class Cursor {
     row: number
     col: number
   }
+  public cursorState: CursorState = CursorState.SCROLL
 
   public sprite: Phaser.GameObjects.Sprite
   constructor(game: Game, defaultPosition: { x: number; y: number }) {
@@ -24,6 +31,13 @@ export class Cursor {
       row: cell.gridRow,
       col: cell.gridCol,
     }
+    this.game.add.tween({
+      targets: this.sprite,
+      scale: { from: 1, to: 1.5 },
+      duration: 250,
+      yoyo: true,
+      repeat: -1,
+    })
   }
 
   moveUnitsInDirection(direction: Direction, units: number) {
@@ -54,6 +68,14 @@ export class Cursor {
       }
     }
     this.panCameraIfNecessary(this.gridRowColPosition.row, this.gridRowColPosition.col)
+  }
+
+  setCursorTint(tintColor: number) {
+    this.sprite.setTint(tintColor)
+  }
+
+  clearCursorTint() {
+    this.sprite.clearTint()
   }
 
   moveToRowCol(row: number, col: number) {

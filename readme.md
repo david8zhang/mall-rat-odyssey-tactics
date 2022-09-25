@@ -9,7 +9,6 @@ A tactical strategy game about a bunch of rats at the mall
 ### Harder Stuff
 
 - Add CPU controlled units
-- Turn system (Can't move the same rat twice in a single turn)
 - Battle system
 - Turn menu (end turn prematurely)
 - Cutscenes
