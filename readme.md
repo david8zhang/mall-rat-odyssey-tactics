@@ -8,9 +8,10 @@ A tactical strategy game about a bunch of rats at the mall
 
 ### Harder Stuff
 
-- Add CPU controlled units
-- Battle system
 - Turn menu (end turn prematurely)
 - Cutscenes
   - In game cutscene
   - Dialog cutscene with characters
+- HP system
+- Attack animations
+- CPU unit movement

@@ -3,8 +3,14 @@ import { UI } from '~/scenes/UI'
 import { Direction } from '~/utils/Directions'
 import { PlayerConstants } from '~/utils/PlayerConstants'
 import { Side } from '~/utils/Side'
-import { Cursor, CursorState } from './Cursor'
+import { Cursor } from './Cursor'
 import { Unit } from './Unit'
+
+export enum ActionState {
+  SELECT_UNIT_TO_MOVE = 'select_unit_to_move',
+  SELECT_MOVE_DEST = 'select_move_dest',
+  SELECT_ATTACK_TARGET = 'select_attack_target',
+}
 
 export class Player {
   private game: Game
@@ -15,6 +21,8 @@ export class Player {
   // Attacking
   public attackableEnemyUnits: Unit[] = []
   public selectedAttackableUnitIndex: number = 0
+
+  public actionState: ActionState = ActionState.SELECT_UNIT_TO_MOVE
 
   constructor(game: Game) {
     this.game = game
@@ -51,9 +59,9 @@ export class Player {
   }
 
   handleMouseClick(pointer: Phaser.Input.Pointer) {
-    switch (this.cursor.cursorState) {
-      case CursorState.SCROLL:
-      case CursorState.MOVE: {
+    switch (this.actionState) {
+      case ActionState.SELECT_UNIT_TO_MOVE:
+      case ActionState.SELECT_MOVE_DEST: {
         const cell = this.game.grid.getCellAtWorldPosition(pointer.worldX, pointer.worldY)
         this.cursor.moveToRowCol(cell.gridRow, cell.gridCol)
         break
@@ -62,12 +70,12 @@ export class Player {
   }
 
   handleArrowKeyPress(arrowKeyCode: string) {
-    switch (this.cursor.cursorState) {
-      case CursorState.SCROLL:
-      case CursorState.MOVE:
+    switch (this.actionState) {
+      case ActionState.SELECT_UNIT_TO_MOVE:
+      case ActionState.SELECT_MOVE_DEST:
         this.moveCursor(arrowKeyCode)
         break
-      case CursorState.ATTACK: {
+      case ActionState.SELECT_ATTACK_TARGET: {
         this.scrollAttackTargets(arrowKeyCode)
       }
     }
@@ -119,7 +127,7 @@ export class Player {
   handleAttackSelectedTarget() {
     const selectedUnitToAttack = this.attackableEnemyUnits[this.selectedAttackableUnitIndex]
     UI.instance.playAttackAnimation(this.selectedUnitToMove!, selectedUnitToAttack, () => {
-      this.cursor.cursorState = CursorState.SCROLL
+      this.actionState = ActionState.SELECT_UNIT_TO_MOVE
       this.cursor.clearCursorTint()
       this.selectedUnitToMove!.setHasMoved(true)
       this.selectedUnitToMove = null
@@ -137,7 +145,7 @@ export class Player {
         this.selectedUnitToMove!.highlightOnlyAttackableSquares()
         this.moveCursorToAttackableTarget()
         this.cursor.setCursorTint(0xffcccb)
-        this.cursor.cursorState = CursorState.ATTACK
+        this.actionState = ActionState.SELECT_ATTACK_TARGET
       } else {
         this.selectedUnitToMove!.dehighlight()
         this.selectedUnitToMove!.setHasMoved(true)
@@ -154,22 +162,22 @@ export class Player {
       const playerAtCursor = this.getPlayerAtCursor()
       playerAtCursor!.highlight()
       this.selectedUnitToMove = playerAtCursor
-      this.cursor.cursorState = CursorState.MOVE
+      this.actionState = ActionState.SELECT_MOVE_DEST
     }
   }
 
   handleSpaceBarPress() {
     if (this.game.currTurn === Side.PLAYER) {
-      switch (this.cursor.cursorState) {
-        case CursorState.MOVE: {
+      switch (this.actionState) {
+        case ActionState.SELECT_MOVE_DEST: {
           this.handleMoveUnitToCursor()
           break
         }
-        case CursorState.SCROLL: {
+        case ActionState.SELECT_UNIT_TO_MOVE: {
           this.handleSelectUnitToMove()
           break
         }
-        case CursorState.ATTACK: {
+        case ActionState.SELECT_ATTACK_TARGET: {
           this.handleAttackSelectedTarget()
           break
         }

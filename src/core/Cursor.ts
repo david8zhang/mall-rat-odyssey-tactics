@@ -3,12 +3,6 @@ import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { Cell } from './Cell'
 
-export enum CursorState {
-  MOVE = 'Move',
-  ATTACK = 'Attack',
-  SCROLL = 'Scroll',
-}
-
 export class Cursor {
   private game: Game
   private position: {
@@ -19,7 +13,6 @@ export class Cursor {
     row: number
     col: number
   }
-  public cursorState: CursorState = CursorState.SCROLL
 
   public sprite: Phaser.GameObjects.Sprite
   constructor(game: Game, defaultPosition: { x: number; y: number }) {
