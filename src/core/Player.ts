@@ -54,8 +54,29 @@ export class Player {
           this.handleSpaceBarPress()
           break
         }
+        case 'Escape': {
+          this.revertCursorToScroll()
+          break
+        }
       }
     })
+  }
+
+  revertCursorToScroll() {
+    switch (this.actionState) {
+      case ActionState.SELECT_ATTACK_TARGET: {
+        this.completeUnitAction()
+        break
+      }
+      case ActionState.SELECT_MOVE_DEST: {
+        this.actionState = ActionState.SELECT_UNIT_TO_MOVE
+        if (this.selectedUnitToMove) {
+          this.selectedUnitToMove.dehighlight()
+          this.selectedUnitToMove = null
+        }
+        break
+      }
+    }
   }
 
   handleMouseClick(pointer: Phaser.Input.Pointer) {
@@ -127,14 +148,20 @@ export class Player {
   handleAttackSelectedTarget() {
     const selectedUnitToAttack = this.attackableEnemyUnits[this.selectedAttackableUnitIndex]
     UI.instance.playAttackAnimation(this.selectedUnitToMove!, selectedUnitToAttack, () => {
-      this.actionState = ActionState.SELECT_UNIT_TO_MOVE
-      this.cursor.clearCursorTint()
-      this.selectedUnitToMove!.setHasMoved(true)
-      this.selectedUnitToMove = null
-      if (this.hasLastUnitMoved()) {
-        this.switchTurn()
-      }
+      this.completeUnitAction()
     })
+  }
+
+  completeUnitAction() {
+    const { row, col } = this.selectedUnitToMove!.getRowCol()
+    this.cursor.moveToRowCol(row, col)
+    this.actionState = ActionState.SELECT_UNIT_TO_MOVE
+    this.cursor.clearCursorTint()
+    this.selectedUnitToMove!.setHasMoved(true)
+    this.selectedUnitToMove = null
+    if (this.hasLastUnitMoved()) {
+      this.switchTurn()
+    }
   }
 
   handleMoveUnitToCursor() {
@@ -147,12 +174,7 @@ export class Player {
         this.cursor.setCursorTint(0xffcccb)
         this.actionState = ActionState.SELECT_ATTACK_TARGET
       } else {
-        this.selectedUnitToMove!.dehighlight()
-        this.selectedUnitToMove!.setHasMoved(true)
-        this.selectedUnitToMove = null
-        if (this.hasLastUnitMoved()) {
-          this.switchTurn()
-        }
+        this.completeUnitAction()
       }
     }
   }
