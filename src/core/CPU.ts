@@ -23,6 +23,7 @@ export class CPU {
         texture: unitConfig.texture,
         moveRange: 4,
         attackRange: 1,
+        maxHealth: 50,
       })
       this.units.push(playerUnit)
     })

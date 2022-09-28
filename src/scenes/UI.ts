@@ -1,3 +1,4 @@
+import { UIValueBar } from '~/core/ui/UIValueBar'
 import { Unit } from '~/core/Unit'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
@@ -23,6 +24,13 @@ export class UI extends Phaser.Scene {
   public attackerSprite!: Phaser.GameObjects.Sprite
   public defenderSprite!: Phaser.GameObjects.Sprite
 
+  public unitStatsSprite!: Phaser.GameObjects.Sprite
+  public unitStatsRect!: Phaser.GameObjects.Rectangle
+  public unitNameText!: Phaser.GameObjects.Text
+  public unitNameHPText!: Phaser.GameObjects.Text
+  public unitStatsHealthBar!: UIValueBar
+  public hoveredUnit: Unit | null = null
+
   constructor() {
     super('ui')
     UI._instance = this
@@ -36,6 +44,45 @@ export class UI extends Phaser.Scene {
     // this.initCameraScrollRectangles()
     this.initTransitionUI()
     this.initAttackUI()
+    // this.initUnitStats()
+  }
+
+  initUnitStats() {
+    this.unitStatsSprite = this.add.sprite(10, 10, 'rat1').setDepth(1000).setScale(2)
+    this.unitStatsRect = this.add
+      .rectangle(10, 10, 135, 55, 0xd3d5ff, 0.85)
+      .setOrigin(0)
+      .setStrokeStyle(1, 0x000000)
+    this.unitNameText = this.add.text(
+      this.unitStatsRect.x + this.unitStatsRect.displayWidth / 2 + 10,
+      this.unitStatsRect.y + 5,
+      'Rat',
+      {
+        fontSize: '15px',
+        color: 'black',
+      }
+    )
+    this.unitNameHPText = this.add.text(0, 0, 'HP:100/100', { fontSize: '10px', color: 'black' })
+    this.unitNameHPText.setPosition(
+      this.unitNameText.x -
+        this.unitNameHPText.displayWidth / 2 +
+        this.unitNameText.displayWidth / 2,
+      this.unitNameText.y + this.unitNameText.displayHeight + 2
+    )
+    this.unitStatsSprite.setPosition(
+      this.unitNameHPText.x / 2 + 5,
+      this.unitStatsRect.y + this.unitStatsRect.displayHeight / 2
+    )
+    this.unitStatsHealthBar = new UIValueBar(this, {
+      x: this.unitNameHPText.x,
+      y: this.unitNameHPText.y + this.unitNameHPText.displayHeight + 5,
+      maxValue: 100,
+      height: 4,
+      width: this.unitNameHPText.displayWidth,
+      borderWidth: 2,
+      fillColor: 0xdbcc70,
+      showBorder: true,
+    })
   }
 
   initAttackUI() {

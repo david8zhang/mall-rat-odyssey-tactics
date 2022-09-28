@@ -9,6 +9,7 @@ export interface UnitConfig {
   }
   moveRange: number
   attackRange: number // Additive to move range (i.e. attack range of 1 and move range of 4 = effective attack range of 5)
+  maxHealth: number
 }
 
 export class Unit {
@@ -21,6 +22,9 @@ export class Unit {
   public attackableSquaresPostMove: Phaser.GameObjects.Rectangle[] = []
   public hasMoved: boolean = false
 
+  public currHealth: number
+  public maxHealth: number
+
   constructor(game: Game, unitConfig: UnitConfig) {
     this.game = game
     this.sprite = this.game.add
@@ -28,6 +32,8 @@ export class Unit {
       .setDepth(5)
     this.moveRange = unitConfig.moveRange
     this.attackRange = unitConfig.attackRange
+    this.maxHealth = unitConfig.maxHealth
+    this.currHealth = this.maxHealth
   }
 
   public highlight() {
@@ -233,6 +239,7 @@ export class Unit {
     this.attackableSquaresPostMove.forEach((square) => {
       square.destroy()
     })
+    this.attackableSquaresPostMove = []
     this.possibleAttackableSquares = []
     this.moveableSquares = []
   }

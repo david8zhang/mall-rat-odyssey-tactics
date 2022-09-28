@@ -214,6 +214,7 @@ export class Player {
       const cell = this.game.grid.getCellAtWorldPosition(attackableSquare.x, attackableSquare.y)
       selectedUnitAttackableSquareCoordinates.add(`${cell.gridRow},${cell.gridCol}`)
     })
+    console.log(selectedUnitAttackableSquareCoordinates)
     return enemyUnits.filter((unit: Unit) => {
       const { row, col } = unit.getRowCol()
       return selectedUnitAttackableSquareCoordinates.has(`${row},${col}`)
@@ -303,6 +304,7 @@ export class Player {
         texture: playerConfig.texture,
         moveRange: 50,
         attackRange: 1,
+        maxHealth: 50,
       })
       this.units.push(playerUnit)
     })
