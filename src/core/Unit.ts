@@ -10,10 +10,11 @@ export interface UnitConfig {
   moveRange: number
   attackRange: number // Additive to move range (i.e. attack range of 1 and move range of 4 = effective attack range of 5)
   maxHealth: number
+  name: string
 }
 
 export class Unit {
-  private sprite: Phaser.GameObjects.Sprite
+  public sprite: Phaser.GameObjects.Sprite
   private game: Game
   private moveRange: number
   private attackRange: number
@@ -24,6 +25,7 @@ export class Unit {
 
   public currHealth: number
   public maxHealth: number
+  public name: string
 
   constructor(game: Game, unitConfig: UnitConfig) {
     this.game = game
@@ -34,6 +36,7 @@ export class Unit {
     this.attackRange = unitConfig.attackRange
     this.maxHealth = unitConfig.maxHealth
     this.currHealth = this.maxHealth
+    this.name = unitConfig.name
   }
 
   public highlight() {

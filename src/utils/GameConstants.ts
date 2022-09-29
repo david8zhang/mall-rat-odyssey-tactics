@@ -9,14 +9,17 @@ export class GameConstants {
     {
       rowColPos: [11, 11],
       texture: 'rat2',
+      name: 'CPU Rat 1',
     },
     {
       rowColPos: [11, 12],
       texture: 'rat2',
+      name: 'CPU Rat 2',
     },
     {
       rowColPos: [11, 13],
       texture: 'rat2',
+      name: 'CPU Rat 3',
     },
   ]
 }

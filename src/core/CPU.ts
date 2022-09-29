@@ -24,6 +24,7 @@ export class CPU {
         moveRange: 4,
         attackRange: 1,
         maxHealth: 50,
+        name: unitConfig.name,
       })
       this.units.push(playerUnit)
     })

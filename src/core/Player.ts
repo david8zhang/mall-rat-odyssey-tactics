@@ -84,7 +84,7 @@ export class Player {
       case ActionState.SELECT_UNIT_TO_MOVE:
       case ActionState.SELECT_MOVE_DEST: {
         const cell = this.game.grid.getCellAtWorldPosition(pointer.worldX, pointer.worldY)
-        this.cursor.moveToRowCol(cell.gridRow, cell.gridCol)
+        this.moveCursorToRowCol(cell.gridRow, cell.gridCol)
         break
       }
     }
@@ -94,7 +94,7 @@ export class Player {
     switch (this.actionState) {
       case ActionState.SELECT_UNIT_TO_MOVE:
       case ActionState.SELECT_MOVE_DEST:
-        this.moveCursor(arrowKeyCode)
+        this.moveCursorWithArrows(arrowKeyCode)
         break
       case ActionState.SELECT_ATTACK_TARGET: {
         this.scrollAttackTargets(arrowKeyCode)
@@ -124,7 +124,12 @@ export class Player {
     }
   }
 
-  moveCursor(arrowKeyCode: string) {
+  moveCursorToRowCol(row: number, col: number) {
+    this.cursor.moveToRowCol(row, col)
+    this.showStatsIfCursorHovered()
+  }
+
+  moveCursorWithArrows(arrowKeyCode: string) {
     switch (arrowKeyCode) {
       case 'ArrowDown': {
         this.cursor.moveUnitsInDirection(Direction.DOWN, 1)
@@ -143,10 +148,28 @@ export class Player {
         break
       }
     }
+    this.showStatsIfCursorHovered()
+  }
+
+  showStatsIfCursorHovered() {
+    const allUnits = this.units.concat(this.game.cpu.units)
+    let isHoveredOnUnit: boolean = false
+    allUnits.forEach((unit) => {
+      const { row, col } = unit.getRowCol()
+      const cursorRowCol = this.cursor.gridRowColPosition
+      if (row === cursorRowCol.row && col === cursorRowCol.col) {
+        isHoveredOnUnit = true
+        UI.instance.hoverUnit(unit)
+      }
+    })
+    if (!isHoveredOnUnit) {
+      UI.instance.hideUnitStats()
+    }
   }
 
   handleAttackSelectedTarget() {
     const selectedUnitToAttack = this.attackableEnemyUnits[this.selectedAttackableUnitIndex]
+    UI.instance.hideUnitStats()
     UI.instance.playAttackAnimation(this.selectedUnitToMove!, selectedUnitToAttack, () => {
       this.completeUnitAction()
     })
@@ -154,7 +177,7 @@ export class Player {
 
   completeUnitAction() {
     const { row, col } = this.selectedUnitToMove!.getRowCol()
-    this.cursor.moveToRowCol(row, col)
+    this.moveCursorToRowCol(row, col)
     this.actionState = ActionState.SELECT_UNIT_TO_MOVE
     this.cursor.clearCursorTint()
     this.selectedUnitToMove!.setHasMoved(true)
@@ -214,7 +237,6 @@ export class Player {
       const cell = this.game.grid.getCellAtWorldPosition(attackableSquare.x, attackableSquare.y)
       selectedUnitAttackableSquareCoordinates.add(`${cell.gridRow},${cell.gridCol}`)
     })
-    console.log(selectedUnitAttackableSquareCoordinates)
     return enemyUnits.filter((unit: Unit) => {
       const { row, col } = unit.getRowCol()
       return selectedUnitAttackableSquareCoordinates.has(`${row},${col}`)
@@ -224,7 +246,7 @@ export class Player {
   moveCursorToAttackableTarget() {
     const firstAttackableUnit = this.getAttackableEnemies()[this.selectedAttackableUnitIndex]
     const { row, col } = firstAttackableUnit.getRowCol()
-    this.cursor.moveToRowCol(row, col)
+    this.moveCursorToRowCol(row, col)
   }
 
   hasEnemyInAttackRange() {
@@ -301,6 +323,7 @@ export class Player {
           x: cell.centerX,
           y: cell.centerY,
         },
+        name: playerConfig.name,
         texture: playerConfig.texture,
         moveRange: 50,
         attackRange: 1,
