@@ -22,6 +22,7 @@ export class UI extends Phaser.Scene {
   public transitionRect!: Phaser.GameObjects.Rectangle
 
   public attackModal!: Phaser.GameObjects.Rectangle
+  public attackAnimationSprite!: Phaser.GameObjects.Sprite
   public attackerSprite!: Phaser.GameObjects.Sprite
   public defenderSprite!: Phaser.GameObjects.Sprite
 
@@ -82,6 +83,10 @@ export class UI extends Phaser.Scene {
       .sprite(this.attackModal.x - 50, this.attackModal.y, '')
       .setVisible(false)
       .setDepth(1000)
+    this.attackAnimationSprite = this.add
+      .sprite(this.attackerSprite.x, this.attackerSprite.y, 'slash')
+      .setVisible(false)
+      .setDepth(1500)
     this.defenderSprite = this.add
       .sprite(this.attackModal.x + 50, this.attackModal.y, '')
       .setFlipX(true)
@@ -106,23 +111,42 @@ export class UI extends Phaser.Scene {
         this.attackerSprite.setVisible(true).setTexture(attacker.texture)
         this.defenderSprite.setVisible(true).setTexture(defender.texture)
         this.tweens.add({
-          delay: 2000,
-          targets: this.attackModal,
-          width: { to: 0, from: GameConstants.WINDOW_WIDTH * 0.75 },
-          height: { to: 0, from: GameConstants.WINDOW_HEIGHT * 0.5 },
+          targets: this.attackerSprite,
           duration: 500,
-          onStart: () => {
-            this.attackerSprite.setVisible(false)
-            this.defenderSprite.setVisible(false)
-          },
-          onUpdate: (tween, target, param) => {
-            target.setPosition(
-              GameConstants.WINDOW_WIDTH / 2 - target.displayWidth / 2,
-              GameConstants.WINDOW_HEIGHT / 2 - target.displayHeight / 2
-            )
+          x: {
+            from: this.attackerSprite.x,
+            to: this.defenderSprite.x - this.defenderSprite.displayWidth,
           },
           onComplete: () => {
-            onEndCb()
+            this.attackAnimationSprite
+              .setPosition(
+                this.attackerSprite.x + this.attackerSprite.displayWidth,
+                this.attackerSprite.y
+              )
+              .setVisible(true)
+              .play('slash')
+            this.tweens.add({
+              delay: 2000,
+              targets: this.attackModal,
+              width: { to: 0, from: GameConstants.WINDOW_WIDTH * 0.75 },
+              height: { to: 0, from: GameConstants.WINDOW_HEIGHT * 0.5 },
+              duration: 500,
+              onStart: () => {
+                this.attackerSprite.setPosition(this.attackModal.x - 50, this.attackModal.y)
+                this.attackerSprite.setVisible(false)
+                this.defenderSprite.setVisible(false)
+                this.attackAnimationSprite.setVisible(false)
+              },
+              onUpdate: (tween, target, param) => {
+                target.setPosition(
+                  GameConstants.WINDOW_WIDTH / 2 - target.displayWidth / 2,
+                  GameConstants.WINDOW_HEIGHT / 2 - target.displayHeight / 2
+                )
+              },
+              onComplete: () => {
+                onEndCb()
+              },
+            })
           },
         })
       },

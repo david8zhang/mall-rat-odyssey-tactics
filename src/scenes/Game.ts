@@ -1,4 +1,5 @@
 import Phaser from 'phaser'
+import { createSlashAnims } from '~/core/anims/createSlashAnims'
 import { CPU } from '~/core/CPU'
 import { Grid } from '~/core/Grid'
 import { Player } from '~/core/Player'
@@ -26,6 +27,7 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
+    createSlashAnims(this.anims)
     this.initCamera()
     this.initTilemap()
     this.initGrid()
