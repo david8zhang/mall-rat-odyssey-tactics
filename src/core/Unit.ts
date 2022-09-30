@@ -22,6 +22,7 @@ export class Unit {
   public possibleAttackableSquares: Phaser.GameObjects.Rectangle[] = []
   public attackableSquaresPostMove: Phaser.GameObjects.Rectangle[] = []
   public hasMoved: boolean = false
+  public isDead: boolean = false
 
   public currHealth: number
   public maxHealth: number
@@ -43,6 +44,20 @@ export class Unit {
     this.sprite.setTint(0xffff00)
     this.highlightMoveableSquares()
     this.highlightPossibleAttackableSquares()
+  }
+
+  takeDamage(damage: number) {
+    this.currHealth = Math.max(this.currHealth - damage, 0)
+  }
+
+  // TODO: Modify damage dealt based on attributes or something
+  calcDamageDealt(): number {
+    return 10
+  }
+
+  die() {
+    this.sprite.setVisible(false)
+    this.isDead = true
   }
 
   highlightPossibleAttackableSquares() {

@@ -1,3 +1,4 @@
+import { UINumber } from '~/core/ui/UINumber'
 import { UIValueBar } from '~/core/ui/UIValueBar'
 import { UnitStatsBox } from '~/core/ui/UnitStatsBox'
 import { Unit } from '~/core/Unit'
@@ -25,6 +26,8 @@ export class UI extends Phaser.Scene {
   public attackAnimationSprite!: Phaser.GameObjects.Sprite
   public attackerSprite!: Phaser.GameObjects.Sprite
   public defenderSprite!: Phaser.GameObjects.Sprite
+  public attackerHealthBar!: UIValueBar
+  public defenderHealthBar!: UIValueBar
 
   public unitStatsBox!: UnitStatsBox
   public hoveredUnit: Unit | null = null
@@ -92,9 +95,71 @@ export class UI extends Phaser.Scene {
       .setFlipX(true)
       .setVisible(false)
       .setDepth(1000)
+
+    const healthBarWidth = this.attackerSprite.displayWidth * 2
+    this.attackerHealthBar = new UIValueBar(this, {
+      x: this.attackerSprite.x - healthBarWidth / 2,
+      y: this.attackerSprite.y + 25,
+      maxValue: 100,
+      height: 4,
+      width: this.attackerSprite.displayWidth * 2,
+      borderWidth: 2,
+      fillColor: 0xdbcc70,
+      showBorder: true,
+    })
+    this.defenderHealthBar = new UIValueBar(this, {
+      x: this.defenderSprite.x - healthBarWidth / 2,
+      y: this.defenderSprite.y + 25,
+      maxValue: 100,
+      height: 4,
+      width: this.defenderSprite.displayWidth * 2,
+      borderWidth: 2,
+      fillColor: 0xdbcc70,
+      showBorder: true,
+    })
+    this.attackerHealthBar.setVisible(false)
+    this.defenderHealthBar.setVisible(false)
   }
 
-  playAttackAnimation(attacker: Unit, defender: Unit, onEndCb: Function) {
+  private tweenAttackModalOut(onEndCb: Function) {
+    // Tween the modal closing
+    this.tweens.add({
+      delay: 2000,
+      targets: this.attackModal,
+      width: { to: 0, from: GameConstants.WINDOW_WIDTH * 0.75 },
+      height: { to: 0, from: GameConstants.WINDOW_HEIGHT * 0.5 },
+      duration: 500,
+      onStart: () => {
+        // Reset all the sprites back to their original positions
+        this.attackerSprite.setPosition(
+          GameConstants.WINDOW_WIDTH / 2 - 50,
+          GameConstants.WINDOW_HEIGHT / 2
+        )
+        this.attackerSprite.setVisible(false)
+        this.defenderSprite.setVisible(false)
+        this.attackerHealthBar.setVisible(false)
+        this.defenderHealthBar.setVisible(false)
+        this.attackAnimationSprite.setVisible(false)
+      },
+      onUpdate: (tween, target, param) => {
+        target.setPosition(
+          GameConstants.WINDOW_WIDTH / 2 - target.displayWidth / 2,
+          GameConstants.WINDOW_HEIGHT / 2 - target.displayHeight / 2
+        )
+      },
+      onComplete: () => {
+        onEndCb()
+      },
+    })
+  }
+
+  playAttackAnimation(
+    attacker: Unit,
+    defender: Unit,
+    damageDealt: number,
+    onEndCb: Function,
+    onAttackCb: Function
+  ) {
     this.attackModal.setVisible(true).setOrigin(0)
     this.tweens.add({
       targets: this.attackModal,
@@ -108,8 +173,16 @@ export class UI extends Phaser.Scene {
         )
       },
       onComplete: () => {
+        // Handle logic after attack modal has fully expanded out
         this.attackerSprite.setVisible(true).setTexture(attacker.texture)
         this.defenderSprite.setVisible(true).setTexture(defender.texture)
+        this.attackerHealthBar.setVisible(true)
+        this.attackerHealthBar.setCurrValue(attacker.currHealth)
+        this.attackerHealthBar.setMaxValue(attacker.maxHealth)
+        this.defenderHealthBar.setVisible(true)
+        this.defenderHealthBar.setCurrValue(defender.currHealth)
+        this.defenderHealthBar.setMaxValue(defender.maxHealth)
+
         this.tweens.add({
           targets: this.attackerSprite,
           duration: 500,
@@ -118,6 +191,28 @@ export class UI extends Phaser.Scene {
             to: this.defenderSprite.x - this.defenderSprite.displayWidth,
           },
           onComplete: () => {
+            // Actual attack animation gets played here
+            this.attackAnimationSprite
+              .on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+                this.attackAnimationSprite.removeAllListeners()
+              })
+              .on(Phaser.Animations.Events.ANIMATION_UPDATE, (_, frame) => {
+                if (frame.index === 3) {
+                  Game.instance.cameras.main.shake(100, 0.005)
+                  this.defenderSprite.setTintFill(0xff0000)
+                  UINumber.createNumber(
+                    `-${damageDealt}`,
+                    this,
+                    this.defenderSprite.x,
+                    this.defenderSprite.y
+                  )
+                  this.defenderHealthBar.decrease(damageDealt)
+                  onAttackCb(attacker, defender)
+                }
+                if (frame.index === 4) {
+                  this.defenderSprite.clearTint()
+                }
+              })
             this.attackAnimationSprite
               .setPosition(
                 this.attackerSprite.x + this.attackerSprite.displayWidth,
@@ -125,28 +220,7 @@ export class UI extends Phaser.Scene {
               )
               .setVisible(true)
               .play('slash')
-            this.tweens.add({
-              delay: 2000,
-              targets: this.attackModal,
-              width: { to: 0, from: GameConstants.WINDOW_WIDTH * 0.75 },
-              height: { to: 0, from: GameConstants.WINDOW_HEIGHT * 0.5 },
-              duration: 500,
-              onStart: () => {
-                this.attackerSprite.setPosition(this.attackModal.x - 50, this.attackModal.y)
-                this.attackerSprite.setVisible(false)
-                this.defenderSprite.setVisible(false)
-                this.attackAnimationSprite.setVisible(false)
-              },
-              onUpdate: (tween, target, param) => {
-                target.setPosition(
-                  GameConstants.WINDOW_WIDTH / 2 - target.displayWidth / 2,
-                  GameConstants.WINDOW_HEIGHT / 2 - target.displayHeight / 2
-                )
-              },
-              onComplete: () => {
-                onEndCb()
-              },
-            })
+            this.tweenAttackModalOut(onEndCb)
           },
         })
       },

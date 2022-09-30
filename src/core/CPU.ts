@@ -30,6 +30,10 @@ export class CPU {
     })
   }
 
+  getLivingUnits() {
+    return this.units.filter((unit: Unit) => !unit.isDead)
+  }
+
   startTurn() {
     this.moveUnits()
   }

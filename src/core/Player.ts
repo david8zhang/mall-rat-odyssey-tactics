@@ -4,6 +4,7 @@ import { Direction } from '~/utils/Directions'
 import { PlayerConstants } from '~/utils/PlayerConstants'
 import { Side } from '~/utils/Side'
 import { Cursor } from './Cursor'
+import { UINumber } from './ui/UINumber'
 import { Unit } from './Unit'
 
 export enum ActionState {
@@ -168,11 +169,24 @@ export class Player {
   }
 
   handleAttackSelectedTarget() {
+    const damageDealt = this.selectedUnitToMove!.calcDamageDealt()
     const selectedUnitToAttack = this.attackableEnemyUnits[this.selectedAttackableUnitIndex]
     UI.instance.hideUnitStats()
-    UI.instance.playAttackAnimation(this.selectedUnitToMove!, selectedUnitToAttack, () => {
-      this.completeUnitAction()
-    })
+    UI.instance.playAttackAnimation(
+      this.selectedUnitToMove!,
+      selectedUnitToAttack,
+      damageDealt,
+      () => {
+        this.completeUnitAction()
+      },
+      (attacker: Unit, defender: Unit) => {
+        defender.takeDamage(damageDealt)
+      }
+    )
+  }
+
+  getLivingUnits() {
+    return this.units.filter((unit) => !unit.isDead)
   }
 
   completeUnitAction() {
@@ -255,14 +269,16 @@ export class Player {
   }
 
   startTurn() {
-    this.units.forEach((unit) => {
+    const livingUnits = this.getLivingUnits()
+    livingUnits.forEach((unit) => {
       unit.setHasMoved(false)
     })
   }
 
   hasLastUnitMoved() {
-    for (let i = 0; i < this.units.length; i++) {
-      const unit = this.units[i]
+    const livingUnits = this.getLivingUnits()
+    for (let i = 0; i < livingUnits.length; i++) {
+      const unit = livingUnits[i]
       if (!unit.hasMoved) {
         return false
       }
@@ -275,8 +291,9 @@ export class Player {
   }
 
   unitAtPosition(row: number, col: number, selectedUnit: Unit) {
-    for (let i = 0; i < this.units.length; i++) {
-      const unit = this.units[i]
+    const allUnits = this.units.concat(this.game.cpu.units)
+    for (let i = 0; i < allUnits.length; i++) {
+      const unit = allUnits[i]
       const rowCol = unit.getRowCol()
       if (rowCol.row === row && rowCol.col === col && unit !== selectedUnit) {
         return true
