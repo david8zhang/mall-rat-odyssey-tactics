@@ -56,6 +56,12 @@ export class UIValueBar {
     return this.currValue === 0
   }
 
+  setPosition(x: number, y: number) {
+    this.x = x
+    this.y = y
+    this.draw()
+  }
+
   increase(amount: number) {
     this.currValue = Math.min(this.maxValue, this.currValue + amount)
     this.draw()

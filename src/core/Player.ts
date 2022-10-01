@@ -153,7 +153,7 @@ export class Player {
   }
 
   showStatsIfCursorHovered() {
-    const allUnits = this.units.concat(this.game.cpu.units)
+    const allUnits = this.game.getAllLivingUnits()
     let isHoveredOnUnit: boolean = false
     allUnits.forEach((unit) => {
       const { row, col } = unit.getRowCol()
@@ -245,7 +245,7 @@ export class Player {
   }
 
   getAttackableEnemies() {
-    const enemyUnits = this.game.cpu.units
+    const enemyUnits = this.game.cpu.getLivingUnits()
     const selectedUnitAttackableSquareCoordinates = new Set<string>([])
     this.selectedUnitToMove!.getAttackableSquaresPostMove().forEach((attackableSquare) => {
       const cell = this.game.grid.getCellAtWorldPosition(attackableSquare.x, attackableSquare.y)
@@ -291,7 +291,7 @@ export class Player {
   }
 
   unitAtPosition(row: number, col: number, selectedUnit: Unit) {
-    const allUnits = this.units.concat(this.game.cpu.units)
+    const allUnits = this.game.getAllLivingUnits()
     for (let i = 0; i < allUnits.length; i++) {
       const unit = allUnits[i]
       const rowCol = unit.getRowCol()

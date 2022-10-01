@@ -39,6 +39,12 @@ export default class Game extends Phaser.Scene {
     this.cameras.main.setBounds(0, 0, GameConstants.GAME_WIDTH, GameConstants.GAME_HEIGHT)
   }
 
+  getAllLivingUnits() {
+    const livingPlayerUnits = this.player.getLivingUnits()
+    const livingCPUUnits = this.cpu.getLivingUnits()
+    return livingPlayerUnits.concat(livingCPUUnits)
+  }
+
   initGrid() {
     this.grid = new Grid(this, {
       width: GameConstants.GAME_WIDTH,

@@ -52,7 +52,7 @@ export class Unit {
 
   // TODO: Modify damage dealt based on attributes or something
   calcDamageDealt(): number {
-    return 10
+    return 50
   }
 
   die() {

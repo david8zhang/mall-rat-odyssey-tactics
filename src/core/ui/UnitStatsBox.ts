@@ -1,5 +1,11 @@
 import { Scene } from 'phaser'
+import { GameConstants } from '~/utils/GameConstants'
 import { UIValueBar } from './UIValueBar'
+
+export enum UnitStatsBoxPosition {
+  UP = 'up',
+  DOWN = 'down',
+}
 
 interface UnitStatsBoxConfig {
   name: string
@@ -9,6 +15,9 @@ interface UnitStatsBoxConfig {
 }
 
 export class UnitStatsBox {
+  private static readonly RECT_HEIGHT = 55
+  private static readonly RECT_WIDTH = 135
+
   unitStatsSprite: Phaser.GameObjects.Sprite
   unitStatsRect: Phaser.GameObjects.Rectangle
   unitNameText: Phaser.GameObjects.Text
@@ -19,7 +28,7 @@ export class UnitStatsBox {
   constructor(scene: Scene, unitStatsBoxConfig: UnitStatsBoxConfig) {
     this.scene = scene
     this.unitStatsRect = this.scene.add
-      .rectangle(10, 10, 135, 55, 0xd3d5ff, 0.85)
+      .rectangle(10, 10, UnitStatsBox.RECT_WIDTH, UnitStatsBox.RECT_HEIGHT, 0xd3d5ff, 0.85)
       .setOrigin(0)
       .setStrokeStyle(1, 0x000000)
     this.unitStatsSprite = this.scene.add.sprite(36, 37, 'rat1').setDepth(1000).setScale(2)
@@ -65,5 +74,38 @@ export class UnitStatsBox {
     this.unitStatsHealthBar.setMaxValue(maxHP)
     this.unitHPText.setText(`HP: ${currHP}/${maxHP}`)
     this.unitNameText.setText(name)
+  }
+
+  moveToPosition(position: UnitStatsBoxPosition) {
+    if (position === UnitStatsBoxPosition.DOWN) {
+      this.unitStatsRect.setPosition(
+        10,
+        GameConstants.WINDOW_HEIGHT - UnitStatsBox.RECT_HEIGHT - 10
+      )
+      this.unitStatsSprite.setPosition(36, GameConstants.WINDOW_HEIGHT - 37)
+      this.unitNameText.setPosition(
+        this.unitStatsSprite.x + this.unitStatsSprite.displayWidth / 2 + 10,
+        GameConstants.WINDOW_HEIGHT - UnitStatsBox.RECT_HEIGHT
+      )
+    } else {
+      this.unitStatsRect.setPosition(10, 10)
+      this.unitStatsSprite.setPosition(36, 37)
+      this.unitNameText.setPosition(
+        this.unitStatsSprite.x + this.unitStatsSprite.displayWidth / 2 + 10,
+        18
+      )
+    }
+    this.repositionAllElements()
+  }
+
+  repositionAllElements() {
+    this.unitHPText.setPosition(
+      this.unitNameText.x,
+      this.unitNameText.y + this.unitNameText.displayHeight + 2
+    )
+    this.unitStatsHealthBar.setPosition(
+      this.unitHPText.x,
+      this.unitHPText.y + this.unitHPText.displayHeight + 5
+    )
   }
 }

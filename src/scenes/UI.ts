@@ -1,6 +1,6 @@
 import { UINumber } from '~/core/ui/UINumber'
 import { UIValueBar } from '~/core/ui/UIValueBar'
-import { UnitStatsBox } from '~/core/ui/UnitStatsBox'
+import { UnitStatsBox, UnitStatsBoxPosition } from '~/core/ui/UnitStatsBox'
 import { Unit } from '~/core/Unit'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
@@ -70,6 +70,14 @@ export class UI extends Phaser.Scene {
       name: unit.name,
       texture: unit.sprite.texture.key,
     })
+    const gameCamera = Game.instance.cameras.main
+    const cameraUpperBound = gameCamera.midPoint.y - gameCamera.height / 2
+    const relativeY = unit.sprite.y - cameraUpperBound // get the y position of the unit relative to camera position
+    if (relativeY < GameConstants.WINDOW_HEIGHT / 2) {
+      this.unitStatsBox.moveToPosition(UnitStatsBoxPosition.DOWN)
+    } else {
+      this.unitStatsBox.moveToPosition(UnitStatsBoxPosition.UP)
+    }
   }
 
   initAttackUI() {
@@ -121,10 +129,23 @@ export class UI extends Phaser.Scene {
     this.defenderHealthBar.setVisible(false)
   }
 
+  private playDefenderDeathAnimation(onEndCb: Function) {
+    this.tweens.add({
+      delay: 500,
+      targets: this.defenderSprite,
+      alpha: { from: 1, to: 0 },
+      duration: 1000,
+      onComplete: () => {
+        this.defenderSprite.setVisible(false).setAlpha(1)
+        onEndCb()
+      },
+    })
+  }
+
   private tweenAttackModalOut(onEndCb: Function) {
     // Tween the modal closing
     this.tweens.add({
-      delay: 2000,
+      delay: 1000,
       targets: this.attackModal,
       width: { to: 0, from: GameConstants.WINDOW_WIDTH * 0.75 },
       height: { to: 0, from: GameConstants.WINDOW_HEIGHT * 0.5 },
@@ -195,6 +216,14 @@ export class UI extends Phaser.Scene {
             this.attackAnimationSprite
               .on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
                 this.attackAnimationSprite.removeAllListeners()
+                if (defender.currHealth === 0) {
+                  this.playDefenderDeathAnimation(() => {
+                    defender.die()
+                    this.tweenAttackModalOut(onEndCb)
+                  })
+                } else {
+                  this.tweenAttackModalOut(onEndCb)
+                }
               })
               .on(Phaser.Animations.Events.ANIMATION_UPDATE, (_, frame) => {
                 if (frame.index === 3) {
@@ -220,7 +249,6 @@ export class UI extends Phaser.Scene {
               )
               .setVisible(true)
               .play('slash')
-            this.tweenAttackModalOut(onEndCb)
           },
         })
       },
