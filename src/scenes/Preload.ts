@@ -1,3 +1,5 @@
+import { CHICANERY_COPYPASTA } from '~/utils/DialogConstants'
+
 export class Preload extends Phaser.Scene {
   constructor() {
     super('preload')
@@ -8,11 +10,20 @@ export class Preload extends Phaser.Scene {
     this.loadCursor()
     this.loadTilemap()
     this.loadAnimations()
+    this.loadDialogUI()
   }
 
   loadUnits() {
     this.load.image('rat1', 'rat1.png')
     this.load.image('rat2', 'rat2.png')
+    this.load.image('rat-dialog', 'rat-dialog.png')
+  }
+
+  loadDialogUI() {
+    this.load.image(
+      'nextPage',
+      'https://raw.githubusercontent.com/rexrainbow/phaser3-rex-notes/master/assets/images/arrow-down-left.png'
+    )
   }
 
   loadCursor() {
@@ -29,7 +40,8 @@ export class Preload extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start('game')
-    this.scene.start('ui')
+    // this.scene.start('game')
+    // this.scene.start('ui')
+    this.scene.start('dialog', CHICANERY_COPYPASTA)
   }
 }

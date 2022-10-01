@@ -1,9 +1,14 @@
 import Phaser from 'phaser'
+import { Plugin as NineSlicePlugin } from 'phaser3-nineslice'
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
+import { Dialog } from './scenes/Dialog'
 import Game from './scenes/Game'
 import { Preload } from './scenes/Preload'
 import { UI } from './scenes/UI'
 import { GameConstants } from './utils/GameConstants'
+
+console.log(window.innerHeight)
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -22,10 +27,19 @@ const config: Phaser.Types.Core.GameConfig = {
   },
   pixelArt: true,
   scale: {
-    mode: Phaser.Scale.FIT,
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [Preload, Game, UI],
+  scene: [Preload, Dialog, Game, UI],
+  plugins: {
+    global: [NineSlicePlugin.DefaultCfg],
+    scene: [
+      {
+        key: 'rexUI',
+        plugin: RexUIPlugin,
+        mapping: 'rexUI',
+      },
+    ],
+  },
 }
 
 export default new Phaser.Game(config)

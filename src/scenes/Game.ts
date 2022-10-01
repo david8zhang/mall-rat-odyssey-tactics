@@ -27,12 +27,18 @@ export default class Game extends Phaser.Scene {
   }
 
   create() {
+    this.initScale()
     createSlashAnims(this.anims)
     this.initCamera()
     this.initTilemap()
     this.initGrid()
     this.initPlayer()
     this.initCPU()
+  }
+
+  initScale() {
+    this.game.scale.resize(GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT)
+    this.game.scale.setZoom(3)
   }
 
   initCamera() {

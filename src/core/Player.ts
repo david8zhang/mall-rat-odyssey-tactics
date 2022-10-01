@@ -24,6 +24,7 @@ export class Player {
   public selectedAttackableUnitIndex: number = 0
 
   public actionState: ActionState = ActionState.SELECT_UNIT_TO_MOVE
+  public isPlayingAttackAnimation = false
 
   constructor(game: Game) {
     this.game = game
@@ -169,20 +170,24 @@ export class Player {
   }
 
   handleAttackSelectedTarget() {
-    const damageDealt = this.selectedUnitToMove!.calcDamageDealt()
-    const selectedUnitToAttack = this.attackableEnemyUnits[this.selectedAttackableUnitIndex]
-    UI.instance.hideUnitStats()
-    UI.instance.playAttackAnimation(
-      this.selectedUnitToMove!,
-      selectedUnitToAttack,
-      damageDealt,
-      () => {
-        this.completeUnitAction()
-      },
-      (attacker: Unit, defender: Unit) => {
-        defender.takeDamage(damageDealt)
-      }
-    )
+    if (!this.isPlayingAttackAnimation) {
+      this.isPlayingAttackAnimation = true
+      const damageDealt = this.selectedUnitToMove!.calcDamageDealt()
+      const selectedUnitToAttack = this.attackableEnemyUnits[this.selectedAttackableUnitIndex]
+      UI.instance.hideUnitStats()
+      UI.instance.playAttackAnimation(
+        this.selectedUnitToMove!,
+        selectedUnitToAttack,
+        damageDealt,
+        () => {
+          this.completeUnitAction()
+          this.isPlayingAttackAnimation = false
+        },
+        (attacker: Unit, defender: Unit) => {
+          defender.takeDamage(damageDealt)
+        }
+      )
+    }
   }
 
   getLivingUnits() {

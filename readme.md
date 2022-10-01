@@ -8,10 +8,8 @@ A tactical strategy game about a bunch of rats at the mall
 
 ### Harder Stuff
 
-- Turn menu (end turn prematurely)
 - Cutscenes
   - In game cutscene
   - Dialog cutscene with characters
-- HP system
-- Attack animations
 - CPU unit movement
+- Turn menu
