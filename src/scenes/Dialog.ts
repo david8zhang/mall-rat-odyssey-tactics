@@ -1,4 +1,4 @@
-import { Scale } from 'phaser'
+import { Game, Scale } from 'phaser'
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { SpeechBox } from '~/core/ui/DialogSpeechBox'
 import { GameConstants } from '~/utils/GameConstants'
@@ -10,7 +10,14 @@ export interface DialogConfig {
   }
   dialogLines: {
     text: string
-    img: string
+    screenShakeConfig?: {
+      duration: number
+      intensity: number
+    }
+    spriteConfig: {
+      texture: string
+      scale?: number
+    }
   }[]
 }
 
@@ -75,6 +82,15 @@ export class Dialog extends Phaser.Scene {
 
   showNextDialogLine() {
     const currDialogLine = this.dialogConfig.dialogLines[this.dialogLineIndex]
+    let defaultScale = this.dialogConfig.spriteConfig ? this.dialogConfig.spriteConfig.scale : 1
+    const { spriteConfig, screenShakeConfig } = currDialogLine
+    if (spriteConfig) {
+      this.speakerSprite.setTexture(spriteConfig.texture)
+      this.speakerSprite.setScale(spriteConfig.scale ? spriteConfig.scale : defaultScale)
+    }
+    if (screenShakeConfig) {
+      this.cameras.main.shake(screenShakeConfig.duration, screenShakeConfig.intensity)
+    }
     this.speechBox.displayText(currDialogLine.text, Dialog.DEFAULT_TYPING_SPEED)
   }
 }
