@@ -5,6 +5,7 @@ export class GameConstants {
   public static readonly GAME_WIDTH = 400
   public static readonly TILE_SIZE = 16
   public static readonly CAMERA_SCORLL_SPEED = 2
+  public static readonly GAME_ZOOM_FACTOR = 2
   public static readonly CPU_START_CONFIG = [
     {
       rowColPos: [11, 11],

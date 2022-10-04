@@ -1,3 +1,4 @@
+import { Scene } from 'phaser'
 import Game from '~/scenes/Game'
 import { Cell } from './Cell'
 
@@ -9,14 +10,14 @@ export interface GridConfig {
 }
 
 export class Grid {
-  private game: Game
+  private scene: Scene
   public grid: Cell[][] = []
   public graphics: Phaser.GameObjects.Graphics
   public cellSize: number
 
-  constructor(game: Game, config: GridConfig) {
-    this.game = game
-    this.graphics = this.game.add.graphics()
+  constructor(scene: Scene, config: GridConfig) {
+    this.scene = scene
+    this.graphics = this.scene.add.graphics()
     this.cellSize = config.cellSize
     this.initGrid(config)
   }
@@ -30,7 +31,7 @@ export class Grid {
     for (let i = 0; i < numCellsWidth; i++) {
       xPos = 0
       for (let j = 0; j < numCellsHeight; j++) {
-        this.grid[i][j] = new Cell(this.game, {
+        this.grid[i][j] = new Cell(this.scene, {
           inGameX: xPos,
           inGameY: yPos,
           gridRow: i,

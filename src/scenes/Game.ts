@@ -38,7 +38,7 @@ export default class Game extends Phaser.Scene {
 
   initScale() {
     this.game.scale.resize(GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT)
-    this.game.scale.setZoom(3)
+    this.game.scale.setZoom(GameConstants.GAME_ZOOM_FACTOR)
   }
 
   initCamera() {

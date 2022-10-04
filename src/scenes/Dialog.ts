@@ -1,29 +1,32 @@
-import { Game, Scale } from 'phaser'
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
-import { SpeechBox } from '~/core/ui/DialogSpeechBox'
+import { SpeechBox } from '~/core/ui/SpeechBox'
 import { GameConstants } from '~/utils/GameConstants'
+
+export interface DialogLine {
+  text: string
+  screenShakeConfig?: {
+    duration: number
+    intensity: number
+  }
+  spriteConfig: {
+    texture: string
+    scale?: number
+  }
+}
 
 export interface DialogConfig {
   speakerTexture: string
   spriteConfig?: {
     scale: number
   }
-  dialogLines: {
-    text: string
-    screenShakeConfig?: {
-      duration: number
-      intensity: number
-    }
-    spriteConfig: {
-      texture: string
-      scale?: number
-    }
-  }[]
+  dialogLines: DialogLine[]
 }
 
 export class Dialog extends Phaser.Scene {
-  private static readonly DIALOG_WINDOW_WIDTH = GameConstants.WINDOW_WIDTH * 3
-  private static readonly DIALOG_WINDOW_HEIGHT = GameConstants.WINDOW_HEIGHT * 3
+  private static readonly DIALOG_WINDOW_WIDTH =
+    GameConstants.WINDOW_WIDTH * GameConstants.GAME_ZOOM_FACTOR
+  private static readonly DIALOG_WINDOW_HEIGHT =
+    GameConstants.WINDOW_HEIGHT * GameConstants.GAME_ZOOM_FACTOR
 
   private static readonly SPEECH_BOX_WIDTH = Dialog.DIALOG_WINDOW_WIDTH - 120
   private static readonly SPEECH_BOX_HEIGHT = 75
@@ -56,6 +59,7 @@ export class Dialog extends Phaser.Scene {
       wrapWidth: Dialog.SPEECH_BOX_WIDTH,
       x: 20,
       y: Dialog.DIALOG_WINDOW_HEIGHT,
+      fontSize: '20px',
       onFinishedTypingCb: () => {
         if (this.dialogLineIndex === this.dialogConfig.dialogLines.length - 1) {
           this.scene.start('game')
@@ -69,6 +73,7 @@ export class Dialog extends Phaser.Scene {
           this.showNextDialogLine()
         }
       },
+      rexUI: this.rexUI,
     })
     this.speakerSprite = this.add.sprite(
       Dialog.DIALOG_WINDOW_WIDTH / 2,

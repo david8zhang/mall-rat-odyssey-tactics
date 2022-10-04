@@ -1,5 +1,7 @@
+import { Scene } from 'phaser'
 import TextBox from 'phaser3-rex-plugins/templates/ui/textbox/TextBox'
 import { Dialog } from '~/scenes/Dialog'
+import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
 export interface SpeechBoxConfig {
   wrapWidth: number
@@ -8,10 +10,30 @@ export interface SpeechBoxConfig {
   x: number
   y: number
   onFinishedTypingCb: Function
+  rexUI: RexUIPlugin
+  fontSize: string
+  space?: {
+    left: number
+    right: number
+    top: number
+    bottom: number
+    icon: number
+    text: number
+  }
+  speechBoxRadius?: number
 }
 
 export class SpeechBox {
-  private scene: Dialog
+  private static readonly DEFAULT_SPACE_CONFIG = {
+    left: 30,
+    right: 5,
+    top: 10,
+    bottom: 25,
+    icon: 10,
+    text: 10,
+  }
+
+  private scene: Scene
   private config: SpeechBoxConfig
   private textBox: TextBox
 
@@ -20,13 +42,15 @@ export class SpeechBox {
 
   public isActive: boolean = true
   public onFinishedTypingCb: Function
+  public rexUI: RexUIPlugin
 
-  constructor(scene: Dialog, config: SpeechBoxConfig) {
+  constructor(scene: Scene, config: SpeechBoxConfig) {
     this.scene = scene
     this.config = config
     this.onFinishedTypingCb = config.onFinishedTypingCb
+    this.rexUI = config.rexUI
     const { x, y } = config
-    this.textBox = this.scene.rexUI.add
+    this.textBox = this.rexUI.add
       .textBox({
         x,
         y,
@@ -36,18 +60,14 @@ export class SpeechBox {
           .image(0, 0, 'nextPage')
           .setTint(SpeechBox.COLOR_LIGHT)
           .setVisible(false),
-        space: {
-          left: 30,
-          right: 5,
-          top: 10,
-          bottom: 25,
-          icon: 10,
-          text: 10,
-        },
+        space: this.config.space ? this.config.space : SpeechBox.DEFAULT_SPACE_CONFIG,
       })
       .setOrigin(0, 1)
       .layout()
       .setDepth(1000)
+
+    const icon = this.textBox.getElement('action') as any
+    icon.setVisible(false)
 
     this.textBox.setInteractive().on('pointerdown', () => {
       if (this.isActive) {
@@ -66,8 +86,6 @@ export class SpeechBox {
 
   setVisible(isVisible: boolean) {
     this.textBox.setVisible(isVisible)
-    const icon = this.textBox.getElement('action') as any
-    icon.setVisible(isVisible)
     this.isActive = isVisible
   }
 
@@ -77,12 +95,12 @@ export class SpeechBox {
   }
 
   getBBCodeText() {
-    const { wrapWidth, fixedWidth, fixedHeight } = this.config
-    return this.scene.rexUI.add
+    const { wrapWidth, fixedWidth, fixedHeight, fontSize } = this.config
+    return this.rexUI.add
       .BBCodeText(0, 0, '', {
         fixedWidth,
         fixedHeight,
-        fontSize: '25px',
+        fontSize,
         wrap: {
           mode: 'word',
           width: wrapWidth,
@@ -110,12 +128,11 @@ export class SpeechBox {
   }
 
   createSpeechBubbleShape(fillColor, strokeColor) {
-    return this.scene.rexUI.add.customShapes({
+    const radius = this.config.speechBoxRadius ? this.config.speechBoxRadius : 20
+    const indent = 10
+    return this.rexUI.add.customShapes({
       create: { lines: 1 },
       update: function () {
-        var radius = 20
-        var indent = 15
-
         var left = 0,
           right = this.width,
           top = 0,

@@ -1,4 +1,4 @@
-import Game from '~/scenes/Game'
+import { Scene } from 'phaser'
 
 export interface CellConfig {
   gridRow: number
@@ -14,10 +14,10 @@ export class Cell {
   public centerX: number
   public centerY: number
   public rectangle: Phaser.Geom.Rectangle
-  private game: Game
+  private scene: Scene
 
-  constructor(game: Game, config: CellConfig) {
-    this.game = game
+  constructor(scene: Scene, config: CellConfig) {
+    this.scene = scene
     this.gridRow = config.gridRow
     this.gridCol = config.gridCol
 

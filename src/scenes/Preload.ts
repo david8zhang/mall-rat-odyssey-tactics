@@ -1,3 +1,4 @@
+import { SAMPLE_CUTSCENE } from '~/utils/CutsceneConstants'
 import { CHICANERY_COPYPASTA } from '~/utils/DialogConstants'
 
 export class Preload extends Phaser.Scene {
@@ -32,6 +33,7 @@ export class Preload extends Phaser.Scene {
 
   loadTilemap() {
     this.load.tilemapTiledJSON('sample-map', 'sample-map.json')
+    this.load.tilemapTiledJSON('cutscene-map', 'cutscene-map.json')
     this.load.image('tilemap_packed', 'tilemap_packed.png')
   }
 
@@ -42,6 +44,7 @@ export class Preload extends Phaser.Scene {
   create() {
     // this.scene.start('game')
     // this.scene.start('ui')
-    this.scene.start('dialog', CHICANERY_COPYPASTA)
+    // this.scene.start('dialog', CHICANERY_COPYPASTA)
+    this.scene.start('cutscene', SAMPLE_CUTSCENE)
   }
 }
