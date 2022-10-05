@@ -2,6 +2,11 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { SpeechBox } from '~/core/ui/SpeechBox'
 import { GameConstants } from '~/utils/GameConstants'
 
+export enum SpeakerPosition {
+  LEFT = 'left',
+  RIGHT = 'right',
+}
+
 export interface DialogLine {
   text: string
   screenShakeConfig?: {
@@ -11,6 +16,7 @@ export interface DialogLine {
   spriteConfig: {
     texture: string
     scale?: number
+    position?: SpeakerPosition
   }
 }
 

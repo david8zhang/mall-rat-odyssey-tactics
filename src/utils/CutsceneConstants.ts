@@ -1,4 +1,5 @@
 import { CutsceneConfig } from '~/scenes/Cutscene'
+import { SpeakerPosition } from '~/scenes/Dialog'
 
 export const SAMPLE_CUTSCENE: CutsceneConfig = {
   initialState: {
@@ -9,6 +10,11 @@ export const SAMPLE_CUTSCENE: CutsceneConfig = {
         texture: 'rat1',
         camFocus: true,
       },
+      rat2: {
+        row: 1,
+        col: 0,
+        texture: 'rat2',
+      },
     },
   },
   newStates: [
@@ -16,6 +22,10 @@ export const SAMPLE_CUTSCENE: CutsceneConfig = {
       characterConfigs: {
         rat1: {
           row: 0,
+          col: 15,
+        },
+        rat2: {
+          row: 1,
           col: 15,
         },
       },
@@ -37,42 +47,62 @@ export const SAMPLE_CUTSCENE: CutsceneConfig = {
       },
       dialogLines: [
         {
-          text: 'Super Idol de xiao rong',
+          text: 'Super Idol的笑容',
           spriteConfig: {
-            texture: 'rat1',
+            texture: 'muscular-rat',
+            scale: 0.25,
+            position: SpeakerPosition.LEFT,
           },
         },
         {
-          text: 'Dou mei ni de tian',
+          text: '都没你的甜',
           spriteConfig: {
-            texture: 'rat1',
+            texture: 'biggie-cheese',
+            scale: 0.2,
+            position: SpeakerPosition.RIGHT,
           },
         },
         {
-          text: 'Ba yue zheng wu de yang guang',
+          text: '八月正午的阳光',
           spriteConfig: {
-            texture: 'rat1',
+            texture: 'muscular-rat',
+            scale: 0.25,
+            position: SpeakerPosition.LEFT,
           },
         },
         {
-          text: 'Dou mei ni yao yan',
+          text: '都没你耀眼',
           spriteConfig: {
-            texture: 'rat1',
+            texture: 'biggie-cheese',
+            scale: 0.2,
+            position: SpeakerPosition.RIGHT,
           },
         },
         {
-          text: 'Re ai yi bai ling wu du de ni',
+          text: '热爱105度的你',
           spriteConfig: {
-            texture: 'rat1',
+            texture: 'muscular-rat',
+            scale: 0.25,
+            position: SpeakerPosition.LEFT,
           },
         },
         {
-          text: 'Di di qing chun de zheng liu shui~',
+          text: '滴滴清纯的蒸馏水~',
           spriteConfig: {
-            texture: 'rat1',
+            texture: 'biggie-cheese',
+            scale: 0.2,
+            position: SpeakerPosition.RIGHT,
           },
         },
       ],
+    },
+    {
+      characterConfigs: {
+        rat1: {
+          row: 5,
+          col: 10,
+        },
+      },
     },
   ],
 }

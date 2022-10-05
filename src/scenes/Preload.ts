@@ -18,6 +18,8 @@ export class Preload extends Phaser.Scene {
     this.load.image('rat1', 'rat1.png')
     this.load.image('rat2', 'rat2.png')
     this.load.image('rat-dialog', 'rat-dialog.png')
+    this.load.image('biggie-cheese', 'biggie_cheese.png')
+    this.load.image('muscular-rat', 'muscular-rat.jpeg')
   }
 
   loadDialogUI() {
@@ -46,5 +48,6 @@ export class Preload extends Phaser.Scene {
     // this.scene.start('ui')
     // this.scene.start('dialog', CHICANERY_COPYPASTA)
     this.scene.start('cutscene', SAMPLE_CUTSCENE)
+    this.scene.start('cutscene-overlay')
   }
 }

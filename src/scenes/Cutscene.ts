@@ -2,6 +2,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { Grid } from '~/core/Grid'
 import { SpeechBox } from '~/core/ui/SpeechBox'
 import { GameConstants } from '~/utils/GameConstants'
+import { CutsceneOverlay } from './CutsceneOverlay'
 import { DialogLine } from './Dialog'
 
 export interface CutsceneCharacterConfig {
@@ -26,10 +27,6 @@ export interface CutsceneConfig {
 }
 
 export class Cutscene extends Phaser.Scene {
-  private static readonly SPEECH_BOX_WIDTH = GameConstants.WINDOW_WIDTH - 120
-  private static readonly SPEECH_BOX_HEIGHT = 25
-  private static readonly DEFAULT_TYPING_SPEED = 50
-
   private tileMap!: Phaser.Tilemaps.Tilemap
   private grid!: Grid
   private cutsceneConfig!: CutsceneConfig
@@ -37,7 +34,8 @@ export class Cutscene extends Phaser.Scene {
   public characterSpriteMapping: {
     [id: string]: Phaser.GameObjects.Sprite
   } = {}
-  public isPlayingState: boolean = false
+  public isPlayingCharacterMovement: boolean = false
+  public isPlayingDialog: boolean = false
 
   // Speechbox
   public rexUI!: RexUIPlugin
@@ -84,48 +82,10 @@ export class Cutscene extends Phaser.Scene {
     this.initScale()
     this.initTilemap()
     this.initGrid()
-    this.initDialogBox()
     this.initMouseClickListener()
     this.initCutsceneState()
     this.initCameraBounds()
-    this.initDialogBox()
   }
-
-  initDialogBox() {
-    this.speechBox = new SpeechBox(this, {
-      fixedHeight: Cutscene.SPEECH_BOX_HEIGHT,
-      fixedWidth: Cutscene.SPEECH_BOX_WIDTH,
-      wrapWidth: Cutscene.SPEECH_BOX_WIDTH,
-      x: 20,
-      y: GameConstants.WINDOW_HEIGHT,
-      fontSize: '12px',
-      speechBoxRadius: 10,
-      space: {
-        left: 30,
-        right: 5,
-        top: 10,
-        bottom: 25,
-        icon: 10,
-        text: 10,
-      },
-      onFinishedTypingCb: () => {
-        // if (this.dialogLineIndex === this.dialogConfig.dialogLines.length - 1) {
-        //   this.scene.start('game')
-        //   this.scene.start('ui')
-        // } else {
-        //   this.dialogLineIndex++
-        //   this.dialogLineIndex = Math.min(
-        //     this.dialogConfig.dialogLines.length - 1,
-        //     this.dialogLineIndex
-        //   )
-        //   this.showNextDialogLine()
-        // }
-      },
-      rexUI: this.rexUI,
-    })
-  }
-
-  onFinishedTyping() {}
 
   initCameraBounds() {
     this.cameras.main.setBounds(0, 0, GameConstants.GAME_WIDTH, GameConstants.GAME_HEIGHT)
@@ -152,25 +112,34 @@ export class Cutscene extends Phaser.Scene {
     this.tileMap.createLayer(layerName, tileset)
   }
 
+  canGoToNextState() {
+    const nextState = this.cutsceneConfig.newStates[this.currStateIndex]
+    return (
+      this.currStateIndex < this.cutsceneConfig.newStates.length &&
+      !this.isPlayingCharacterMovement &&
+      !this.isPlayingDialog &&
+      nextState
+    )
+  }
+
   // On each tick of the clock, go to the next state of the cutscene and move each character accordingly
   goToNextState() {
-    const nextState = this.cutsceneConfig.newStates[this.currStateIndex]
-    if (
-      this.currStateIndex == this.cutsceneConfig.newStates.length ||
-      this.isPlayingState ||
-      !nextState
-    ) {
+    const canGoToNextState = this.canGoToNextState()
+    if (!canGoToNextState) {
       return
     }
-    this.isPlayingState = true
+    this.isPlayingCharacterMovement = true
     const prevState =
       this.currStateIndex === 0
         ? this.cutsceneConfig.initialState
         : this.cutsceneConfig.newStates[this.currStateIndex - 1]
-    this.handleCharacterMovement(prevState, nextState)
+    const nextState = this.cutsceneConfig.newStates[this.currStateIndex]
+    this.handleCharacterMovement(prevState, nextState, () => {
+      this.handleDialog(nextState)
+    })
   }
 
-  handleCharacterMovement(prevState: any, nextState: any) {
+  handleCharacterMovement(prevState: any, nextState: any, onCompleteCallback: Function) {
     const characterConfigKeys = Object.keys(nextState.characterConfigs)
     characterConfigKeys.forEach((key: string, index: number) => {
       const prevCharacterState = prevState.characterConfigs[key]
@@ -181,10 +150,10 @@ export class Cutscene extends Phaser.Scene {
         this.characterSpriteMapping[key],
         () => {
           if (index === characterConfigKeys.length - 1) {
-            this.isPlayingState = false
+            this.isPlayingCharacterMovement = false
             this.currStateIndex++
             if (nextState.dialogLines) {
-              this.handleDialog(nextState)
+              onCompleteCallback()
             }
           }
         }
@@ -194,9 +163,14 @@ export class Cutscene extends Phaser.Scene {
 
   handleDialog(nextState: any) {
     const { dialogLines } = nextState
-    const dialogLineToShow = dialogLines[this.dialogLineIndex]
-    console.log('Went here!')
-    this.speechBox.displayText(dialogLineToShow.text, 50)
+    if (dialogLines && dialogLines.length > 0) {
+      this.isPlayingDialog = true
+      CutsceneOverlay.instance.setDialogLines(dialogLines)
+      CutsceneOverlay.instance.setOnDialogFinishedCallback(() => {
+        this.isPlayingDialog = false
+      })
+      CutsceneOverlay.instance.showNextDialogLine()
+    }
   }
 
   moveToNewCell(

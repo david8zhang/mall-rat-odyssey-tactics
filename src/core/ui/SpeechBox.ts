@@ -105,26 +105,13 @@ export class SpeechBox {
           mode: 'word',
           width: wrapWidth,
         },
-        maxLines: 3,
+        maxLines: 2,
       })
       .setDepth(1000)
   }
 
   setPosition(x: number, y: number) {
     this.textBox.setPosition(x, y)
-  }
-
-  getBuiltInText() {
-    const { wrapWidth, fixedWidth, fixedHeight } = this.config
-    return this.scene.add
-      .text(0, 0, '', {
-        fontSize: '12px',
-        wordWrap: {
-          width: wrapWidth,
-        },
-        maxLines: 3,
-      })
-      .setFixedSize(fixedWidth, fixedHeight)
   }
 
   createSpeechBubbleShape(fillColor, strokeColor) {
