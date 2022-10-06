@@ -1,6 +1,7 @@
 import Game from '~/scenes/Game'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
+import { Blackboard } from './behavior-tree/Blackboard'
 import { Unit } from './Unit'
 
 export class CPU {
@@ -15,7 +16,7 @@ export class CPU {
     GameConstants.CPU_START_CONFIG.forEach((unitConfig) => {
       const rowColPos = unitConfig.rowColPos
       const cell = this.game.grid.getCellAtRowCol(rowColPos[0], rowColPos[1])
-      const playerUnit = new Unit(this.game, {
+      const unit = new Unit(this.game, {
         position: {
           x: cell.centerX,
           y: cell.centerY,
@@ -26,7 +27,7 @@ export class CPU {
         maxHealth: 50,
         name: unitConfig.name,
       })
-      this.units.push(playerUnit)
+      this.units.push(unit)
     })
   }
 
@@ -39,8 +40,10 @@ export class CPU {
   }
 
   moveUnits() {
-    // TODO: Add logic to move CPU units
-    // For now, just switch turn back to player
-    this.game.setTurn(Side.PLAYER)
+    this.units.forEach((unit: Unit) => {})
+  }
+
+  setupBehaviorTree() {
+    const blackboard = new Blackboard()
   }
 }

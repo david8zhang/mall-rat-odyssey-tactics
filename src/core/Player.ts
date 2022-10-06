@@ -336,20 +336,20 @@ export class Player {
   }
 
   initUnits() {
-    const playerConfigs = PlayerConstants.START_CONFIG
-    playerConfigs.forEach((playerConfig) => {
-      const rowColPos = playerConfig.rowColPos
+    const unitConfigs = PlayerConstants.UNIT_CONFIGS
+    unitConfigs.forEach((unitConfig) => {
+      const rowColPos = unitConfig.rowColPos
       const cell = this.game.grid.getCellAtRowCol(rowColPos[0], rowColPos[1])
       const playerUnit = new Unit(this.game, {
         position: {
           x: cell.centerX,
           y: cell.centerY,
         },
-        name: playerConfig.name,
-        texture: playerConfig.texture,
-        moveRange: 50,
-        attackRange: 1,
-        maxHealth: 50,
+        name: unitConfig.name,
+        texture: unitConfig.texture,
+        moveRange: unitConfig.moveRange,
+        attackRange: unitConfig.attackRange,
+        maxHealth: unitConfig.maxHealth,
       })
       this.units.push(playerUnit)
     })

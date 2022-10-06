@@ -6,10 +6,10 @@ A tactical strategy game about a bunch of rats at the mall
 
 ### Easy Wins
 
+- Win condition
+- UI Menus
+
 ### Harder Stuff
 
-- Cutscenes
-  - In game cutscene
-  - Dialog cutscene with characters
 - CPU unit movement
 - Turn menu

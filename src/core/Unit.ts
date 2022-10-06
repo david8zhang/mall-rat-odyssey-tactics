@@ -43,7 +43,7 @@ export class Unit {
   public highlight() {
     this.sprite.setTint(0xffff00)
     this.highlightMoveableSquares()
-    this.highlightPossibleAttackableSquares()
+    // this.highlightPossibleAttackableSquares()
   }
 
   takeDamage(damage: number) {
@@ -60,7 +60,8 @@ export class Unit {
     this.isDead = true
   }
 
-  highlightPossibleAttackableSquares() {
+  getAttackableSquaresPreMove() {
+    const attackableSquares: number[][] = []
     const cell = this.game.grid.getCellAtWorldPosition(this.sprite.x, this.sprite.y)
     const currCoordinates = [cell.gridRow, cell.gridCol, 0]
     const queue = [currCoordinates]
@@ -76,7 +77,7 @@ export class Unit {
       ]
       const currNode = queue.shift()
       if (currNode && seen[currNode[0]][currNode[1]] == -1) {
-        seen[currNode[0]][currNode[1]] = currNode[2]
+        attackableSquares.push([currNode[0], currNode[1]])
         directions.forEach((dir) => {
           const newRow = currNode[0] + dir[0]
           const newCol = currNode[1] + dir[1]
@@ -92,25 +93,7 @@ export class Unit {
         })
       }
     }
-    for (let i = 0; i < seen.length; i++) {
-      for (let j = 0; j < seen[0].length; j++) {
-        if (seen[i][j] > this.moveRange && seen[i][j] <= this.moveRange + this.attackRange) {
-          const cell = this.game.grid.getCellAtRowCol(i, j)
-          const newRect = this.game.add
-            .rectangle(
-              cell.centerX,
-              cell.centerY,
-              GameConstants.TILE_SIZE,
-              GameConstants.TILE_SIZE,
-              0xff0000,
-              0.25
-            )
-            .setDepth(this.sprite.depth - 1)
-            .setVisible(false)
-          this.possibleAttackableSquares.push(newRect)
-        }
-      }
-    }
+    return attackableSquares
   }
 
   highlightOnlyAttackableSquares() {
@@ -236,9 +219,6 @@ export class Unit {
   public dehighlight() {
     this.sprite.clearTint()
     this.moveableSquares.forEach((square) => {
-      square.setVisible(false)
-    })
-    this.possibleAttackableSquares.forEach((square) => {
       square.setVisible(false)
     })
     this.attackableSquaresPostMove.forEach((square) => {
