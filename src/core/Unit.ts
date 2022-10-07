@@ -108,7 +108,8 @@ export class Unit {
     })
   }
 
-  highlightMoveableSquares() {
+  getMoveableSquares(): number[][] {
+    const moveableSquares: number[][] = []
     const cell = this.game.grid.getCellAtWorldPosition(this.sprite.x, this.sprite.y)
     const currCoordinates = [cell.gridRow, cell.gridCol, 0]
     const queue = [currCoordinates]
@@ -125,6 +126,7 @@ export class Unit {
       const currNode = queue.shift()
       if (currNode && !seen[currNode[0]][currNode[1]]) {
         seen[currNode[0]][currNode[1]] = true
+        moveableSquares.push([currNode[0], currNode[1]])
         directions.forEach((dir) => {
           const newRow = currNode[0] + dir[0]
           const newCol = currNode[1] + dir[1]
@@ -137,24 +139,26 @@ export class Unit {
         })
       }
     }
-    for (let i = 0; i < seen.length; i++) {
-      for (let j = 0; j < seen[0].length; j++) {
-        if (seen[i][j]) {
-          const cell = this.game.grid.getCellAtRowCol(i, j)
-          const newRect = this.game.add
-            .rectangle(
-              cell.centerX,
-              cell.centerY,
-              GameConstants.TILE_SIZE,
-              GameConstants.TILE_SIZE,
-              0x0000ff,
-              0.25
-            )
-            .setDepth(this.sprite.depth - 1)
-          this.moveableSquares.push(newRect)
-        }
-      }
-    }
+    return moveableSquares
+  }
+
+  highlightMoveableSquares() {
+    const moveableSquares = this.getMoveableSquares()
+    moveableSquares.forEach((moveableSquare) => {
+      const [i, j] = moveableSquare
+      const cell = this.game.grid.getCellAtRowCol(i, j)
+      const newRect = this.game.add
+        .rectangle(
+          cell.centerX,
+          cell.centerY,
+          GameConstants.TILE_SIZE,
+          GameConstants.TILE_SIZE,
+          0x0000ff,
+          0.25
+        )
+        .setDepth(this.sprite.depth - 1)
+      this.moveableSquares.push(newRect)
+    })
   }
 
   wallTileAtPosition(row: number, col: number) {

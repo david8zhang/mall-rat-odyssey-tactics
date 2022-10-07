@@ -1,12 +1,13 @@
 import Game from '~/scenes/Game'
 import { GameConstants } from '~/utils/GameConstants'
-import { Side } from '~/utils/Side'
 import { Blackboard } from './behavior-tree/Blackboard'
 import { Unit } from './Unit'
 
 export class CPU {
   private game: Game
   public units: Unit[] = []
+  public unitToMove: Unit | null = null
+
   constructor(game: Game) {
     this.game = game
     this.initUnits()
