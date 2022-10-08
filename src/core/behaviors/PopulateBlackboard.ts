@@ -15,7 +15,14 @@ export class PopulateBlackboard extends BehaviorTreeNode {
 
   public process(): BehaviorStatus {
     this.blackboard.setData(BlackboardKeys.CURR_UNIT_TO_MOVE, this.cpu.unitToMove)
-    this.blackboard.setData(BlackboardKeys.PLAYER_UNITS, Game.instance.player.units)
+    this.blackboard.setData(BlackboardKeys.PLAYER_UNITS, Game.instance.player.getLivingUnits())
+    this.blackboard.setData(BlackboardKeys.ON_UNIT_MOVE_COMPLETE_CB, () => {
+      if (this.cpu.unitToMoveIndex === this.cpu.units.length - 1) {
+        this.cpu.switchTurn()
+      } else {
+        this.cpu.moveNextUnit()
+      }
+    })
     return BehaviorStatus.SUCCESS
   }
 }

@@ -8,6 +8,12 @@ import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
 import { UI } from './UI'
 
+export enum GameOverConditions {
+  PLAYER_WIN = 'PLAYER_WIN',
+  CPU_WIN = 'CPU_WIN',
+  IN_PROGRESS = 'IN_PROGRESS',
+}
+
 export default class Game extends Phaser.Scene {
   public tileMap!: Phaser.Tilemaps.Tilemap
   public grid!: Grid
@@ -132,6 +138,18 @@ export default class Game extends Phaser.Scene {
 
   createLayer(layerName: string, tileset: Phaser.Tilemaps.Tileset) {
     this.tileMap.createLayer(layerName, tileset)
+  }
+
+  unitAtPosition(row: number, col: number) {
+    const allUnits = this.getAllLivingUnits()
+    for (let i = 0; i < allUnits.length; i++) {
+      const unit = allUnits[i]
+      const rowCol = unit.getRowCol()
+      if (rowCol.row === row && rowCol.col === col) {
+        return true
+      }
+    }
+    return false
   }
 
   setTurn(side: Side) {

@@ -4,7 +4,7 @@ import { Blackboard } from '~/core/behavior-tree/Blackboard'
 import { Unit } from '~/core/Unit'
 import { BlackboardKeys } from '../BlackboardKeys'
 
-export class AttackPlayerUnit extends BehaviorTreeNode {
+export class MoveUnitNextToTarget extends BehaviorTreeNode {
   constructor(blackboard: Blackboard) {
     super('AttackPlayerUnit', blackboard)
   }

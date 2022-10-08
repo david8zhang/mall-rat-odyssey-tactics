@@ -139,7 +139,9 @@ export class Unit {
         })
       }
     }
-    return moveableSquares
+    return moveableSquares.filter((square: number[]) => {
+      return !this.game.unitAtPosition(square[0], square[1])
+    })
   }
 
   highlightMoveableSquares() {

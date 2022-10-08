@@ -11,7 +11,7 @@ export abstract class BehaviorTreeNode {
   }
 
   public preprocess() {
-    // console.log('Processing node: ' + this.name)
+    console.log('Processing node: ' + this.name)
   }
 
   public tick(): BehaviorStatus {
@@ -23,7 +23,7 @@ export abstract class BehaviorTreeNode {
   public abstract process(): BehaviorStatus
 
   public emitStatus(status: BehaviorStatus): BehaviorStatus {
-    // console.log('Returned status: ' + status)
+    console.log('Returned status: ' + status)
     return status
   }
 }
