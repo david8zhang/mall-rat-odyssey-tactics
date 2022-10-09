@@ -1,11 +1,12 @@
-import { SAMPLE_GAME_LEVEL_CONFIG, SceneType } from '~/utils/LevelConfig'
+import { FULL_GAME_LEVEL_CONFIG, SceneType } from '~/utils/LevelConfig'
 
 export class SceneController extends Phaser.Scene {
   public static instance: SceneController
-  public levelConfig = SAMPLE_GAME_LEVEL_CONFIG // Each "level" is comprised of a list of scene configs
+  public levelConfig = FULL_GAME_LEVEL_CONFIG // Each "level" is comprised of a list of scene configs
   public currLevelIndex: number = 0 // Get the index of the level
 
   public currLevelSubSceneIndex: number = 0 // Get the index of the scene config within each level
+  public gameFinished: boolean = false
 
   constructor() {
     super('scene-controller')
@@ -20,7 +21,7 @@ export class SceneController extends Phaser.Scene {
       case SceneType.CUTSCENE: {
         console.log('Went here!')
         this.scene.stop('game')
-        this.scene.stop('ui')
+        this.scene.stop('game-ui')
         this.scene.stop('dialog')
         this.scene.start('cutscene', currScene.config)
         this.scene.start('cutscene-overlay')
@@ -28,7 +29,7 @@ export class SceneController extends Phaser.Scene {
       }
       case SceneType.DIALOG: {
         this.scene.stop('game')
-        this.scene.stop('ui')
+        this.scene.stop('game-ui')
         this.scene.stop('cutscene')
         this.scene.stop('cutscene-overlay')
         this.scene.start('dialog', currScene.config)
@@ -38,7 +39,7 @@ export class SceneController extends Phaser.Scene {
         this.scene.stop('cutscene')
         this.scene.stop('cutscene-overlay')
         this.scene.start('game', currScene.config)
-        this.scene.start('ui')
+        this.scene.start('game-ui')
         this.scene.stop('dialog')
         break
       }
@@ -50,14 +51,17 @@ export class SceneController extends Phaser.Scene {
   }
 
   onSceneCompleted() {
+    if (this.gameFinished) {
+      return
+    }
+
     const currLevel = this.levelConfig[this.currLevelIndex]
     this.currLevelSubSceneIndex++
     if (this.currLevelSubSceneIndex >= currLevel.length) {
       this.currLevelSubSceneIndex = 0
       this.currLevelIndex++
       if (this.currLevelIndex >= this.levelConfig.length) {
-        console.log('Game finished!')
-        return
+        this.gameFinished = true
       } else {
         this.playLevelScene()
       }

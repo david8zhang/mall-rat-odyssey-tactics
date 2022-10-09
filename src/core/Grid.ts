@@ -1,5 +1,5 @@
 import { Scene } from 'phaser'
-import Game from '~/scenes/Game'
+import Game from '~/scenes/game/Game'
 import { Cell } from './Cell'
 
 // Note: All cell sizes must be square!

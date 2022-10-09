@@ -1,14 +1,14 @@
 import Phaser from 'phaser'
 import { Plugin as NineSlicePlugin } from 'phaser3-nineslice'
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
-import { Cutscene } from './scenes/Cutscene'
-import { CutsceneOverlay } from './scenes/CutsceneOverlay'
+import { Cutscene } from './scenes/cutscene/Cutscene'
+import { CutsceneOverlay } from './scenes/cutscene/CutsceneOverlay'
 
 import { Dialog } from './scenes/Dialog'
-import Game from './scenes/Game'
+import Game from './scenes/game/Game'
 import { Preload } from './scenes/Preload'
 import { SceneController } from './scenes/SceneController'
-import { UI } from './scenes/UI'
+import { GameUI } from './scenes/game/GameUI'
 import { GameConstants } from './utils/GameConstants'
 
 const config: Phaser.Types.Core.GameConfig = {
@@ -30,7 +30,7 @@ const config: Phaser.Types.Core.GameConfig = {
   scale: {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [Preload, SceneController, Dialog, Cutscene, CutsceneOverlay, Game, UI],
+  scene: [Preload, SceneController, Dialog, Cutscene, CutsceneOverlay, Game, GameUI],
   plugins: {
     global: [NineSlicePlugin.DefaultCfg],
     scene: [

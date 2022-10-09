@@ -1,3 +1,5 @@
+import { SAMPLE_GAME } from '~/utils/LevelConfig'
+
 export class Preload extends Phaser.Scene {
   constructor() {
     super('preload')
@@ -14,9 +16,7 @@ export class Preload extends Phaser.Scene {
   loadUnits() {
     this.load.image('rat1', 'rat1.png')
     this.load.image('rat2', 'rat2.png')
-    this.load.image('rat-dialog', 'rat-dialog.png')
-    this.load.image('biggie-cheese', 'biggie_cheese.png')
-    this.load.image('muscular-rat', 'muscular-rat.jpeg')
+    this.load.image('dottie', 'dottie.png')
   }
 
   loadDialogUI() {

@@ -1,5 +1,5 @@
-import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/Game'
-import { AttackDirection, UI } from '~/scenes/UI'
+import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/game/Game'
+import { AttackDirection, GameUI } from '~/scenes/game/GameUI'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
 import { BehaviorTreeNode } from './behavior-tree/BehaviorTreeNode'
@@ -54,7 +54,7 @@ export class CPU {
   }
 
   startTurn() {
-    UI.instance.configureAttackAnimationModal(AttackDirection.RIGHT)
+    GameUI.instance.configureAttackAnimationModal(AttackDirection.RIGHT)
     this.moveUnits()
   }
 

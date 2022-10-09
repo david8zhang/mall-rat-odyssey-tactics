@@ -2,7 +2,7 @@ import { BehaviorStatus } from '~/core/behavior-tree/BehaviorStatus'
 import { BehaviorTreeNode } from '~/core/behavior-tree/BehaviorTreeNode'
 import { Blackboard } from '~/core/behavior-tree/Blackboard'
 import { Unit } from '~/core/Unit'
-import { UI } from '~/scenes/UI'
+import { GameUI } from '~/scenes/game/GameUI'
 import { BlackboardKeys } from '../BlackboardKeys'
 
 export class AttackPlayerUnit extends BehaviorTreeNode {
@@ -18,7 +18,7 @@ export class AttackPlayerUnit extends BehaviorTreeNode {
     ) as Function
 
     const damageDealt = unitToMove.calcDamageDealt()
-    UI.instance.playAttackAnimation(
+    GameUI.instance.playAttackAnimation(
       unitToMove,
       playerUnitToTarget,
       damageDealt,

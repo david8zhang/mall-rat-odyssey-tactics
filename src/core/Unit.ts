@@ -1,4 +1,4 @@
-import Game from '~/scenes/Game'
+import Game from '~/scenes/game/Game'
 import { GameConstants } from '~/utils/GameConstants'
 
 export interface UnitConfig {

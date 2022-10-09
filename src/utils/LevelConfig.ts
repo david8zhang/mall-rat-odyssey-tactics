@@ -1,7 +1,12 @@
-import { CutsceneConfig } from '~/scenes/Cutscene'
+import { CutsceneConfig } from '~/scenes/cutscene/Cutscene'
 import { GameConstants } from './GameConstants'
 
 // Move these interfaces and enums to another file
+export enum CutsceneStateTypes {
+  DIALOG = 'DIALOG',
+  CHARACTER_MOVEMENT = 'CHARACTER_MOVEMENT',
+}
+
 export interface CutsceneCharacterConfig {
   row: number
   col: number
@@ -96,277 +101,6 @@ export const SAMPLE_GAME = {
   ],
 }
 
-export const SAMPLE_DIALOG: DialogConfig = {
-  speakerTexture: 'rat-dialog',
-  spriteConfig: {
-    scale: 0.5,
-  },
-  dialogLines: [
-    {
-      screenShakeConfig: {
-        duration: 250,
-        intensity: 0.025,
-      },
-      text: 'I AM NOT CRAZY!',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'I am not crazy!',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'I know he swapped those numbers',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'I knew it was 1216. One after Magna Carta. As if I could ever make such a mistake. Never. Never!',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: "I just - I just couldn't prove it. He covered his tracks, he got that idiot at the copy shop to lie for him..",
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: "You think this is something? You think this is bad? This? This chicanery? He's done worse!",
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'That billboard! Are you telling me that a man just happens to fall like that? No! HE orchestrated it! Jimmy!',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      screenShakeConfig: {
-        duration: 500,
-        intensity: 0.01,
-      },
-      text: 'He DEFECATED through a SUNROOF!',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: "And I saved him! And I shouldn't have...",
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'I took him into my own firm! What was I thinking!?',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: "He'll never change. He'll NEVER change! Ever since he was 9, Always the same!",
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: "Couldn't keep his hands out of the cash drawer!",
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'But not our Jimmy!',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: "Couldn't be precious Jimmy!",
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'Stealing them blind!',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'And HE gets to be a lawyer?',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      screenShakeConfig: {
-        duration: 500,
-        intensity: 0.01,
-      },
-      text: 'What a sick joke!',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: "I should've stopped him when I had the chance!",
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'And you, you have to stop him! You...',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: '...',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'I apologize.',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'I lost my train of thought',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'Got carried away..',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-    {
-      text: 'Do you have anything else?',
-      spriteConfig: {
-        texture: 'rat-dialog',
-      },
-    },
-  ],
-}
-
-export const SAMPLE_CUTSCENE: CutsceneConfig = {
-  initialState: {
-    characterConfigs: {
-      rat1: {
-        row: 0,
-        col: 0,
-        texture: 'rat1',
-        camFocus: true,
-      },
-      rat2: {
-        row: 1,
-        col: 0,
-        texture: 'rat2',
-      },
-    },
-  },
-  newStates: [
-    {
-      characterConfigs: {
-        rat1: {
-          row: 0,
-          col: 15,
-        },
-        rat2: {
-          row: 1,
-          col: 15,
-        },
-      },
-    },
-    {
-      characterConfigs: {
-        rat1: {
-          row: 5,
-          col: 5,
-        },
-      },
-    },
-    {
-      characterConfigs: {
-        rat1: {
-          row: 5,
-          col: 5,
-        },
-      },
-      dialogLines: [
-        {
-          text: 'Super Idol的笑容',
-          spriteConfig: {
-            texture: 'muscular-rat',
-            scale: 0.25,
-            position: SpeakerPosition.LEFT,
-          },
-        },
-        {
-          text: '都没你的甜',
-          spriteConfig: {
-            texture: 'biggie-cheese',
-            scale: 0.2,
-            position: SpeakerPosition.RIGHT,
-          },
-        },
-        {
-          text: '八月正午的阳光',
-          spriteConfig: {
-            texture: 'muscular-rat',
-            scale: 0.25,
-            position: SpeakerPosition.LEFT,
-          },
-        },
-        {
-          text: '都没你耀眼',
-          spriteConfig: {
-            texture: 'biggie-cheese',
-            scale: 0.2,
-            position: SpeakerPosition.RIGHT,
-          },
-        },
-        {
-          text: '热爱105度的你',
-          spriteConfig: {
-            texture: 'muscular-rat',
-            scale: 0.25,
-            position: SpeakerPosition.LEFT,
-          },
-        },
-        {
-          text: '滴滴清纯的蒸馏水~',
-          spriteConfig: {
-            texture: 'biggie-cheese',
-            scale: 0.2,
-            position: SpeakerPosition.RIGHT,
-          },
-        },
-      ],
-    },
-    {
-      characterConfigs: {
-        rat1: {
-          row: 5,
-          col: 10,
-        },
-      },
-    },
-  ],
-}
-
 export const PIPPIN_DOTS_LEVEL = [
   {
     sceneType: SceneType.CUTSCENE,
@@ -381,18 +115,18 @@ export const PIPPIN_DOTS_LEVEL = [
           },
           citizenRat1: {
             row: 15,
-            col: 13,
+            col: 11,
             texture: 'rat1',
           },
           citizenRat2: {
             row: 15,
             col: 12,
-            texture: 'rat2',
+            texture: 'rat1',
           },
           citizenRat3: {
             row: 15,
-            col: 14,
-            texture: 'rat3',
+            col: 13,
+            texture: 'rat1',
           },
           guardRat1: {
             row: 12,
@@ -406,50 +140,28 @@ export const PIPPIN_DOTS_LEVEL = [
           },
         },
       },
-      newStates: [
+      states: [
         {
-          characterConfigs: {
+          type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+          config: {
             guardRat1: {
               row: 13,
               col: 10,
             },
           },
-          dialogLines: [
+        },
+        {
+          type: CutsceneStateTypes.DIALOG,
+          config: [
             {
-              text: 'I now present her royal highness: Princess Dottie of Pippin Dots!',
+              text: 'I now present, her royal highness Princess Dottie of the great kingdom of Pippin Dots!',
               spriteConfig: {
                 texture: 'rat1',
-                scale: 2,
+                scale: 3,
                 position: SpeakerPosition.LEFT,
               },
             },
           ],
-        },
-        {
-          characterConfigs: {
-            dottie: {
-              row: 13,
-              col: 12,
-            },
-            dialogLines: [
-              {
-                text: 'Thank you, <guardRat1>.',
-                spriteConfig: {
-                  texture: 'dottie',
-                  scale: 2,
-                  position: SpeakerPosition.RIGHT,
-                },
-              },
-              {
-                text: 'It is my pleasure to welcome you all, my loyal subjects to the fifth annual Ice Cream Banquet!',
-                spriteConfig: {
-                  texture: 'dottie',
-                  scale: 2,
-                  position: SpeakerPosition.RIGHT,
-                },
-              },
-            ],
-          },
         },
       ],
     },
@@ -457,18 +169,3 @@ export const PIPPIN_DOTS_LEVEL = [
 ]
 
 export const FULL_GAME_LEVEL_CONFIG = [PIPPIN_DOTS_LEVEL]
-export const SAMPLE_LEVEL = [
-  {
-    sceneType: SceneType.CUTSCENE,
-    config: SAMPLE_CUTSCENE,
-  },
-  {
-    sceneType: SceneType.DIALOG,
-    config: SAMPLE_DIALOG,
-  },
-  {
-    sceneType: SceneType.GAME,
-    config: SAMPLE_GAME,
-  },
-]
-export const SAMPLE_GAME_LEVEL_CONFIG = [SAMPLE_LEVEL]

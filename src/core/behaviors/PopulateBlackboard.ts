@@ -1,4 +1,4 @@
-import Game from '~/scenes/Game'
+import Game from '~/scenes/game/Game'
 import { BehaviorStatus } from '../behavior-tree/BehaviorStatus'
 import { BehaviorTreeNode } from '../behavior-tree/BehaviorTreeNode'
 import { Blackboard } from '../behavior-tree/Blackboard'

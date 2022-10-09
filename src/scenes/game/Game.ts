@@ -7,8 +7,8 @@ import { Unit } from '~/core/Unit'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
-import { SceneController } from './SceneController'
-import { UI } from './UI'
+import { SceneController } from '../SceneController'
+import { GameUI } from './GameUI'
 
 export interface InitialUnitConfig {
   rowColPos: number[]
@@ -179,8 +179,8 @@ export default class Game extends Phaser.Scene {
 
   handleGameOverCondition(gameOverCondition: GameOverConditions) {
     this.currTurn = Side.PLAYER
-    UI.instance.hideUnitStats()
-    UI.instance.showGameOverUI(gameOverCondition, () => {
+    GameUI.instance.hideUnitStats()
+    GameUI.instance.showGameOverUI(gameOverCondition, () => {
       SceneController.instance.onSceneCompleted()
     })
   }
@@ -199,7 +199,7 @@ export default class Game extends Phaser.Scene {
 
   setTurn(side: Side) {
     this.currTurn = side
-    UI.instance.transitionTurn(() => {
+    GameUI.instance.transitionTurn(() => {
       if (side === Side.CPU) {
         this.cpu.startTurn()
       } else if (side === Side.PLAYER) {

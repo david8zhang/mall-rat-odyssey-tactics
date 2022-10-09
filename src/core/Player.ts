@@ -1,5 +1,5 @@
-import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/Game'
-import { AttackDirection, UI } from '~/scenes/UI'
+import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/game/Game'
+import { AttackDirection, GameUI } from '~/scenes/game/GameUI'
 import { Direction } from '~/utils/Directions'
 import { Side } from '~/utils/Side'
 import { Cursor } from './Cursor'
@@ -159,11 +159,11 @@ export class Player {
       const cursorRowCol = this.cursor.gridRowColPosition
       if (row === cursorRowCol.row && col === cursorRowCol.col) {
         isHoveredOnUnit = true
-        UI.instance.hoverUnit(unit)
+        GameUI.instance.hoverUnit(unit)
       }
     })
     if (!isHoveredOnUnit) {
-      UI.instance.hideUnitStats()
+      GameUI.instance.hideUnitStats()
     }
   }
 
@@ -172,8 +172,8 @@ export class Player {
       this.isPlayingAttackAnimation = true
       const damageDealt = this.selectedUnitToMove!.calcDamageDealt()
       const selectedUnitToAttack = this.attackableEnemyUnits[this.selectedAttackableUnitIndex]
-      UI.instance.hideUnitStats()
-      UI.instance.playAttackAnimation(
+      GameUI.instance.hideUnitStats()
+      GameUI.instance.playAttackAnimation(
         this.selectedUnitToMove!,
         selectedUnitToAttack,
         damageDealt,
@@ -280,7 +280,7 @@ export class Player {
   }
 
   startTurn() {
-    UI.instance.configureAttackAnimationModal(AttackDirection.LEFT)
+    GameUI.instance.configureAttackAnimationModal(AttackDirection.LEFT)
   }
 
   hasLastUnitMoved() {
@@ -295,7 +295,7 @@ export class Player {
   }
 
   switchTurn() {
-    UI.instance.hideUnitStats()
+    GameUI.instance.hideUnitStats()
     const livingUnits = this.getLivingUnits()
     livingUnits.forEach((unit) => {
       unit.setHasMoved(false)

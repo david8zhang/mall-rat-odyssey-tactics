@@ -106,7 +106,7 @@ export class SpeechBox {
           mode: 'word',
           width: wrapWidth,
         },
-        maxLines: maxLines ? 3 : maxLines,
+        maxLines: maxLines ? maxLines : 3,
       })
       .setDepth(1000)
   }

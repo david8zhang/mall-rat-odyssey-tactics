@@ -1,4 +1,4 @@
-import Game from '~/scenes/Game'
+import Game from '~/scenes/game/Game'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { Cell } from './Cell'

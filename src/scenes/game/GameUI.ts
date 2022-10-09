@@ -12,10 +12,10 @@ export enum AttackDirection {
   LEFT = 'LEFT',
 }
 
-export class UI extends Phaser.Scene {
+export class GameUI extends Phaser.Scene {
   public static readonly SCROLL_RECT_HEIGHT = 192
   public static readonly SCROLL_RECT_WIDTH = 32
-  private static _instance: UI
+  private static _instance: GameUI
 
   // Enable camera scroll when mouse moves to the edge of the screen
   public isScrollingCamera: boolean = false
@@ -45,12 +45,12 @@ export class UI extends Phaser.Scene {
   public gameOverText!: Phaser.GameObjects.Text
 
   constructor() {
-    super('ui')
-    UI._instance = this
+    super('game-ui')
+    GameUI._instance = this
   }
 
   public static get instance() {
-    return UI._instance
+    return GameUI._instance
   }
 
   create() {
@@ -403,8 +403,8 @@ export class UI extends Phaser.Scene {
     this.leftCamScrollRect = this.createScrollRect(
       16,
       GameConstants.WINDOW_HEIGHT / 2,
-      UI.SCROLL_RECT_WIDTH,
-      UI.SCROLL_RECT_HEIGHT,
+      GameUI.SCROLL_RECT_WIDTH,
+      GameUI.SCROLL_RECT_HEIGHT,
       () => {
         if (!this.isScrollingCamera) {
           this.isScrollingCamera = true
@@ -419,8 +419,8 @@ export class UI extends Phaser.Scene {
     this.rightCamScrollRect = this.createScrollRect(
       GameConstants.WINDOW_WIDTH - 16,
       GameConstants.WINDOW_HEIGHT / 2,
-      UI.SCROLL_RECT_WIDTH,
-      UI.SCROLL_RECT_HEIGHT,
+      GameUI.SCROLL_RECT_WIDTH,
+      GameUI.SCROLL_RECT_HEIGHT,
       () => {
         if (!this.isScrollingCamera) {
           this.isScrollingCamera = true
@@ -435,8 +435,8 @@ export class UI extends Phaser.Scene {
     this.upCamScrollRect = this.createScrollRect(
       GameConstants.WINDOW_WIDTH / 2,
       16,
-      UI.SCROLL_RECT_HEIGHT,
-      UI.SCROLL_RECT_WIDTH,
+      GameUI.SCROLL_RECT_HEIGHT,
+      GameUI.SCROLL_RECT_WIDTH,
       () => {
         if (!this.isScrollingCamera) {
           this.isScrollingCamera = true
@@ -452,8 +452,8 @@ export class UI extends Phaser.Scene {
     this.downCamScrollRect = this.createScrollRect(
       GameConstants.WINDOW_WIDTH / 2,
       GameConstants.WINDOW_HEIGHT - 16,
-      UI.SCROLL_RECT_HEIGHT,
-      UI.SCROLL_RECT_WIDTH,
+      GameUI.SCROLL_RECT_HEIGHT,
+      GameUI.SCROLL_RECT_WIDTH,
       () => {
         if (!this.isScrollingCamera) {
           this.isScrollingCamera = true
