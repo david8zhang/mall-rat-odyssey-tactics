@@ -7,7 +7,7 @@ export class GameConstants {
   public static readonly CAMERA_SCORLL_SPEED = 2
   public static readonly GAME_ZOOM_FACTOR = 2
 
-  public static readonly DEFAULT_UNIT_MOVE_RANGE = 5
+  public static readonly DEFAULT_UNIT_MOVE_RANGE = 100
   public static readonly DEFAULT_UNIT_ATTACK_RANGE = 1
   public static readonly DEFAULT_UNIT_MAX_HEALTH = 50
 

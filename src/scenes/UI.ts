@@ -7,6 +7,11 @@ import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
 import Game from './Game'
 
+export enum AttackDirection {
+  RIGHT = 'RiGHT',
+  LEFT = 'LEFT',
+}
+
 export class UI extends Phaser.Scene {
   public static readonly SCROLL_RECT_HEIGHT = 192
   public static readonly SCROLL_RECT_WIDTH = 32
@@ -28,6 +33,7 @@ export class UI extends Phaser.Scene {
   public defenderSprite!: Phaser.GameObjects.Sprite
   public attackerHealthBar!: UIValueBar
   public defenderHealthBar!: UIValueBar
+  public attackDirection: AttackDirection = AttackDirection.LEFT
 
   public unitStatsBox!: UnitStatsBox
   public hoveredUnit: Unit | null = null
@@ -152,10 +158,17 @@ export class UI extends Phaser.Scene {
       duration: 500,
       onStart: () => {
         // Reset all the sprites back to their original positions
-        this.attackerSprite.setPosition(
-          GameConstants.WINDOW_WIDTH / 2 - 50,
-          GameConstants.WINDOW_HEIGHT / 2
-        )
+        if (this.attackDirection === AttackDirection.RIGHT) {
+          this.attackerSprite.setPosition(
+            GameConstants.WINDOW_WIDTH / 2 + 50,
+            GameConstants.WINDOW_HEIGHT / 2
+          )
+        } else {
+          this.attackerSprite.setPosition(
+            GameConstants.WINDOW_WIDTH / 2 - 50,
+            GameConstants.WINDOW_HEIGHT / 2
+          )
+        }
         this.attackerSprite.setVisible(false)
         this.defenderSprite.setVisible(false)
         this.attackerHealthBar.setVisible(false)
@@ -174,6 +187,26 @@ export class UI extends Phaser.Scene {
     })
   }
 
+  configureAttackAnimationModal(direction: AttackDirection) {
+    this.attackDirection = direction
+    const healthBarWidth = this.attackerSprite.displayWidth * 2
+    if (direction === AttackDirection.LEFT) {
+      this.attackerSprite.setPosition(this.attackModal.x - 50, this.attackModal.y).setFlipX(false)
+      this.defenderSprite.setPosition(this.attackModal.x + 50, this.attackModal.y).setFlipX(true)
+    } else {
+      this.attackerSprite.setPosition(this.attackModal.x + 50, this.attackModal.y).setFlipX(true)
+      this.defenderSprite.setPosition(this.attackModal.x - 50, this.attackModal.y).setFlipX(false)
+    }
+    this.attackerHealthBar.setPosition(
+      this.attackerSprite.x - healthBarWidth / 2,
+      this.attackerSprite.y + 25
+    )
+    this.defenderHealthBar.setPosition(
+      this.defenderSprite.x - healthBarWidth / 2,
+      this.defenderSprite.y + 25
+    )
+  }
+
   playAttackAnimation(
     attacker: Unit,
     defender: Unit,
@@ -181,6 +214,7 @@ export class UI extends Phaser.Scene {
     onEndCb: Function,
     onAttackCb: Function
   ) {
+    // Start animation to show attack modal
     this.attackModal.setVisible(true).setOrigin(0)
     this.tweens.add({
       targets: this.attackModal,
@@ -194,7 +228,7 @@ export class UI extends Phaser.Scene {
         )
       },
       onComplete: () => {
-        // Handle logic after attack modal has fully expanded out
+        // Show attacker and defender UI
         this.attackerSprite.setVisible(true).setTexture(attacker.texture)
         this.defenderSprite.setVisible(true).setTexture(defender.texture)
         this.attackerHealthBar.setVisible(true)
@@ -204,12 +238,16 @@ export class UI extends Phaser.Scene {
         this.defenderHealthBar.setCurrValue(defender.currHealth)
         this.defenderHealthBar.setMaxValue(defender.maxHealth)
 
+        let toPos = this.defenderSprite.x - this.defenderSprite.displayWidth
+        if (this.attackDirection == AttackDirection.RIGHT) {
+          toPos = this.defenderSprite.x + this.defenderSprite.displayWidth
+        }
         this.tweens.add({
           targets: this.attackerSprite,
           duration: 500,
           x: {
             from: this.attackerSprite.x,
-            to: this.defenderSprite.x - this.defenderSprite.displayWidth,
+            to: toPos,
           },
           onComplete: () => {
             // Actual attack animation gets played here
@@ -242,12 +280,15 @@ export class UI extends Phaser.Scene {
                   this.defenderSprite.clearTint()
                 }
               })
+
+            let animPosX = this.attackerSprite.x + this.attackerSprite.displayWidth
+            if (this.attackDirection === AttackDirection.RIGHT) {
+              animPosX = this.attackerSprite.x - this.attackerSprite.displayWidth
+            }
             this.attackAnimationSprite
-              .setPosition(
-                this.attackerSprite.x + this.attackerSprite.displayWidth,
-                this.attackerSprite.y
-              )
+              .setPosition(animPosX, this.attackerSprite.y)
               .setVisible(true)
+              .setFlipX(this.attackDirection === AttackDirection.RIGHT ? true : false)
               .play('slash')
           },
         })

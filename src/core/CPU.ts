@@ -1,4 +1,5 @@
 import Game, { GameOverConditions } from '~/scenes/Game'
+import { AttackDirection, UI } from '~/scenes/UI'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
 import { BehaviorTreeNode } from './behavior-tree/BehaviorTreeNode'
@@ -38,9 +39,9 @@ export class CPU {
           y: cell.centerY,
         },
         texture: unitConfig.texture,
-        moveRange: 4,
-        attackRange: 1,
-        maxHealth: 50,
+        moveRange: unitConfig.moveRange,
+        attackRange: unitConfig.attackRange,
+        maxHealth: unitConfig.maxHealth,
         name: unitConfig.name,
       })
       this.units.push(unit)
@@ -53,12 +54,8 @@ export class CPU {
   }
 
   startTurn() {
-    const winCondition = this.getWinCondition()
-    if (winCondition != GameOverConditions.IN_PROGRESS) {
-      // Handle win condition satisfied
-    } else {
-      this.moveUnits()
-    }
+    UI.instance.configureAttackAnimationModal(AttackDirection.RIGHT)
+    this.moveUnits()
   }
 
   getWinCondition() {
@@ -72,9 +69,6 @@ export class CPU {
   }
 
   moveNextUnit() {
-    if (this.unitToMove) {
-      this.unitToMove.setHasMoved(true)
-    }
     this.unitToMoveIndex++
     const livingUnits = this.getLivingUnits()
     this.unitToMove = livingUnits[this.unitToMoveIndex]
@@ -84,11 +78,14 @@ export class CPU {
   }
 
   switchTurn() {
-    this.unitToMoveIndex = 0
-    this.getLivingUnits().forEach((unit) => {
-      unit.setHasMoved(false)
+    this.game.time.delayedCall(500, () => {
+      this.unitToMoveIndex = 0
+      this.unitToMove = this.units[this.unitToMoveIndex]
+      this.getLivingUnits().forEach((unit) => {
+        unit.setHasMoved(false)
+      })
+      this.game.setTurn(Side.PLAYER)
     })
-    this.game.setTurn(Side.PLAYER)
   }
 
   moveUnits() {
@@ -96,6 +93,9 @@ export class CPU {
   }
 
   onUnitMoveComplete() {
+    if (this.unitToMove) {
+      this.unitToMove.setHasMoved(true)
+    }
     const livingUnits = this.getLivingUnits()
     if (this.unitToMoveIndex === livingUnits.length - 1) {
       this.switchTurn()

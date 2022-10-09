@@ -2,6 +2,7 @@ import { BehaviorStatus } from '~/core/behavior-tree/BehaviorStatus'
 import { BehaviorTreeNode } from '~/core/behavior-tree/BehaviorTreeNode'
 import { Blackboard } from '~/core/behavior-tree/Blackboard'
 import { Unit } from '~/core/Unit'
+import { UI } from '~/scenes/UI'
 import { BlackboardKeys } from '../BlackboardKeys'
 
 export class AttackPlayerUnit extends BehaviorTreeNode {
@@ -15,10 +16,21 @@ export class AttackPlayerUnit extends BehaviorTreeNode {
     const onActionCallback = this.blackboard.getData(
       BlackboardKeys.ON_UNIT_MOVE_COMPLETE_CB
     ) as Function
-    playerUnitToTarget.takeDamage(0)
-    if (onActionCallback) {
-      onActionCallback()
-    }
+
+    const damageDealt = unitToMove.calcDamageDealt()
+    UI.instance.playAttackAnimation(
+      unitToMove,
+      playerUnitToTarget,
+      damageDealt,
+      () => {
+        if (onActionCallback) {
+          onActionCallback()
+        }
+      },
+      () => {
+        playerUnitToTarget.takeDamage(damageDealt)
+      }
+    )
     return BehaviorStatus.SUCCESS
   }
 }

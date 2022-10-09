@@ -3,6 +3,7 @@ import { createSlashAnims } from '~/core/anims/createSlashAnims'
 import { CPU } from '~/core/CPU'
 import { Grid } from '~/core/Grid'
 import { Player } from '~/core/Player'
+import { Unit } from '~/core/Unit'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
@@ -140,12 +141,12 @@ export default class Game extends Phaser.Scene {
     this.tileMap.createLayer(layerName, tileset)
   }
 
-  unitAtPosition(row: number, col: number) {
+  unitAtPosition(row: number, col: number, currUnit: Unit) {
     const allUnits = this.getAllLivingUnits()
     for (let i = 0; i < allUnits.length; i++) {
       const unit = allUnits[i]
       const rowCol = unit.getRowCol()
-      if (rowCol.row === row && rowCol.col === col) {
+      if (rowCol.row === row && rowCol.col === col && currUnit !== unit) {
         return true
       }
     }

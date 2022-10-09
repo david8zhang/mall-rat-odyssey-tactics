@@ -13,6 +13,9 @@ export class ShouldRetreat extends BehaviorTreeNode {
 
   public process(): BehaviorStatus {
     const unitToMove = this.blackboard.getData(BlackboardKeys.CURR_UNIT_TO_MOVE) as Unit
+    if (!unitToMove) {
+      return BehaviorStatus.FAILURE
+    }
     const lowHealthAmt = Math.round(unitToMove.maxHealth * ShouldRetreat.LOW_HEALTH_THRESHOLD_PCT)
     return unitToMove.currHealth <= lowHealthAmt ? BehaviorStatus.SUCCESS : BehaviorStatus.FAILURE
   }

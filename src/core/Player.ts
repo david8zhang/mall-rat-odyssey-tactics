@@ -1,5 +1,5 @@
 import Game from '~/scenes/Game'
-import { UI } from '~/scenes/UI'
+import { AttackDirection, UI } from '~/scenes/UI'
 import { Direction } from '~/utils/Directions'
 import { PlayerConstants } from '~/utils/PlayerConstants'
 import { Side } from '~/utils/Side'
@@ -274,10 +274,7 @@ export class Player {
   }
 
   startTurn() {
-    const livingUnits = this.getLivingUnits()
-    livingUnits.forEach((unit) => {
-      unit.setHasMoved(false)
-    })
+    UI.instance.configureAttackAnimationModal(AttackDirection.LEFT)
   }
 
   hasLastUnitMoved() {
@@ -292,19 +289,12 @@ export class Player {
   }
 
   switchTurn() {
+    UI.instance.hideUnitStats()
+    const livingUnits = this.getLivingUnits()
+    livingUnits.forEach((unit) => {
+      unit.setHasMoved(false)
+    })
     this.game.setTurn(Side.CPU)
-  }
-
-  unitAtPosition(row: number, col: number, selectedUnit: Unit) {
-    const allUnits = this.game.getAllLivingUnits()
-    for (let i = 0; i < allUnits.length; i++) {
-      const unit = allUnits[i]
-      const rowCol = unit.getRowCol()
-      if (rowCol.row === row && rowCol.col === col && unit !== selectedUnit) {
-        return true
-      }
-    }
-    return false
   }
 
   movePlayerToCursorPosition() {
@@ -322,7 +312,7 @@ export class Player {
     return (
       this.selectedUnitToMove != null &&
       this.selectedUnitToMove.isSquareWithinMoveableSquares(gridRowCol.row, gridRowCol.col) &&
-      !this.unitAtPosition(gridRowCol.row, gridRowCol.col, this.selectedUnitToMove)
+      !this.game.unitAtPosition(gridRowCol.row, gridRowCol.col, this.selectedUnitToMove)
     )
   }
 

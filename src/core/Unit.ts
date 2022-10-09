@@ -78,6 +78,7 @@ export class Unit {
       const currNode = queue.shift()
       if (currNode && seen[currNode[0]][currNode[1]] == -1) {
         attackableSquares.push([currNode[0], currNode[1]])
+        seen[currNode[0]][currNode[1]] = currNode[2]
         directions.forEach((dir) => {
           const newRow = currNode[0] + dir[0]
           const newCol = currNode[1] + dir[1]
@@ -140,7 +141,7 @@ export class Unit {
       }
     }
     return moveableSquares.filter((square: number[]) => {
-      return !this.game.unitAtPosition(square[0], square[1])
+      return !this.game.unitAtPosition(square[0], square[1], this)
     })
   }
 
