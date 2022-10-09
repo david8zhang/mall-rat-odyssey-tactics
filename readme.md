@@ -11,5 +11,5 @@ A tactical strategy game about a bunch of rats at the mall
 
 ### Harder Stuff
 
-- CPU unit movement
-- Turn menu
+- Scene controller which controls when to play cutscenes, dialog scenes, game (battle) scenes
+- Level editor

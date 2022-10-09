@@ -1,6 +1,3 @@
-import { SAMPLE_CUTSCENE } from '~/utils/CutsceneConstants'
-import { CHICANERY_COPYPASTA } from '~/utils/DialogConstants'
-
 export class Preload extends Phaser.Scene {
   constructor() {
     super('preload')
@@ -44,10 +41,6 @@ export class Preload extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start('game')
-    this.scene.start('ui')
-    // this.scene.start('dialog', CHICANERY_COPYPASTA)
-    // this.scene.start('cutscene', SAMPLE_CUTSCENE)
-    // this.scene.start('cutscene-overlay')
+    this.scene.start('scene-controller')
   }
 }

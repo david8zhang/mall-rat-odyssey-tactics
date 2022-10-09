@@ -2,15 +2,9 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { Grid } from '~/core/Grid'
 import { SpeechBox } from '~/core/ui/SpeechBox'
 import { GameConstants } from '~/utils/GameConstants'
+import { CutsceneCharacterConfig, DialogLine } from '~/utils/LevelConfig'
 import { CutsceneOverlay } from './CutsceneOverlay'
-import { DialogLine } from './Dialog'
-
-export interface CutsceneCharacterConfig {
-  row: number
-  col: number
-  texture?: string
-  camFocus?: boolean
-}
+import { SceneController } from './SceneController'
 
 export interface CutsceneConfig {
   initialState: {
@@ -114,16 +108,19 @@ export class Cutscene extends Phaser.Scene {
 
   canGoToNextState() {
     const nextState = this.cutsceneConfig.newStates[this.currStateIndex]
-    return (
-      this.currStateIndex < this.cutsceneConfig.newStates.length &&
-      !this.isPlayingCharacterMovement &&
-      !this.isPlayingDialog &&
-      nextState
-    )
+    return !this.isPlayingCharacterMovement && !this.isPlayingDialog && nextState
+  }
+
+  isLastState() {
+    return this.currStateIndex >= this.cutsceneConfig.newStates.length
   }
 
   // On each tick of the clock, go to the next state of the cutscene and move each character accordingly
   goToNextState() {
+    if (this.isLastState()) {
+      SceneController.instance.onSceneCompleted()
+      return
+    }
     const canGoToNextState = this.canGoToNextState()
     if (!canGoToNextState) {
       return

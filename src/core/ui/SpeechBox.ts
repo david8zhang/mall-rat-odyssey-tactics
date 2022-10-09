@@ -21,6 +21,7 @@ export interface SpeechBoxConfig {
     text: number
   }
   speechBoxRadius?: number
+  maxLines?: number
 }
 
 export class SpeechBox {
@@ -95,7 +96,7 @@ export class SpeechBox {
   }
 
   getBBCodeText() {
-    const { wrapWidth, fixedWidth, fixedHeight, fontSize } = this.config
+    const { wrapWidth, fixedWidth, fixedHeight, fontSize, maxLines } = this.config
     return this.rexUI.add
       .BBCodeText(0, 0, '', {
         fixedWidth,
@@ -105,7 +106,7 @@ export class SpeechBox {
           mode: 'word',
           width: wrapWidth,
         },
-        maxLines: 2,
+        maxLines: maxLines ? 3 : maxLines,
       })
       .setDepth(1000)
   }

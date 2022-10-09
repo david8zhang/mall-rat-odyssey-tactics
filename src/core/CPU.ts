@@ -1,4 +1,4 @@
-import Game, { GameOverConditions } from '~/scenes/Game'
+import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/Game'
 import { AttackDirection, UI } from '~/scenes/UI'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
@@ -23,14 +23,14 @@ export class CPU {
   public unitToMove: Unit | null = null
   public behaviorTree!: BehaviorTreeNode
 
-  constructor(game: Game) {
+  constructor(game: Game, cpuConfig: InitialUnitConfig[]) {
     this.game = game
-    this.initUnits()
+    this.initUnits(cpuConfig)
     this.setupBehaviorTree()
   }
 
-  initUnits() {
-    GameConstants.CPU_START_CONFIG.forEach((unitConfig) => {
+  initUnits(cpuConfig: InitialUnitConfig[]) {
+    cpuConfig.forEach((unitConfig) => {
       const rowColPos = unitConfig.rowColPos
       const cell = this.game.grid.getCellAtRowCol(rowColPos[0], rowColPos[1])
       const unit = new Unit(this.game, {
@@ -56,16 +56,6 @@ export class CPU {
   startTurn() {
     UI.instance.configureAttackAnimationModal(AttackDirection.RIGHT)
     this.moveUnits()
-  }
-
-  getWinCondition() {
-    if (this.game.player.getLivingUnits().length === 0) {
-      return GameOverConditions.CPU_WIN
-    } else if (this.getLivingUnits().length === 0) {
-      return GameOverConditions.PLAYER_WIN
-    } else {
-      return GameOverConditions.IN_PROGRESS
-    }
   }
 
   moveNextUnit() {
@@ -96,11 +86,17 @@ export class CPU {
     if (this.unitToMove) {
       this.unitToMove.setHasMoved(true)
     }
-    const livingUnits = this.getLivingUnits()
-    if (this.unitToMoveIndex === livingUnits.length - 1) {
-      this.switchTurn()
+    // Check if the game win condition has been satisfied
+    const gameOverCondition = this.game.getGameOverCondition()
+    if (gameOverCondition !== GameOverConditions.IN_PROGRESS) {
+      this.game.handleGameOverCondition(gameOverCondition)
     } else {
-      this.moveNextUnit()
+      const livingUnits = this.getLivingUnits()
+      if (this.unitToMoveIndex === livingUnits.length - 1) {
+        this.switchTurn()
+      } else {
+        this.moveNextUnit()
+      }
     }
   }
 

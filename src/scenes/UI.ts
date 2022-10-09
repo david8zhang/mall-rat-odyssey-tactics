@@ -5,7 +5,7 @@ import { Unit } from '~/core/Unit'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
-import Game from './Game'
+import Game, { GameOverConditions } from './Game'
 
 export enum AttackDirection {
   RIGHT = 'RiGHT',
@@ -17,16 +17,18 @@ export class UI extends Phaser.Scene {
   public static readonly SCROLL_RECT_WIDTH = 32
   private static _instance: UI
 
+  // Enable camera scroll when mouse moves to the edge of the screen
   public isScrollingCamera: boolean = false
-
   public leftCamScrollRect!: Phaser.GameObjects.Rectangle
   public rightCamScrollRect!: Phaser.GameObjects.Rectangle
   public upCamScrollRect!: Phaser.GameObjects.Rectangle
   public downCamScrollRect!: Phaser.GameObjects.Rectangle
 
+  // Transition between player/CPU turn text
   public transitionText!: Phaser.GameObjects.Text
   public transitionRect!: Phaser.GameObjects.Rectangle
 
+  // Handle the attack animation
   public attackModal!: Phaser.GameObjects.Rectangle
   public attackAnimationSprite!: Phaser.GameObjects.Sprite
   public attackerSprite!: Phaser.GameObjects.Sprite
@@ -35,8 +37,12 @@ export class UI extends Phaser.Scene {
   public defenderHealthBar!: UIValueBar
   public attackDirection: AttackDirection = AttackDirection.LEFT
 
+  // A box that appears in the corner of the window displaying the unit's current stats
   public unitStatsBox!: UnitStatsBox
   public hoveredUnit: Unit | null = null
+
+  // UI that appears when battle is over (all player units dead or CPU units dead)
+  public gameOverText!: Phaser.GameObjects.Text
 
   constructor() {
     super('ui')
@@ -52,6 +58,14 @@ export class UI extends Phaser.Scene {
     this.initTransitionUI()
     this.initAttackUI()
     this.initUnitStats()
+    this.initGameOverUI()
+  }
+
+  initGameOverUI() {
+    this.gameOverText = this.add
+      .text(GameConstants.WINDOW_WIDTH / 2, GameConstants.WINDOW_HEIGHT / 2, '')
+      .setVisible(false)
+      .setDepth(1000)
   }
 
   initUnitStats() {
@@ -312,6 +326,43 @@ export class UI extends Phaser.Scene {
       .text(GameConstants.WINDOW_WIDTH / 2, GameConstants.WINDOW_HEIGHT / 2, '')
       .setVisible(false)
       .setDepth(1000)
+  }
+
+  showGameOverUI(gameOverCondition: GameOverConditions, onEndCb: Function) {
+    const gameOverTextContent =
+      gameOverCondition === GameOverConditions.PLAYER_WIN ? 'VICTORY' : 'DEFEAT'
+    const gameOverTextStyle = {
+      fontSize: '25px',
+      color: gameOverCondition === GameOverConditions.PLAYER_WIN ? '#00873E' : '#CD001A',
+      stroke: '#ffffff',
+      strokeThickness: 5,
+    }
+    this.gameOverText.setText(gameOverTextContent).setVisible(true).setStyle(gameOverTextStyle)
+    this.gameOverText.setPosition(
+      GameConstants.WINDOW_WIDTH / 2 - this.gameOverText.displayWidth / 2,
+      GameConstants.WINDOW_HEIGHT / 2 - this.gameOverText.displayHeight / 2
+    )
+    this.add.tween({
+      targets: this.transitionRect,
+      alpha: { from: 0, to: 0.5 },
+      onStart: () => {
+        this.transitionRect.setVisible(true)
+      },
+      onComplete: () => {
+        onEndCb()
+      },
+      duration: 750,
+      hold: 500,
+    })
+    this.add.tween({
+      targets: this.transitionText,
+      alpha: { from: 0, to: 1 },
+      onStart: () => {
+        this.transitionText.setVisible(true)
+      },
+      duration: 750,
+      hold: 500,
+    })
   }
 
   transitionTurn(onEndCb: Function) {

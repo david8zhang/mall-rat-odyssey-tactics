@@ -1,32 +1,8 @@
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { SpeechBox } from '~/core/ui/SpeechBox'
 import { GameConstants } from '~/utils/GameConstants'
-
-export enum SpeakerPosition {
-  LEFT = 'left',
-  RIGHT = 'right',
-}
-
-export interface DialogLine {
-  text: string
-  screenShakeConfig?: {
-    duration: number
-    intensity: number
-  }
-  spriteConfig: {
-    texture: string
-    scale?: number
-    position?: SpeakerPosition
-  }
-}
-
-export interface DialogConfig {
-  speakerTexture: string
-  spriteConfig?: {
-    scale: number
-  }
-  dialogLines: DialogLine[]
-}
+import { DialogConfig } from '~/utils/LevelConfig'
+import { SceneController } from './SceneController'
 
 export class Dialog extends Phaser.Scene {
   private static readonly DIALOG_WINDOW_WIDTH =
@@ -54,6 +30,7 @@ export class Dialog extends Phaser.Scene {
 
   create() {
     this.game.scale.resize(Dialog.DIALOG_WINDOW_WIDTH, Dialog.DIALOG_WINDOW_HEIGHT)
+    this.game.scale.setZoom(1)
     this.initDialogUI()
     this.showNextDialogLine()
   }
@@ -66,10 +43,10 @@ export class Dialog extends Phaser.Scene {
       x: 20,
       y: Dialog.DIALOG_WINDOW_HEIGHT,
       fontSize: '20px',
+      maxLines: 3,
       onFinishedTypingCb: () => {
         if (this.dialogLineIndex === this.dialogConfig.dialogLines.length - 1) {
-          this.scene.start('game')
-          this.scene.start('ui')
+          SceneController.instance.onSceneCompleted()
         } else {
           this.dialogLineIndex++
           this.dialogLineIndex = Math.min(

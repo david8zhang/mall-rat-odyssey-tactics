@@ -7,7 +7,22 @@ import { Unit } from '~/core/Unit'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
+import { SceneController } from './SceneController'
 import { UI } from './UI'
+
+export interface InitialUnitConfig {
+  rowColPos: number[]
+  texture: string
+  name: string
+  moveRange: number
+  attackRange: number
+  maxHealth: number
+}
+
+export interface GameConfig {
+  cpuConfig: InitialUnitConfig[]
+  playerConfig: InitialUnitConfig[]
+}
 
 export enum GameOverConditions {
   PLAYER_WIN = 'PLAYER_WIN',
@@ -23,6 +38,9 @@ export default class Game extends Phaser.Scene {
   public cameraPanEvent: Phaser.Time.TimerEvent | null = null
   public currTurn: Side = Side.PLAYER
   private static _instance: Game
+
+  private playerConfig!: InitialUnitConfig[]
+  private cpuConfig!: InitialUnitConfig[]
 
   constructor() {
     super('game')
@@ -41,6 +59,12 @@ export default class Game extends Phaser.Scene {
     this.initGrid()
     this.initPlayer()
     this.initCPU()
+  }
+
+  init(data: GameConfig) {
+    const { cpuConfig, playerConfig } = data
+    this.cpuConfig = cpuConfig
+    this.playerConfig = playerConfig
   }
 
   initScale() {
@@ -121,11 +145,11 @@ export default class Game extends Phaser.Scene {
   }
 
   initPlayer() {
-    this.player = new Player(this)
+    this.player = new Player(this, this.playerConfig)
   }
 
   initCPU() {
-    this.cpu = new CPU(this)
+    this.cpu = new CPU(this, this.cpuConfig)
   }
 
   initTilemap() {
@@ -151,6 +175,26 @@ export default class Game extends Phaser.Scene {
       }
     }
     return false
+  }
+
+  handleGameOverCondition(gameOverCondition: GameOverConditions) {
+    this.currTurn = Side.PLAYER
+    UI.instance.hideUnitStats()
+    UI.instance.showGameOverUI(gameOverCondition, () => {
+      SceneController.instance.onSceneCompleted()
+    })
+  }
+
+  getGameOverCondition() {
+    const playerLivingUnits = this.player.getLivingUnits()
+    const cpuLivingUnits = this.cpu.getLivingUnits()
+    if (playerLivingUnits.length === 0) {
+      return GameOverConditions.CPU_WIN
+    } else if (cpuLivingUnits.length === 0) {
+      return GameOverConditions.PLAYER_WIN
+    } else {
+      return GameOverConditions.IN_PROGRESS
+    }
   }
 
   setTurn(side: Side) {

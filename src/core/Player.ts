@@ -1,11 +1,9 @@
-import Game from '~/scenes/Game'
+import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/Game'
 import { AttackDirection, UI } from '~/scenes/UI'
 import { Direction } from '~/utils/Directions'
-import { PlayerConstants } from '~/utils/PlayerConstants'
 import { Side } from '~/utils/Side'
 import { Cursor } from './Cursor'
-import { UINumber } from './ui/UINumber'
-import { Unit } from './Unit'
+import { Unit, UnitConfig } from './Unit'
 
 export enum ActionState {
   SELECT_UNIT_TO_MOVE = 'select_unit_to_move',
@@ -26,9 +24,9 @@ export class Player {
   public actionState: ActionState = ActionState.SELECT_UNIT_TO_MOVE
   public isPlayingAttackAnimation = false
 
-  constructor(game: Game) {
+  constructor(game: Game, playerConfig: InitialUnitConfig[]) {
     this.game = game
-    this.initUnits()
+    this.initUnits(playerConfig)
     this.cursor = new Cursor(this.game, {
       x: this.units[0].x,
       y: this.units[1].y,
@@ -201,8 +199,15 @@ export class Player {
     this.cursor.clearCursorTint()
     this.selectedUnitToMove!.setHasMoved(true)
     this.selectedUnitToMove = null
-    if (this.hasLastUnitMoved()) {
-      this.switchTurn()
+
+    // Check for game over condition after each unit action
+    const gameOverCondition = this.game.getGameOverCondition()
+    if (gameOverCondition !== GameOverConditions.IN_PROGRESS) {
+      this.game.handleGameOverCondition(gameOverCondition)
+    } else {
+      if (this.hasLastUnitMoved()) {
+        this.switchTurn()
+      }
     }
   }
 
@@ -231,6 +236,7 @@ export class Player {
   }
 
   handleSpaceBarPress() {
+    console.log(this.game.currTurn)
     if (this.game.currTurn === Side.PLAYER) {
       switch (this.actionState) {
         case ActionState.SELECT_MOVE_DEST: {
@@ -325,9 +331,8 @@ export class Player {
     return playerAtCursor !== undefined ? playerAtCursor : null
   }
 
-  initUnits() {
-    const unitConfigs = PlayerConstants.UNIT_CONFIGS
-    unitConfigs.forEach((unitConfig) => {
+  initUnits(playerConfig: InitialUnitConfig[]) {
+    playerConfig.forEach((unitConfig) => {
       const rowColPos = unitConfig.rowColPos
       const cell = this.game.grid.getCellAtRowCol(rowColPos[0], rowColPos[1])
       const playerUnit = new Unit(this.game, {

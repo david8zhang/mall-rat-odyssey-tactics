@@ -7,10 +7,9 @@ import { CutsceneOverlay } from './scenes/CutsceneOverlay'
 import { Dialog } from './scenes/Dialog'
 import Game from './scenes/Game'
 import { Preload } from './scenes/Preload'
+import { SceneController } from './scenes/SceneController'
 import { UI } from './scenes/UI'
 import { GameConstants } from './utils/GameConstants'
-
-console.log(window.innerHeight)
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -31,7 +30,7 @@ const config: Phaser.Types.Core.GameConfig = {
   scale: {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [Preload, Dialog, Cutscene, CutsceneOverlay, Game, UI],
+  scene: [Preload, SceneController, Dialog, Cutscene, CutsceneOverlay, Game, UI],
   plugins: {
     global: [NineSlicePlugin.DefaultCfg],
     scene: [
