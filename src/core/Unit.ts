@@ -43,7 +43,6 @@ export class Unit {
   public highlight() {
     this.sprite.setTint(0xffff00)
     this.highlightMoveableSquares()
-    // this.highlightPossibleAttackableSquares()
   }
 
   takeDamage(damage: number) {

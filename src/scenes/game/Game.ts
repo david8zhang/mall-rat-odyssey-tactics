@@ -180,6 +180,7 @@ export default class Game extends Phaser.Scene {
   handleGameOverCondition(gameOverCondition: GameOverConditions) {
     this.currTurn = Side.PLAYER
     GameUI.instance.hideUnitStats()
+    GameUI.instance.hideTransitionUI()
     GameUI.instance.showGameOverUI(gameOverCondition, () => {
       SceneController.instance.onSceneCompleted()
     })

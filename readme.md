@@ -4,12 +4,9 @@ A tactical strategy game about a bunch of rats at the mall
 
 ## TODO
 
-### Easy Wins
-
-- Win condition
-- UI Menus
-
-### Harder Stuff
-
-- Scene controller which controls when to play cutscenes, dialog scenes, game (battle) scenes
-- Level editor
+- Overworld Map
+- Ranged unit attacks
+- Playable alpha (Put it all together)
+  - All story cutscenes are done
+  - All levels are finished (for the most part)
+- "Secret sauce" feature? (Something unique that sets it apart from other tactical RPG games)

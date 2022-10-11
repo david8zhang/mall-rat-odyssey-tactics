@@ -365,6 +365,10 @@ export class GameUI extends Phaser.Scene {
     })
   }
 
+  hideTransitionUI() {
+    this.transitionText.setVisible(false)
+  }
+
   transitionTurn(onEndCb: Function) {
     this.transitionText.setText('Player Turn')
     if (Game.instance.currTurn === Side.CPU) {
