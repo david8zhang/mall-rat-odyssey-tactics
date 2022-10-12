@@ -1,5 +1,6 @@
 import { CutsceneConfig } from '~/scenes/cutscene/Cutscene'
 import { GameConstants } from './GameConstants'
+import { UnitTypes } from './UnitConstants'
 
 // Move these interfaces and enums to another file
 export enum CutsceneStateTypes {
@@ -55,6 +56,7 @@ export const SAMPLE_GAME = {
       moveRange: GameConstants.DEFAULT_UNIT_MOVE_RANGE,
       attackRange: GameConstants.DEFAULT_UNIT_ATTACK_RANGE,
       maxHealth: GameConstants.DEFAULT_UNIT_MAX_HEALTH,
+      unitType: UnitTypes.PHYSICAL,
     },
     {
       rowColPos: [11, 12],
@@ -63,6 +65,7 @@ export const SAMPLE_GAME = {
       moveRange: GameConstants.DEFAULT_UNIT_MOVE_RANGE,
       attackRange: GameConstants.DEFAULT_UNIT_ATTACK_RANGE,
       maxHealth: GameConstants.DEFAULT_UNIT_MAX_HEALTH,
+      unitType: UnitTypes.PHYSICAL,
     },
     {
       rowColPos: [11, 13],
@@ -71,6 +74,7 @@ export const SAMPLE_GAME = {
       moveRange: GameConstants.DEFAULT_UNIT_MOVE_RANGE,
       attackRange: GameConstants.DEFAULT_UNIT_ATTACK_RANGE,
       maxHealth: GameConstants.DEFAULT_UNIT_MAX_HEALTH,
+      unitType: UnitTypes.PHYSICAL,
     },
   ],
   playerConfig: [
@@ -81,6 +85,7 @@ export const SAMPLE_GAME = {
       moveRange: GameConstants.DEFAULT_UNIT_MOVE_RANGE,
       attackRange: GameConstants.DEFAULT_UNIT_ATTACK_RANGE,
       maxHealth: GameConstants.DEFAULT_UNIT_MAX_HEALTH,
+      unitType: UnitTypes.RANGED,
     },
     {
       rowColPos: [24, 11],
@@ -89,6 +94,7 @@ export const SAMPLE_GAME = {
       moveRange: GameConstants.DEFAULT_UNIT_MOVE_RANGE,
       attackRange: GameConstants.DEFAULT_UNIT_ATTACK_RANGE,
       maxHealth: GameConstants.DEFAULT_UNIT_MAX_HEALTH,
+      unitType: UnitTypes.RANGED,
     },
     {
       rowColPos: [24, 13],
@@ -97,6 +103,7 @@ export const SAMPLE_GAME = {
       moveRange: GameConstants.DEFAULT_UNIT_MOVE_RANGE,
       attackRange: GameConstants.DEFAULT_UNIT_ATTACK_RANGE,
       maxHealth: GameConstants.DEFAULT_UNIT_MAX_HEALTH,
+      unitType: UnitTypes.RANGED,
     },
   ],
 }

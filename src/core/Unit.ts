@@ -1,5 +1,6 @@
 import Game from '~/scenes/game/Game'
 import { GameConstants } from '~/utils/GameConstants'
+import { UnitTypes } from '~/utils/UnitConstants'
 
 export interface UnitConfig {
   texture: string
@@ -11,6 +12,7 @@ export interface UnitConfig {
   attackRange: number // Additive to move range (i.e. attack range of 1 and move range of 4 = effective attack range of 5)
   maxHealth: number
   name: string
+  unitType: UnitTypes
 }
 
 export class Unit {
@@ -23,6 +25,7 @@ export class Unit {
   public attackableSquaresPostMove: Phaser.GameObjects.Rectangle[] = []
   public hasMoved: boolean = false
   public isDead: boolean = false
+  public unitType: UnitTypes
 
   public currHealth: number
   public maxHealth: number
@@ -38,6 +41,7 @@ export class Unit {
     this.maxHealth = unitConfig.maxHealth
     this.currHealth = this.maxHealth
     this.name = unitConfig.name
+    this.unitType = unitConfig.unitType
   }
 
   public highlight() {
@@ -76,16 +80,17 @@ export class Unit {
       ]
       const currNode = queue.shift()
       if (currNode && seen[currNode[0]][currNode[1]] == -1) {
-        attackableSquares.push([currNode[0], currNode[1]])
         seen[currNode[0]][currNode[1]] = currNode[2]
         directions.forEach((dir) => {
           const newRow = currNode[0] + dir[0]
           const newCol = currNode[1] + dir[1]
           const newDistance = currNode[2] + 1
-          if (
-            this.game.grid.withinBounds(newRow, newCol) &&
-            newDistance <= this.moveRange + this.attackRange
-          ) {
+          // Add 1 to attack range if the unit is ranged. (Ranged cannot attack squares directly next to them)
+          let distanceToCompare = this.moveRange + this.attackRange
+          if (this.unitType === UnitTypes.RANGED) {
+            distanceToCompare++
+          }
+          if (this.game.grid.withinBounds(newRow, newCol) && newDistance <= distanceToCompare) {
             if (!this.wallTileAtPosition(newRow, newCol)) {
               queue.push([newRow, newCol, newDistance])
             }
@@ -176,8 +181,8 @@ export class Unit {
     const currCoordinates = [cell.gridRow, cell.gridCol, 0]
     const queue = [currCoordinates]
     const seen = new Array(this.game.grid.numRows)
-      .fill(false)
-      .map(() => new Array(this.game.grid.numCols).fill(false))
+      .fill(-1)
+      .map(() => new Array(this.game.grid.numCols).fill(-1))
     while (queue.length > 0) {
       const directions = [
         [0, 1],
@@ -186,13 +191,17 @@ export class Unit {
         [-1, 0],
       ]
       const currNode = queue.shift()
-      if (currNode && !seen[currNode[0]][currNode[1]]) {
-        seen[currNode[0]][currNode[1]] = true
+      if (currNode && seen[currNode[0]][currNode[1]] == -1) {
+        seen[currNode[0]][currNode[1]] = currNode[2]
         directions.forEach((dir) => {
           const newRow = currNode[0] + dir[0]
           const newCol = currNode[1] + dir[1]
           const newDistance = currNode[2] + 1
-          if (this.game.grid.withinBounds(newRow, newCol) && newDistance <= this.attackRange) {
+
+          // Add 1 to attack range if the unit is ranged. (Ranged cannot attack squares directly next to them)
+          const attackRange =
+            this.unitType === UnitTypes.RANGED ? this.attackRange + 1 : this.attackRange
+          if (this.game.grid.withinBounds(newRow, newCol) && newDistance <= attackRange) {
             if (!this.wallTileAtPosition(newRow, newCol)) {
               queue.push([newRow, newCol, newDistance])
             }
@@ -202,7 +211,10 @@ export class Unit {
     }
     for (let i = 0; i < seen.length; i++) {
       for (let j = 0; j < seen[0].length; j++) {
-        if (seen[i][j]) {
+        if (seen[i][j] != -1) {
+          if (this.unitType === UnitTypes.RANGED && seen[i][j] <= 1) {
+            continue
+          }
           const cell = this.game.grid.getCellAtRowCol(i, j)
           const newRect = this.game.add
             .rectangle(

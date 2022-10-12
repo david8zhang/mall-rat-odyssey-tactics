@@ -1,9 +1,10 @@
 import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/game/Game'
 import { AttackDirection, GameUI } from '~/scenes/game/GameUI'
 import { Direction } from '~/utils/Directions'
+import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
 import { Cursor } from './Cursor'
-import { Unit, UnitConfig } from './Unit'
+import { Unit } from './Unit'
 
 export enum ActionState {
   SELECT_UNIT_TO_MOVE = 'select_unit_to_move',
@@ -236,7 +237,6 @@ export class Player {
   }
 
   handleSpaceBarPress() {
-    console.log(this.game.currTurn)
     if (this.game.currTurn === Side.PLAYER) {
       switch (this.actionState) {
         case ActionState.SELECT_MOVE_DEST: {
@@ -258,7 +258,8 @@ export class Player {
   getAttackableEnemies() {
     const enemyUnits = this.game.cpu.getLivingUnits()
     const selectedUnitAttackableSquareCoordinates = new Set<string>([])
-    this.selectedUnitToMove!.getAttackableSquaresPostMove().forEach((attackableSquare) => {
+    const attackableSquaresPostMove = this.selectedUnitToMove!.getAttackableSquaresPostMove()
+    attackableSquaresPostMove.forEach((attackableSquare) => {
       const cell = this.game.grid.getCellAtWorldPosition(attackableSquare.x, attackableSquare.y)
       selectedUnitAttackableSquareCoordinates.add(`${cell.gridRow},${cell.gridCol}`)
     })
@@ -345,6 +346,7 @@ export class Player {
         moveRange: unitConfig.moveRange,
         attackRange: unitConfig.attackRange,
         maxHealth: unitConfig.maxHealth,
+        unitType: unitConfig.unitType,
       })
       this.units.push(playerUnit)
     })

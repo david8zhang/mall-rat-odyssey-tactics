@@ -7,6 +7,7 @@ import { Unit } from '~/core/Unit'
 import { Direction } from '~/utils/Directions'
 import { GameConstants } from '~/utils/GameConstants'
 import { Side } from '~/utils/Side'
+import { UnitTypes } from '~/utils/UnitConstants'
 import { SceneController } from '../SceneController'
 import { GameUI } from './GameUI'
 
@@ -17,6 +18,7 @@ export interface InitialUnitConfig {
   moveRange: number
   attackRange: number
   maxHealth: number
+  unitType: UnitTypes
 }
 
 export interface GameConfig {
