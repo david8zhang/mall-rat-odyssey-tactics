@@ -1,7 +1,7 @@
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { SpeechBox } from '~/core/ui/SpeechBox'
+import { DialogConfig } from '~/utils/DialogConstants'
 import { GameConstants } from '~/utils/GameConstants'
-import { DialogConfig } from '~/utils/LevelConfig'
 import { SceneController } from './SceneController'
 
 export class Dialog extends Phaser.Scene {

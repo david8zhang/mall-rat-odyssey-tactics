@@ -1,7 +1,7 @@
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { SpeechBox } from '~/core/ui/SpeechBox'
+import { DialogLine, SpeakerPosition } from '~/utils/DialogConstants'
 import { GameConstants } from '~/utils/GameConstants'
-import { DialogLine, SpeakerPosition } from '~/utils/LevelConfig'
 
 export class CutsceneOverlay extends Phaser.Scene {
   private static readonly SPEECH_BOX_WIDTH = GameConstants.WINDOW_WIDTH - 120

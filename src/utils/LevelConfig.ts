@@ -1,50 +1,14 @@
-import { CutsceneConfig } from '~/scenes/cutscene/Cutscene'
+import { CutsceneStateTypes } from './CutsceneConstants'
+import { SpeakerPosition } from './DialogConstants'
 import { GameConstants } from './GameConstants'
 import { UnitTypes } from './UnitConstants'
 
 // Move these interfaces and enums to another file
-export enum CutsceneStateTypes {
-  DIALOG = 'DIALOG',
-  CHARACTER_MOVEMENT = 'CHARACTER_MOVEMENT',
-}
-
-export interface CutsceneCharacterConfig {
-  row: number
-  col: number
-  texture?: string
-  camFocus?: boolean
-}
 
 export enum SceneType {
   CUTSCENE = 'CUTSCENE',
   DIALOG = 'DIALOG',
   GAME = 'GAME',
-}
-
-export enum SpeakerPosition {
-  LEFT = 'left',
-  RIGHT = 'right',
-}
-
-export interface DialogLine {
-  text: string
-  screenShakeConfig?: {
-    duration: number
-    intensity: number
-  }
-  spriteConfig: {
-    texture: string
-    scale?: number
-    position?: SpeakerPosition
-  }
-}
-
-export interface DialogConfig {
-  speakerTexture: string
-  spriteConfig?: {
-    scale: number
-  }
-  dialogLines: DialogLine[]
 }
 
 export const SAMPLE_GAME = {

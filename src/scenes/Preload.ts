@@ -41,7 +41,32 @@ export class Preload extends Phaser.Scene {
   }
 
   create() {
-    this.scene.start('game', SAMPLE_GAME)
-    this.scene.start('game-ui')
+    this.scene.start('overworld', {
+      currLevelIdx: 0,
+      levelConfig: [
+        {
+          hasCompleted: true,
+          levelName: 'Pippin Dots',
+        },
+        {
+          hasCompleted: false,
+          levelName: 'Shoe Castle',
+        },
+        {
+          hasCompleted: false,
+          levelName: 'Pop Topic',
+        },
+        {
+          hasCompleted: false,
+          levelName: 'Yarns & Nobles',
+        },
+        {
+          hasCompleted: false,
+          levelName: "McNaldo's",
+        },
+      ],
+    })
+    // this.scene.start('game', SAMPLE_GAME)
+    // this.scene.start('game-ui')
   }
 }

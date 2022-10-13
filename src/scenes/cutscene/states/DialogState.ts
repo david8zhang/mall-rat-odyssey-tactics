@@ -1,4 +1,4 @@
-import { DialogLine } from '~/utils/LevelConfig'
+import { DialogLine } from '~/utils/DialogConstants'
 import { Cutscene } from '../Cutscene'
 import { CutsceneOverlay } from '../CutsceneOverlay'
 import { CutsceneState } from './CutsceneState'

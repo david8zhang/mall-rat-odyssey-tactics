@@ -1,4 +1,4 @@
-import { CutsceneCharacterConfig } from '~/utils/LevelConfig'
+import { CutsceneCharacterConfig } from '~/utils/CutsceneConstants'
 import { Cutscene } from '../Cutscene'
 import { CutsceneState } from './CutsceneState'
 

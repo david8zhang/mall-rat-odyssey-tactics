@@ -10,6 +10,7 @@ import { Preload } from './scenes/Preload'
 import { SceneController } from './scenes/SceneController'
 import { GameUI } from './scenes/game/GameUI'
 import { GameConstants } from './utils/GameConstants'
+import { Overworld } from './scenes/Overworld'
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -30,7 +31,7 @@ const config: Phaser.Types.Core.GameConfig = {
   scale: {
     autoCenter: Phaser.Scale.CENTER_BOTH,
   },
-  scene: [Preload, SceneController, Dialog, Cutscene, CutsceneOverlay, Game, GameUI],
+  scene: [Preload, SceneController, Dialog, Cutscene, CutsceneOverlay, Game, GameUI, Overworld],
   plugins: {
     global: [NineSlicePlugin.DefaultCfg],
     scene: [
