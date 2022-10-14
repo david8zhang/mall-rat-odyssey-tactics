@@ -13,7 +13,8 @@ export class DialogState extends CutsceneState {
       this.cutscene.canGoToNextState = false
       CutsceneOverlay.instance.setDialogLines(dialogLines)
       CutsceneOverlay.instance.setOnDialogFinishedCallback(() => {
-        this.cutscene.canGoToNextState = false
+        this.cutscene.canGoToNextState = true
+        onEndCb()
       })
       CutsceneOverlay.instance.showNextDialogLine()
     }

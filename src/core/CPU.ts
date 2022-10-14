@@ -43,6 +43,7 @@ export class CPU {
         attackRange: unitConfig.attackRange,
         maxHealth: unitConfig.maxHealth,
         name: unitConfig.name,
+        unitType: unitConfig.unitType,
       })
       this.units.push(unit)
     })

@@ -125,6 +125,10 @@ export class GameUI extends Phaser.Scene {
       .setDepth(1000)
 
     const healthBarWidth = this.attackerSprite.displayWidth * 2
+    console.log(this.attackerSprite.x, this.defenderSprite.x)
+    console.log(this.attackerSprite.x - healthBarWidth / 2)
+    console.log(this.defenderSprite.x - healthBarWidth / 2)
+
     this.attackerHealthBar = new UIValueBar(this, {
       x: this.attackerSprite.x - healthBarWidth / 2,
       y: this.attackerSprite.y + 25,
@@ -203,22 +207,23 @@ export class GameUI extends Phaser.Scene {
 
   configureAttackAnimationModal(direction: AttackDirection) {
     this.attackDirection = direction
-    const healthBarWidth = this.attackerSprite.displayWidth * 2
     if (direction === AttackDirection.LEFT) {
-      this.attackerSprite.setPosition(this.attackModal.x - 50, this.attackModal.y).setFlipX(false)
-      this.defenderSprite.setPosition(this.attackModal.x + 50, this.attackModal.y).setFlipX(true)
+      this.attackerSprite
+        .setPosition(GameConstants.WINDOW_WIDTH / 2 - 50, GameConstants.WINDOW_HEIGHT / 2)
+        .setFlipX(false)
+      this.defenderSprite
+        .setPosition(GameConstants.WINDOW_WIDTH / 2 + 50, GameConstants.WINDOW_HEIGHT / 2)
+        .setFlipX(true)
     } else {
-      this.attackerSprite.setPosition(this.attackModal.x + 50, this.attackModal.y).setFlipX(true)
-      this.defenderSprite.setPosition(this.attackModal.x - 50, this.attackModal.y).setFlipX(false)
+      this.attackerSprite
+        .setPosition(GameConstants.WINDOW_WIDTH / 2 + 50, GameConstants.WINDOW_HEIGHT / 2)
+        .setFlipX(true)
+      this.defenderSprite
+        .setPosition(GameConstants.WINDOW_WIDTH / 2 - 50, GameConstants.WINDOW_HEIGHT / 2)
+        .setFlipX(false)
     }
-    this.attackerHealthBar.setPosition(
-      this.attackerSprite.x - healthBarWidth / 2,
-      this.attackerSprite.y + 25
-    )
-    this.defenderHealthBar.setPosition(
-      this.defenderSprite.x - healthBarWidth / 2,
-      this.defenderSprite.y + 25
-    )
+    this.attackerHealthBar.setPosition(this.attackerSprite.x - 32, this.attackerSprite.y + 25)
+    this.defenderHealthBar.setPosition(this.defenderSprite.x - 32, this.defenderSprite.y + 25)
   }
 
   playAttackAnimation(
@@ -337,7 +342,7 @@ export class GameUI extends Phaser.Scene {
       stroke: '#ffffff',
       strokeThickness: 5,
     }
-    this.gameOverText.setText(gameOverTextContent).setVisible(true).setStyle(gameOverTextStyle)
+    this.gameOverText.setText(gameOverTextContent).setVisible(false).setStyle(gameOverTextStyle)
     this.gameOverText.setPosition(
       GameConstants.WINDOW_WIDTH / 2 - this.gameOverText.displayWidth / 2,
       GameConstants.WINDOW_HEIGHT / 2 - this.gameOverText.displayHeight / 2
@@ -355,10 +360,10 @@ export class GameUI extends Phaser.Scene {
       hold: 500,
     })
     this.add.tween({
-      targets: this.transitionText,
+      targets: this.gameOverText,
       alpha: { from: 0, to: 1 },
       onStart: () => {
-        this.transitionText.setVisible(true)
+        this.gameOverText.setVisible(true)
       },
       duration: 750,
       hold: 500,
@@ -385,6 +390,8 @@ export class GameUI extends Phaser.Scene {
         this.transitionRect.setVisible(true)
       },
       onComplete: () => {
+        this.transitionRect.setVisible(false)
+        this.transitionText.setVisible(false)
         onEndCb()
       },
       duration: 750,

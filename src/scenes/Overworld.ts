@@ -11,18 +11,26 @@ export class Overworld extends Phaser.Scene {
   public levelConfig: OverworldLevelConfig[] = []
   public isMovingToNewLevel: boolean = false
 
+  public completedLevels: string[] = []
+
+  public static instance: Overworld
+
   constructor() {
     super('overworld')
+    Overworld.instance = this
   }
 
-  init(data: OverworldConfig) {
-    this.currLevelIdx = data.currLevelIdx
-    this.levelConfig = data.levelConfig
+  configure(levelConfig: OverworldLevelConfig[]) {
+    this.levelConfig = levelConfig
   }
 
   initScale() {
     this.game.scale.resize(GameConstants.WINDOW_WIDTH, GameConstants.WINDOW_HEIGHT)
     this.game.scale.setZoom(GameConstants.GAME_ZOOM_FACTOR)
+  }
+
+  startWithCompletedLevel(levelName: string) {
+    this.completedLevels.push(levelName)
   }
 
   create() {
@@ -98,11 +106,13 @@ export class Overworld extends Phaser.Scene {
   }
 
   configurePlayerOWSprite() {
-    const currLevel = this.levelSelectorCircles[this.currLevelIdx]
-    this.playerSprite
-      .setPosition(currLevel.x, currLevel.y - currLevel.height / 2)
-      .setVisible(true)
-      .setDepth(3)
+    if (this.levelSelectorCircles.length > 0) {
+      const currLevel = this.levelSelectorCircles[this.currLevelIdx]
+      this.playerSprite
+        .setPosition(currLevel.x, currLevel.y - currLevel.height / 2)
+        .setVisible(true)
+        .setDepth(3)
+    }
   }
 
   initLevelSelectors() {
@@ -112,13 +122,14 @@ export class Overworld extends Phaser.Scene {
     }
     const distBetweenCircles = 150
     this.levelConfig.forEach((config, index) => {
+      const isCompleted = this.completedLevels.includes(config.levelName)
       const newCircle = this.add
         .ellipse(
           currPosition.x,
           currPosition.y,
           30,
           15,
-          config.hasCompleted ? Overworld.LEVEL_COMPLETE_COLOR : Overworld.LEVEL_INCOMPLETE_COLOR
+          isCompleted ? Overworld.LEVEL_COMPLETE_COLOR : Overworld.LEVEL_INCOMPLETE_COLOR
         )
         .setStrokeStyle(1, 0xffffff)
         .setDepth(2)

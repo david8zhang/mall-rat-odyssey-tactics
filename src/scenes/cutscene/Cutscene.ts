@@ -108,16 +108,16 @@ export class Cutscene extends Phaser.Scene {
   }
 
   isLastState() {
-    return this.currStateIndex >= this.cutsceneConfig.states.length
+    return this.currStateIndex == this.cutsceneConfig.states.length
   }
 
   // On each tick of the clock, go to the next state of the cutscene and move each character accordingly
   goToNextState() {
-    if (this.isLastState()) {
-      SceneController.instance.onSceneCompleted()
+    if (!this.canGoToNextState) {
       return
     }
-    if (!this.canGoToNextState) {
+    if (this.isLastState()) {
+      SceneController.instance.onSceneCompleted()
       return
     }
     const currState = this.cutsceneConfig.states[this.currStateIndex]
