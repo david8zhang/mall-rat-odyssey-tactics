@@ -1,4 +1,5 @@
 export interface OverworldLevelConfig {
+  prereqs: string[]
   levelName: string
 }
 

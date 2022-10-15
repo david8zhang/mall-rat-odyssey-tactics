@@ -21,11 +21,16 @@ export class SceneController extends Phaser.Scene {
     SceneController.instance = this
   }
 
+  playGameLevelForIndex(levelIndex: number) {
+    this.playLevelScene(this.allLevels, levelIndex, 0)
+  }
+
   playLevelScene(levels: any[], levelIndex: number, levelSubSceneIndex: number) {
     const currLevel = levels[levelIndex]
     const currScene = currLevel.scenes[levelSubSceneIndex]
     switch (currScene.sceneType) {
       case SceneType.CUTSCENE: {
+        this.scene.stop('overworld')
         this.scene.stop('game')
         this.scene.stop('game-ui')
         this.scene.stop('dialog')
@@ -34,6 +39,7 @@ export class SceneController extends Phaser.Scene {
         break
       }
       case SceneType.DIALOG: {
+        this.scene.stop('overworld')
         this.scene.stop('game')
         this.scene.stop('game-ui')
         this.scene.stop('cutscene')
@@ -42,6 +48,7 @@ export class SceneController extends Phaser.Scene {
         break
       }
       case SceneType.GAME: {
+        this.scene.stop('overworld')
         this.scene.stop('cutscene')
         this.scene.stop('cutscene-overlay')
         this.scene.start('game', currScene.config)
@@ -50,6 +57,16 @@ export class SceneController extends Phaser.Scene {
         break
       }
     }
+  }
+
+  goToOverworldWithCompletedLevel(levelName: string) {
+    Overworld.instance.startWithCompletedLevel(levelName)
+    this.scene.stop('cutscene')
+    this.scene.stop('cutscene-overlay')
+    this.scene.stop('game')
+    this.scene.stop('game-ui')
+    this.scene.stop('dialog')
+    this.scene.start('overworld')
   }
 
   create() {
@@ -88,7 +105,6 @@ export class SceneController extends Phaser.Scene {
         }
       }
     } else {
-      console.log(this.currLevelSubSceneIndex, this.currLevelIndex)
       const currLevel = this.allLevels[this.currLevelIndex]
       this.currLevelSubSceneIndex++
       if (this.currLevelSubSceneIndex >= currLevel.scenes.length) {
@@ -97,9 +113,7 @@ export class SceneController extends Phaser.Scene {
         if (this.currLevelIndex >= this.allLevels.length) {
           console.log('GAME FINISHED!')
         } else {
-          console.log('Starting overworld position')
-          Overworld.instance.startWithCompletedLevel(currLevel.levelName)
-          this.scene.start('overworld')
+          this.goToOverworldWithCompletedLevel(currLevel.levelName)
         }
       } else {
         this.playLevelScene(this.allLevels, this.currLevelIndex, this.currLevelSubSceneIndex)

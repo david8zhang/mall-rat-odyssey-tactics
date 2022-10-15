@@ -125,10 +125,6 @@ export class GameUI extends Phaser.Scene {
       .setDepth(1000)
 
     const healthBarWidth = this.attackerSprite.displayWidth * 2
-    console.log(this.attackerSprite.x, this.defenderSprite.x)
-    console.log(this.attackerSprite.x - healthBarWidth / 2)
-    console.log(this.defenderSprite.x - healthBarWidth / 2)
-
     this.attackerHealthBar = new UIValueBar(this, {
       x: this.attackerSprite.x - healthBarWidth / 2,
       y: this.attackerSprite.y + 25,

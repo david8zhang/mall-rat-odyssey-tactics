@@ -17,6 +17,7 @@ export interface SceneConfig {
 }
 
 export interface LevelConfig {
+  prereqs: string[]
   levelName: string
   scenes: SceneConfig[]
 }
@@ -82,73 +83,76 @@ export const SAMPLE_GAME = {
   ],
 }
 
-export const PIPPIN_DOTS_LEVEL = {
-  levelName: 'Pippin Dots',
-  scenes: [
-    {
-      sceneType: SceneType.CUTSCENE,
-      config: {
-        initialState: {
-          characterConfigs: {
-            dottie: {
-              row: 12,
-              col: 12,
-              texture: 'dottie',
-              camFocus: true,
-            },
-            citizenRat1: {
-              row: 15,
-              col: 11,
-              texture: 'rat1',
-            },
-            citizenRat2: {
-              row: 15,
-              col: 12,
-              texture: 'rat1',
-            },
-            citizenRat3: {
-              row: 15,
-              col: 13,
-              texture: 'rat1',
-            },
-            guardRat1: {
-              row: 12,
-              col: 10,
-              texture: 'rat1',
-            },
-            guardRat2: {
-              row: 12,
-              col: 14,
-              texture: 'rat1',
-            },
+const OPENING_CUTSCENE = {
+  sceneType: SceneType.CUTSCENE,
+  config: {
+    initialState: {
+      characterConfigs: {
+        dottie: {
+          row: 12,
+          col: 12,
+          texture: 'dottie',
+          camFocus: true,
+        },
+        citizenRat1: {
+          row: 15,
+          col: 11,
+          texture: 'rat1',
+        },
+        citizenRat2: {
+          row: 15,
+          col: 12,
+          texture: 'rat1',
+        },
+        citizenRat3: {
+          row: 15,
+          col: 13,
+          texture: 'rat1',
+        },
+        guardRat1: {
+          row: 12,
+          col: 10,
+          texture: 'rat1',
+        },
+        guardRat2: {
+          row: 12,
+          col: 14,
+          texture: 'rat1',
+        },
+      },
+    },
+    states: [
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          guardRat1: {
+            row: 13,
+            col: 10,
           },
         },
-        states: [
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
           {
-            type: CutsceneStateTypes.CHARACTER_MOVEMENT,
-            config: {
-              guardRat1: {
-                row: 13,
-                col: 10,
-              },
+            text: 'I now present, her royal highness Princess Dottie of the great kingdom of Pippin Dots!',
+            spriteConfig: {
+              texture: 'rat1',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
             },
-          },
-          {
-            type: CutsceneStateTypes.DIALOG,
-            config: [
-              {
-                text: 'I now present, her royal highness Princess Dottie of the great kingdom of Pippin Dots!',
-                spriteConfig: {
-                  texture: 'rat1',
-                  scale: 3,
-                  position: SpeakerPosition.LEFT,
-                },
-              },
-            ],
           },
         ],
       },
-    },
+    ],
+  },
+}
+
+export const PIPPIN_DOTS_LEVEL = {
+  prereqs: [],
+  levelName: 'Pippin Dots',
+  scenes: [
+    OPENING_CUTSCENE,
     {
       sceneType: SceneType.GAME,
       config: SAMPLE_GAME,
@@ -157,6 +161,7 @@ export const PIPPIN_DOTS_LEVEL = {
 }
 
 export const SHOE_CASTLE_LEVEL = {
+  prereqs: ['Pippin Dots'],
   levelName: 'Shoe Castle',
   scenes: [
     {
@@ -167,6 +172,7 @@ export const SHOE_CASTLE_LEVEL = {
 }
 
 export const POP_TOPIC_LEVEL = {
+  prereqs: ['Shoe Castle'],
   levelName: 'Pop Topic',
   scenes: [
     {
@@ -177,6 +183,7 @@ export const POP_TOPIC_LEVEL = {
 }
 
 export const YARNS_AND_NOBLE_LEVEL = {
+  prereqs: ['Pop Topic'],
   levelName: 'Yarns & Noble',
   scenes: [
     {
@@ -187,6 +194,7 @@ export const YARNS_AND_NOBLE_LEVEL = {
 }
 
 export const MCNALDOS_LEVEL = {
+  prereqs: ['Yanrs & Noble'],
   levelName: "McNaldo's",
   scenes: [
     {
@@ -206,12 +214,7 @@ export const FULL_GAME_LEVEL_CONFIG = [
 
 export const TUTORIAL_LEVEL = {
   levelName: 'Tutorial',
-  scenes: [
-    {
-      sceneType: SceneType.GAME,
-      config: SAMPLE_GAME,
-    },
-  ],
+  scenes: [OPENING_CUTSCENE],
 }
 
 export const PRE_GAME_CONFIG = [TUTORIAL_LEVEL]

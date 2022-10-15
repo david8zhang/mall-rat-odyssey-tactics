@@ -117,6 +117,7 @@ export class Cutscene extends Phaser.Scene {
       return
     }
     if (this.isLastState()) {
+      this.currStateIndex = 0
       SceneController.instance.onSceneCompleted()
       return
     }

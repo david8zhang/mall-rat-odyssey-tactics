@@ -1,9 +1,11 @@
 import { GameConstants } from '~/utils/GameConstants'
 import { OverworldConfig, OverworldLevelConfig } from '~/utils/OverworldConstants'
+import { SceneController } from './SceneController'
 
 export class Overworld extends Phaser.Scene {
   private static readonly LEVEL_COMPLETE_COLOR = 0x00873e
   private static readonly LEVEL_INCOMPLETE_COLOR = 0xff0000
+  private static readonly LEVEL_LOCKED_COLOR = 0x333333
 
   private playerSprite!: Phaser.GameObjects.Sprite
   public levelSelectorCircles: Phaser.GameObjects.Ellipse[] = []
@@ -30,7 +32,9 @@ export class Overworld extends Phaser.Scene {
   }
 
   startWithCompletedLevel(levelName: string) {
-    this.completedLevels.push(levelName)
+    if (!this.completedLevels.includes(levelName)) {
+      this.completedLevels.push(levelName)
+    }
   }
 
   create() {
@@ -45,7 +49,7 @@ export class Overworld extends Phaser.Scene {
     this.input.keyboard.on('keydown', (e) => {
       switch (e.key) {
         case 'Enter': {
-          console.log('Pressed enter!')
+          SceneController.instance.playGameLevelForIndex(this.currLevelIdx)
           break
         }
         case 'ArrowRight': {
@@ -64,19 +68,22 @@ export class Overworld extends Phaser.Scene {
     if (this.currLevelIdx < this.levelConfig.length - 1 && !this.isMovingToNewLevel) {
       const currLevel = this.levelSelectorCircles[this.currLevelIdx]
       const nextLevel = this.levelSelectorCircles[this.currLevelIdx + 1]
-      this.isMovingToNewLevel = true
-      this.tweens.add({
-        targets: this.playerSprite,
-        x: {
-          from: currLevel.x,
-          to: nextLevel.x,
-        },
-        duration: 500,
-        onComplete: () => {
-          this.currLevelIdx++
-          this.isMovingToNewLevel = false
-        },
-      })
+      const nextLevelConfig = this.levelConfig[this.currLevelIdx + 1]
+      if (this.levelPreReqCompleted(nextLevelConfig.prereqs)) {
+        this.isMovingToNewLevel = true
+        this.tweens.add({
+          targets: this.playerSprite,
+          x: {
+            from: currLevel.x,
+            to: nextLevel.x,
+          },
+          duration: 500,
+          onComplete: () => {
+            this.currLevelIdx++
+            this.isMovingToNewLevel = false
+          },
+        })
+      }
     }
   }
 
@@ -115,6 +122,15 @@ export class Overworld extends Phaser.Scene {
     }
   }
 
+  levelPreReqCompleted(prereq: string[]) {
+    for (let i = 0; i < prereq.length; i++) {
+      if (!this.completedLevels.includes(prereq[i])) {
+        return false
+      }
+    }
+    return true
+  }
+
   initLevelSelectors() {
     let currPosition = {
       x: GameConstants.WINDOW_WIDTH / 2,
@@ -123,14 +139,15 @@ export class Overworld extends Phaser.Scene {
     const distBetweenCircles = 150
     this.levelConfig.forEach((config, index) => {
       const isCompleted = this.completedLevels.includes(config.levelName)
+      let circleColor = Overworld.LEVEL_INCOMPLETE_COLOR
+      if (isCompleted) {
+        circleColor = Overworld.LEVEL_COMPLETE_COLOR
+      }
+      if (!this.levelPreReqCompleted(config.prereqs)) {
+        circleColor = Overworld.LEVEL_LOCKED_COLOR
+      }
       const newCircle = this.add
-        .ellipse(
-          currPosition.x,
-          currPosition.y,
-          30,
-          15,
-          isCompleted ? Overworld.LEVEL_COMPLETE_COLOR : Overworld.LEVEL_INCOMPLETE_COLOR
-        )
+        .ellipse(currPosition.x, currPosition.y, 30, 15, circleColor)
         .setStrokeStyle(1, 0xffffff)
         .setDepth(2)
       this.levelSelectorCircles.push(newCircle)
@@ -150,6 +167,7 @@ export class Overworld extends Phaser.Scene {
       currPosition.x += distBetweenCircles
       const levelText = this.add.text(newCircle.x, newCircle.y + 10, config.levelName, {
         fontSize: '12px',
+        color: 'white',
       })
       levelText.setPosition(newCircle.x - levelText.displayWidth / 2, newCircle.y + 15)
     })
