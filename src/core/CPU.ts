@@ -1,6 +1,5 @@
 import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/game/Game'
 import { AttackDirection, GameUI } from '~/scenes/game/GameUI'
-import { GameConstants } from '~/scenes/game/GameConstants'
 import { Side } from '~/utils/Side'
 import { BehaviorTreeNode } from './behavior-tree/BehaviorTreeNode'
 import { Blackboard } from './behavior-tree/Blackboard'
@@ -15,18 +14,26 @@ import { PopulateBlackboard } from './behaviors/PopulateBlackboard'
 import { Retreat } from './behaviors/retreat/Retreat'
 import { ShouldRetreat } from './behaviors/retreat/ShouldRetreat'
 import { Unit } from './units/Unit'
+import { Cursor } from './Cursor'
 
 export class CPU {
-  private game: Game
+  public game: Game
   public units: Unit[] = []
   public unitToMoveIndex: number = 0
   public unitToMove: Unit | null = null
   public behaviorTree!: BehaviorTreeNode
+  public attackCrosshair: Cursor
 
   constructor(game: Game, cpuConfig: InitialUnitConfig[]) {
     this.game = game
     this.initUnits(cpuConfig)
     this.setupBehaviorTree()
+    this.attackCrosshair = new Cursor(this.game, {
+      x: 0,
+      y: 0,
+    })
+    this.attackCrosshair.setCursorTint(0xff0000)
+    this.attackCrosshair.hide()
   }
 
   initUnits(cpuConfig: InitialUnitConfig[]) {
@@ -120,7 +127,7 @@ export class CPU {
           new SequenceNode('AttackSequence', blackboard, [
             new GetPlayerUnitToTarget(blackboard),
             new MoveUnitNextToTarget(blackboard),
-            new AttackPlayerUnit(blackboard),
+            new AttackPlayerUnit(blackboard, this),
           ]),
           new SequenceNode('MoveSequence', blackboard, [
             new GetSquareToMove(blackboard),

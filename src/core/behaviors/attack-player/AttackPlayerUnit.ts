@@ -1,13 +1,15 @@
 import { BehaviorStatus } from '~/core/behavior-tree/BehaviorStatus'
 import { BehaviorTreeNode } from '~/core/behavior-tree/BehaviorTreeNode'
 import { Blackboard } from '~/core/behavior-tree/Blackboard'
+import { CPU } from '~/core/CPU'
 import { Unit } from '~/core/units/Unit'
-import { GameUI } from '~/scenes/game/GameUI'
 import { BlackboardKeys } from '../BlackboardKeys'
 
 export class AttackPlayerUnit extends BehaviorTreeNode {
-  constructor(blackboard: Blackboard) {
+  private cpu: CPU
+  constructor(blackboard: Blackboard, cpu: CPU) {
     super('attackPlayerUnit', blackboard)
+    this.cpu = cpu
   }
 
   public process(): BehaviorStatus {
@@ -16,10 +18,17 @@ export class AttackPlayerUnit extends BehaviorTreeNode {
     const onActionCallback = this.blackboard.getData(
       BlackboardKeys.ON_UNIT_MOVE_COMPLETE_CB
     ) as Function
-    unitToMove.attackTarget(playerUnitToTarget, () => {
-      if (onActionCallback) {
-        onActionCallback()
-      }
+
+    const targetGridPos = playerUnitToTarget.getRowCol()
+    this.cpu.attackCrosshair.show()
+    this.cpu.attackCrosshair.moveToRowCol(targetGridPos.row, targetGridPos.col)
+    this.cpu.game.time.delayedCall(500, () => {
+      this.cpu.attackCrosshair.hide()
+      unitToMove.attackTarget(playerUnitToTarget, () => {
+        if (onActionCallback) {
+          onActionCallback()
+        }
+      })
     })
     return BehaviorStatus.SUCCESS
   }

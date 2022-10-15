@@ -1,6 +1,7 @@
 import Game from '~/scenes/game/Game'
 import { GameConstants } from '~/scenes/game/GameConstants'
 import { GameUI, ShowAttackModalConfig } from '~/scenes/game/GameUI'
+import { UIValueBar } from '../ui/UIValueBar'
 import { UnitTypes } from './UnitConstants'
 
 export interface UnitConfig {
@@ -34,6 +35,7 @@ export class Unit {
   public currHealth: number
   public maxHealth: number
   public name: string
+  public miniHPBar: UIValueBar
 
   constructor(game: Game, unitConfig: UnitConfig) {
     this.game = game
@@ -47,6 +49,15 @@ export class Unit {
     this.currHealth = this.maxHealth
     this.name = unitConfig.name
     this.unitType = unitConfig.unitType
+    this.miniHPBar = new UIValueBar(this.game, {
+      x: this.sprite.x - (this.sprite.displayWidth - 2) / 2,
+      y: this.sprite.y - this.sprite.displayHeight / 2,
+      maxValue: this.maxHealth,
+      height: 2,
+      width: this.sprite.displayWidth - 2,
+      borderWidth: 0,
+      shouldChangeColor: true,
+    })
   }
 
   public highlight() {
@@ -56,6 +67,7 @@ export class Unit {
 
   takeDamage(damage: number) {
     this.currHealth = Math.max(this.currHealth - damage, 0)
+    this.miniHPBar.setCurrValue(this.currHealth)
   }
 
   // TODO: Modify damage dealt based on attributes or something
@@ -66,6 +78,7 @@ export class Unit {
   die() {
     this.sprite.setVisible(false)
     this.isDead = true
+    this.miniHPBar.destroy()
   }
 
   getAttackableSquaresPreMove() {
@@ -342,6 +355,10 @@ export class Unit {
   public moveToRowColPosition(row: number, col: number) {
     const cell = this.game.grid.getCellAtRowCol(row, col)
     this.sprite.setPosition(cell.centerX, cell.centerY)
+    this.miniHPBar.setPosition(
+      this.sprite.x - (this.sprite.displayWidth - 2) / 2,
+      this.sprite.y - this.sprite.displayHeight / 2
+    )
   }
 
   setHasMoved(hasMoved: boolean) {

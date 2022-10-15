@@ -1,7 +1,6 @@
 import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/game/Game'
 import { AttackDirection, GameUI } from '~/scenes/game/GameUI'
 import { Direction } from '~/utils/Directions'
-import { GameConstants } from '~/scenes/game/GameConstants'
 import { Side } from '~/utils/Side'
 import { Cursor } from './Cursor'
 import { Unit } from './units/Unit'
@@ -14,7 +13,7 @@ export enum ActionState {
 
 export class Player {
   private game: Game
-  private cursor: Cursor
+  public cursor: Cursor
   public units: Unit[] = []
   public selectedUnitToMove: Unit | null = null
 
@@ -271,6 +270,7 @@ export class Player {
   }
 
   startTurn() {
+    this.cursor.show()
     GameUI.instance.configureAttackAnimationModal(AttackDirection.LEFT)
   }
 
@@ -286,6 +286,7 @@ export class Player {
   }
 
   switchTurn() {
+    this.cursor.hide()
     GameUI.instance.hideUnitStats()
     const livingUnits = this.getLivingUnits()
     livingUnits.forEach((unit) => {

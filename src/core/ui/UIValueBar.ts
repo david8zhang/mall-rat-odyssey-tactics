@@ -8,6 +8,7 @@ interface UIValueBarConfig {
   fillColor?: number
   showBorder?: boolean
   isVertical?: boolean
+  shouldChangeColor?: boolean
 }
 
 export class UIValueBar {
@@ -23,6 +24,7 @@ export class UIValueBar {
   showBorder: boolean
   borderWidth: number
   isVertical: boolean = false
+  shouldChangeColor: boolean = false
 
   constructor(scene: Phaser.Scene, config: UIValueBarConfig) {
     this.bar = new Phaser.GameObjects.Graphics(scene)
@@ -37,6 +39,9 @@ export class UIValueBar {
 
     if (config.isVertical) {
       this.isVertical = config.isVertical
+    }
+    if (config.shouldChangeColor) {
+      this.shouldChangeColor = config.shouldChangeColor
     }
 
     this.fillColor = fillColor || 0x2ecc71
@@ -94,6 +99,16 @@ export class UIValueBar {
 
     const percentage = this.currValue / this.maxValue
     this.bar.fillStyle(this.fillColor)
+
+    if (this.shouldChangeColor) {
+      if (percentage <= 0.25) {
+        this.bar.fillStyle(0xff0000)
+      } else if (percentage <= 0.5) {
+        this.bar.fillStyle(0xf1c40f)
+      } else {
+        this.bar.fillStyle(this.fillColor)
+      }
+    }
 
     if (this.isVertical) {
       const length = Math.round(percentage * this.height)

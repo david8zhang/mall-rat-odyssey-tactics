@@ -194,6 +194,7 @@ export default class Game extends Phaser.Scene {
   }
 
   resetAfterSceneEnd() {
+    this.player.cursor.show()
     this.currTurn = Side.PLAYER
     GameUI.instance.configureAttackAnimationModal(AttackDirection.LEFT)
   }

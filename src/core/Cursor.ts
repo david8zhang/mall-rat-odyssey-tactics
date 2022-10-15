@@ -71,6 +71,14 @@ export class Cursor {
     this.sprite.clearTint()
   }
 
+  hide() {
+    this.sprite.setVisible(false)
+  }
+
+  show() {
+    this.sprite.setVisible(true)
+  }
+
   moveToRowCol(row: number, col: number) {
     const cell = this.game.grid.getCellAtRowCol(row, col)
     this.sprite.setPosition(cell.centerX, cell.centerY)
