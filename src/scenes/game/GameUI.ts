@@ -12,9 +12,51 @@ export enum AttackDirection {
   LEFT = 'LEFT',
 }
 
+export interface ShowAttackModalConfig {
+  attacker: Unit
+  defender: Unit
+  damageDealt: number
+  counterDamageDealt: number
+  onCounterAttackCb: Function
+  onAttackCb: Function
+  onEndCb: Function
+}
+
+export interface AttackAnimationConfig {
+  attacker: Unit
+  defender: Unit
+  damageDealt: number
+  attackerSprite: Phaser.GameObjects.Sprite
+  defenderSprite: Phaser.GameObjects.Sprite
+  defenderHealthBar: UIValueBar
+  animSprite: Phaser.GameObjects.Sprite
+  attackDirection: AttackDirection
+  onAttackCb: Function
+  onCompleteCb: Function
+}
+
 export class GameUI extends Phaser.Scene {
   public static readonly SCROLL_RECT_HEIGHT = 192
   public static readonly SCROLL_RECT_WIDTH = 32
+
+  public static readonly ATTACKER_INITIAL_POSITION_LEFT = {
+    x: GameConstants.WINDOW_WIDTH / 2 - 50,
+    y: GameConstants.WINDOW_HEIGHT / 2,
+  }
+  public static readonly DEFENDER_INITIAL_POSITION_LEFT = {
+    x: GameConstants.WINDOW_WIDTH / 2 + 50,
+    y: GameConstants.WINDOW_HEIGHT / 2,
+  }
+
+  public static readonly ATTACKER_INITIAL_POSITION_RIGHT = {
+    x: GameConstants.WINDOW_WIDTH / 2 + 50,
+    y: GameConstants.WINDOW_HEIGHT / 2,
+  }
+  public static readonly DEFENDER_INITIAL_POSITION_RIGHT = {
+    x: GameConstants.WINDOW_WIDTH / 2 - 50,
+    y: GameConstants.WINDOW_HEIGHT / 2,
+  }
+
   private static _instance: GameUI
 
   // Enable camera scroll when mouse moves to the edge of the screen
@@ -28,9 +70,10 @@ export class GameUI extends Phaser.Scene {
   public transitionText!: Phaser.GameObjects.Text
   public transitionRect!: Phaser.GameObjects.Rectangle
 
-  // Handle the attack animation
+  // Handle the attack animation (Probably should extract this out to its own component)
   public attackModal!: Phaser.GameObjects.Rectangle
   public attackAnimationSprite!: Phaser.GameObjects.Sprite
+  public defendAnimationSprite!: Phaser.GameObjects.Sprite
   public attackerSprite!: Phaser.GameObjects.Sprite
   public defenderSprite!: Phaser.GameObjects.Sprite
   public attackerHealthBar!: UIValueBar
@@ -123,6 +166,10 @@ export class GameUI extends Phaser.Scene {
       .setFlipX(true)
       .setVisible(false)
       .setDepth(1000)
+    this.defendAnimationSprite = this.add
+      .sprite(this.defenderSprite.x, this.defenderSprite.y, 'slash')
+      .setVisible(false)
+      .setDepth(1500)
 
     const healthBarWidth = this.attackerSprite.displayWidth * 2
     this.attackerHealthBar = new UIValueBar(this, {
@@ -149,14 +196,14 @@ export class GameUI extends Phaser.Scene {
     this.defenderHealthBar.setVisible(false)
   }
 
-  private playDefenderDeathAnimation(onEndCb: Function) {
+  private playDeathAnimation(unitSprite: Phaser.GameObjects.Sprite, onEndCb: Function) {
     this.tweens.add({
       delay: 500,
-      targets: this.defenderSprite,
+      targets: unitSprite,
       alpha: { from: 1, to: 0 },
       duration: 1000,
       onComplete: () => {
-        this.defenderSprite.setVisible(false).setAlpha(1)
+        unitSprite.setVisible(false).setAlpha(1)
         onEndCb()
       },
     })
@@ -171,23 +218,7 @@ export class GameUI extends Phaser.Scene {
       height: { to: 0, from: GameConstants.WINDOW_HEIGHT * 0.5 },
       duration: 500,
       onStart: () => {
-        // Reset all the sprites back to their original positions
-        if (this.attackDirection === AttackDirection.RIGHT) {
-          this.attackerSprite.setPosition(
-            GameConstants.WINDOW_WIDTH / 2 + 50,
-            GameConstants.WINDOW_HEIGHT / 2
-          )
-        } else {
-          this.attackerSprite.setPosition(
-            GameConstants.WINDOW_WIDTH / 2 - 50,
-            GameConstants.WINDOW_HEIGHT / 2
-          )
-        }
-        this.attackerSprite.setVisible(false)
-        this.defenderSprite.setVisible(false)
-        this.attackerHealthBar.setVisible(false)
-        this.defenderHealthBar.setVisible(false)
-        this.attackAnimationSprite.setVisible(false)
+        this.resetAllAttackSpritePositions()
       },
       onUpdate: (tween, target, param) => {
         target.setPosition(
@@ -202,34 +233,142 @@ export class GameUI extends Phaser.Scene {
     })
   }
 
+  private resetAllAttackSpritePositions() {
+    this.attackerSprite.setVisible(false)
+    this.defenderSprite.setVisible(false)
+    this.attackerHealthBar.setVisible(false)
+    this.defenderHealthBar.setVisible(false)
+    this.attackAnimationSprite.setVisible(false)
+    this.defendAnimationSprite.setVisible(false)
+    // Reset all the sprites back to their original positions
+    if (this.attackDirection === AttackDirection.RIGHT) {
+      this.attackerSprite.setPosition(
+        GameUI.ATTACKER_INITIAL_POSITION_RIGHT.x,
+        GameUI.ATTACKER_INITIAL_POSITION_RIGHT.y
+      )
+      this.defenderSprite.setPosition(
+        GameUI.DEFENDER_INITIAL_POSITION_RIGHT.x,
+        GameUI.DEFENDER_INITIAL_POSITION_RIGHT.y
+      )
+    } else {
+      this.attackerSprite.setPosition(
+        GameUI.ATTACKER_INITIAL_POSITION_LEFT.x,
+        GameUI.ATTACKER_INITIAL_POSITION_LEFT.y
+      )
+      this.defenderSprite.setPosition(
+        GameUI.DEFENDER_INITIAL_POSITION_LEFT.x,
+        GameUI.DEFENDER_INITIAL_POSITION_LEFT.y
+      )
+    }
+  }
+
   configureAttackAnimationModal(direction: AttackDirection) {
     this.attackDirection = direction
     if (direction === AttackDirection.LEFT) {
       this.attackerSprite
-        .setPosition(GameConstants.WINDOW_WIDTH / 2 - 50, GameConstants.WINDOW_HEIGHT / 2)
+        .setPosition(
+          GameUI.ATTACKER_INITIAL_POSITION_LEFT.x,
+          GameUI.ATTACKER_INITIAL_POSITION_LEFT.y
+        )
         .setFlipX(false)
       this.defenderSprite
-        .setPosition(GameConstants.WINDOW_WIDTH / 2 + 50, GameConstants.WINDOW_HEIGHT / 2)
+        .setPosition(
+          GameUI.DEFENDER_INITIAL_POSITION_LEFT.x,
+          GameUI.DEFENDER_INITIAL_POSITION_LEFT.y
+        )
         .setFlipX(true)
     } else {
       this.attackerSprite
-        .setPosition(GameConstants.WINDOW_WIDTH / 2 + 50, GameConstants.WINDOW_HEIGHT / 2)
+        .setPosition(
+          GameUI.ATTACKER_INITIAL_POSITION_RIGHT.x,
+          GameUI.ATTACKER_INITIAL_POSITION_RIGHT.y
+        )
         .setFlipX(true)
       this.defenderSprite
-        .setPosition(GameConstants.WINDOW_WIDTH / 2 - 50, GameConstants.WINDOW_HEIGHT / 2)
+        .setPosition(
+          GameUI.DEFENDER_INITIAL_POSITION_RIGHT.x,
+          GameUI.DEFENDER_INITIAL_POSITION_RIGHT.y
+        )
         .setFlipX(false)
     }
     this.attackerHealthBar.setPosition(this.attackerSprite.x - 32, this.attackerSprite.y + 25)
     this.defenderHealthBar.setPosition(this.defenderSprite.x - 32, this.defenderSprite.y + 25)
   }
 
-  playAttackAnimation(
-    attacker: Unit,
-    defender: Unit,
-    damageDealt: number,
-    onEndCb: Function,
-    onAttackCb: Function
-  ) {
+  playAttackAnimation(config: AttackAnimationConfig) {
+    const {
+      attacker,
+      defender,
+      attackerSprite,
+      defenderSprite,
+      damageDealt,
+      attackDirection,
+      onCompleteCb,
+      defenderHealthBar,
+      animSprite,
+      onAttackCb,
+    } = config
+    let defenderPos = defenderSprite.x - defenderSprite.displayWidth
+    if (attackDirection == AttackDirection.RIGHT) {
+      defenderPos = defenderSprite.x + defenderSprite.displayWidth
+    }
+    this.tweens.add({
+      targets: attackerSprite,
+      duration: 500,
+      x: {
+        from: attackerSprite.x,
+        to: defenderPos,
+      },
+      onComplete: () => {
+        // Actual attack animation gets played here
+        animSprite
+          .on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
+            animSprite.removeAllListeners()
+            if (defender.currHealth === 0) {
+              this.playDeathAnimation(defenderSprite, () => {
+                defender.die()
+                onCompleteCb()
+              })
+            } else {
+              onCompleteCb()
+            }
+          })
+          .on(Phaser.Animations.Events.ANIMATION_UPDATE, (_, frame) => {
+            if (frame.index === 3) {
+              Game.instance.cameras.main.shake(100, 0.005)
+              defenderSprite.setTintFill(0xff0000)
+              UINumber.createNumber(`-${damageDealt}`, this, defenderSprite.x, defenderSprite.y)
+              defenderHealthBar.decrease(damageDealt)
+              onAttackCb(attacker, defender)
+            }
+            if (frame.index === 4) {
+              defenderSprite.clearTint()
+            }
+          })
+
+        let animPosX = attackerSprite.x + attackerSprite.displayWidth
+        if (attackDirection === AttackDirection.RIGHT) {
+          animPosX = attackerSprite.x - attackerSprite.displayWidth
+        }
+        animSprite
+          .setPosition(animPosX, attackerSprite.y)
+          .setVisible(true)
+          .setFlipX(attackDirection === AttackDirection.RIGHT ? true : false)
+          .play('slash')
+      },
+    })
+  }
+
+  showAttackModalAndPlayAttackAnimation(attackAnimationConfig: ShowAttackModalConfig) {
+    const {
+      attacker,
+      defender,
+      onEndCb,
+      onAttackCb,
+      damageDealt,
+      onCounterAttackCb,
+      counterDamageDealt,
+    } = attackAnimationConfig
     // Start animation to show attack modal
     this.tweens.add({
       targets: this.attackModal,
@@ -255,59 +394,59 @@ export class GameUI extends Phaser.Scene {
         this.defenderHealthBar.setVisible(true)
         this.defenderHealthBar.setCurrValue(defender.currHealth)
         this.defenderHealthBar.setMaxValue(defender.maxHealth)
+        console.log('Pre attack attacker position x', this.attackerSprite.x)
 
-        let toPos = this.defenderSprite.x - this.defenderSprite.displayWidth
-        if (this.attackDirection == AttackDirection.RIGHT) {
-          toPos = this.defenderSprite.x + this.defenderSprite.displayWidth
-        }
-        this.tweens.add({
-          targets: this.attackerSprite,
-          duration: 500,
-          x: {
-            from: this.attackerSprite.x,
-            to: toPos,
+        this.playAttackAnimation({
+          attacker,
+          defender,
+          damageDealt,
+          animSprite: this.attackAnimationSprite,
+          defenderHealthBar: this.defenderHealthBar,
+          attackerSprite: this.attackerSprite,
+          defenderSprite: this.defenderSprite,
+          attackDirection: this.attackDirection,
+          onAttackCb: (attacker: Unit, defender: Unit) => {
+            onAttackCb(attacker, defender)
           },
-          onComplete: () => {
-            // Actual attack animation gets played here
-            this.attackAnimationSprite
-              .on(Phaser.Animations.Events.ANIMATION_COMPLETE, () => {
-                this.attackAnimationSprite.removeAllListeners()
-                if (defender.currHealth === 0) {
-                  this.playDefenderDeathAnimation(() => {
-                    defender.die()
-                    this.tweenAttackModalOut(onEndCb)
+          onCompleteCb: () => {
+            if (!defender.isDead) {
+              this.attackAnimationSprite.setVisible(false)
+              // Move the attacker back to original position
+              this.tweens.add({
+                targets: this.attackerSprite,
+                x: {
+                  from: this.attackerSprite.x,
+                  to:
+                    this.attackDirection === AttackDirection.LEFT
+                      ? GameUI.ATTACKER_INITIAL_POSITION_LEFT.x
+                      : GameUI.ATTACKER_INITIAL_POSITION_RIGHT.x,
+                },
+                duration: 500,
+                onComplete: () => {
+                  this.playAttackAnimation({
+                    attacker: defender,
+                    defender: attacker,
+                    damageDealt: counterDamageDealt,
+                    animSprite: this.defendAnimationSprite,
+                    defenderHealthBar: this.attackerHealthBar,
+                    attackerSprite: this.defenderSprite,
+                    defenderSprite: this.attackerSprite,
+                    attackDirection:
+                      this.attackDirection === AttackDirection.LEFT
+                        ? AttackDirection.RIGHT
+                        : AttackDirection.LEFT,
+                    onAttackCb: (attacker: Unit, defender: Unit) => {
+                      onCounterAttackCb(attacker, defender)
+                    },
+                    onCompleteCb: () => {
+                      this.tweenAttackModalOut(onEndCb)
+                    },
                   })
-                } else {
-                  this.tweenAttackModalOut(onEndCb)
-                }
+                },
               })
-              .on(Phaser.Animations.Events.ANIMATION_UPDATE, (_, frame) => {
-                if (frame.index === 3) {
-                  Game.instance.cameras.main.shake(100, 0.005)
-                  this.defenderSprite.setTintFill(0xff0000)
-                  UINumber.createNumber(
-                    `-${damageDealt}`,
-                    this,
-                    this.defenderSprite.x,
-                    this.defenderSprite.y
-                  )
-                  this.defenderHealthBar.decrease(damageDealt)
-                  onAttackCb(attacker, defender)
-                }
-                if (frame.index === 4) {
-                  this.defenderSprite.clearTint()
-                }
-              })
-
-            let animPosX = this.attackerSprite.x + this.attackerSprite.displayWidth
-            if (this.attackDirection === AttackDirection.RIGHT) {
-              animPosX = this.attackerSprite.x - this.attackerSprite.displayWidth
+            } else {
+              this.tweenAttackModalOut(onEndCb)
             }
-            this.attackAnimationSprite
-              .setPosition(animPosX, this.attackerSprite.y)
-              .setVisible(true)
-              .setFlipX(this.attackDirection === AttackDirection.RIGHT ? true : false)
-              .play('slash')
           },
         })
       },

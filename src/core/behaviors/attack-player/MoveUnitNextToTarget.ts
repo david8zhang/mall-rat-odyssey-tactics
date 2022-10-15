@@ -10,6 +10,22 @@ export class MoveUnitNextToTarget extends BehaviorTreeNode {
     super('AttackPlayerUnit', blackboard)
   }
 
+  private shuffle(array: any[]) {
+    let currentIndex = array.length,
+      randomIndex
+
+    // While there remain elements to shuffle.
+    while (currentIndex != 0) {
+      // Pick a remaining element.
+      randomIndex = Math.floor(Math.random() * currentIndex)
+      currentIndex--
+
+      // And swap it with the current element.
+      ;[array[currentIndex], array[randomIndex]] = [array[randomIndex], array[currentIndex]]
+    }
+    return array
+  }
+
   public process(): BehaviorStatus {
     const playerToTarget = this.blackboard.getData(BlackboardKeys.PLAYER_UNIT_TO_TARGET)
     if (!playerToTarget) {
@@ -36,8 +52,9 @@ export class MoveUnitNextToTarget extends BehaviorTreeNode {
             [-2, 0],
             [0, -2],
           ]
+    const shuffledDirections = this.shuffle(directions)
     let squareToMoveTo: number[] | null = null
-    directions.forEach((direction) => {
+    shuffledDirections.forEach((direction) => {
       const { row, col } = playerToTarget.getRowCol()
       const newRow = row + direction[0]
       const newCol = col + direction[1]

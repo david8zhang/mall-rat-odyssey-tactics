@@ -184,7 +184,11 @@ export default class Game extends Phaser.Scene {
     GameUI.instance.hideUnitStats()
     GameUI.instance.hideTransitionUI()
     GameUI.instance.showGameOverUI(gameOverCondition, () => {
-      SceneController.instance.onSceneCompleted()
+      if (gameOverCondition === GameOverConditions.PLAYER_WIN) {
+        SceneController.instance.onSceneCompleted()
+      } else {
+        SceneController.instance.restartCurrentLevel()
+      }
     })
   }
 

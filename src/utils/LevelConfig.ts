@@ -34,7 +34,7 @@ export const SAMPLE_GAME = {
       moveRange: GameConstants.DEFAULT_UNIT_MOVE_RANGE,
       attackRange: GameConstants.DEFAULT_UNIT_ATTACK_RANGE,
       maxHealth: GameConstants.DEFAULT_UNIT_MAX_HEALTH,
-      unitType: UnitTypes.PHYSICAL,
+      unitType: UnitTypes.RANGED,
     },
     {
       rowColPos: [11, 12],
@@ -43,7 +43,7 @@ export const SAMPLE_GAME = {
       moveRange: GameConstants.DEFAULT_UNIT_MOVE_RANGE,
       attackRange: GameConstants.DEFAULT_UNIT_ATTACK_RANGE,
       maxHealth: GameConstants.DEFAULT_UNIT_MAX_HEALTH,
-      unitType: UnitTypes.PHYSICAL,
+      unitType: UnitTypes.RANGED,
     },
     {
       rowColPos: [11, 13],
@@ -52,7 +52,7 @@ export const SAMPLE_GAME = {
       moveRange: GameConstants.DEFAULT_UNIT_MOVE_RANGE,
       attackRange: GameConstants.DEFAULT_UNIT_ATTACK_RANGE,
       maxHealth: GameConstants.DEFAULT_UNIT_MAX_HEALTH,
-      unitType: UnitTypes.PHYSICAL,
+      unitType: UnitTypes.RANGED,
     },
   ],
   playerConfig: [

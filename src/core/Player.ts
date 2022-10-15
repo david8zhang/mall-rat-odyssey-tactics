@@ -171,21 +171,11 @@ export class Player {
   handleAttackSelectedTarget() {
     if (!this.isPlayingAttackAnimation) {
       this.isPlayingAttackAnimation = true
-      const damageDealt = this.selectedUnitToMove!.calcDamageDealt()
       const selectedUnitToAttack = this.attackableEnemyUnits[this.selectedAttackableUnitIndex]
-      GameUI.instance.hideUnitStats()
-      GameUI.instance.playAttackAnimation(
-        this.selectedUnitToMove!,
-        selectedUnitToAttack,
-        damageDealt,
-        () => {
-          this.completeUnitAction()
-          this.isPlayingAttackAnimation = false
-        },
-        (attacker: Unit, defender: Unit) => {
-          defender.takeDamage(damageDealt)
-        }
-      )
+      this.selectedUnitToMove!.attackTarget(selectedUnitToAttack, () => {
+        this.completeUnitAction()
+        this.isPlayingAttackAnimation = false
+      })
     }
   }
 
@@ -324,7 +314,8 @@ export class Player {
   }
 
   getPlayerAtCursor() {
-    const playerAtCursor = this.units.find((playerUnit: Unit) => {
+    const livingUnits = this.getLivingUnits()
+    const playerAtCursor = livingUnits.find((playerUnit: Unit) => {
       const { row, col } = playerUnit.getRowCol()
       const gridRowCol = this.cursor.gridRowColPosition
       return row === gridRowCol.row && col === gridRowCol.col

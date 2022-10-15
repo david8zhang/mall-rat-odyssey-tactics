@@ -10,4 +10,5 @@ export class GameConstants {
   public static readonly DEFAULT_UNIT_MOVE_RANGE = 100
   public static readonly DEFAULT_UNIT_ATTACK_RANGE = 5
   public static readonly DEFAULT_UNIT_MAX_HEALTH = 50
+  public static readonly DEFAULT_UNIT_DAMAGE = 10
 }

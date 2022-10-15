@@ -72,7 +72,6 @@ export class SceneController extends Phaser.Scene {
     Overworld.instance.configure(this.gameConfig.gameLevels)
     this.isPreGame = this.gameConfig.preGameLevels.length > 0
     if (this.isPreGame) {
-      console.log('PLAY PRE GAME STUFF')
       this.playLevelScene(
         this.gameConfig.preGameLevels,
         this.currPreGameLevelIndex,
@@ -89,6 +88,15 @@ export class SceneController extends Phaser.Scene {
 
   finishLevel(levelName: string) {
     Overworld.instance.startWithCompletedLevel(levelName)
+  }
+
+  restartCurrentLevel() {
+    this.currLevelSubSceneIndex = 0
+    this.playLevelScene(
+      this.gameConfig.gameLevels,
+      this.currLevelIndex,
+      this.currLevelSubSceneIndex
+    )
   }
 
   onSceneCompleted() {

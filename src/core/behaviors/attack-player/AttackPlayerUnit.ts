@@ -16,21 +16,11 @@ export class AttackPlayerUnit extends BehaviorTreeNode {
     const onActionCallback = this.blackboard.getData(
       BlackboardKeys.ON_UNIT_MOVE_COMPLETE_CB
     ) as Function
-
-    const damageDealt = unitToMove.calcDamageDealt()
-    GameUI.instance.playAttackAnimation(
-      unitToMove,
-      playerUnitToTarget,
-      damageDealt,
-      () => {
-        if (onActionCallback) {
-          onActionCallback()
-        }
-      },
-      () => {
-        playerUnitToTarget.takeDamage(damageDealt)
+    unitToMove.attackTarget(playerUnitToTarget, () => {
+      if (onActionCallback) {
+        onActionCallback()
       }
-    )
+    })
     return BehaviorStatus.SUCCESS
   }
 }

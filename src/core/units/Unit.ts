@@ -1,5 +1,6 @@
 import Game from '~/scenes/game/Game'
 import { GameConstants } from '~/scenes/game/GameConstants'
+import { GameUI, ShowAttackModalConfig } from '~/scenes/game/GameUI'
 import { UnitTypes } from './UnitConstants'
 
 export interface UnitConfig {
@@ -55,7 +56,7 @@ export class Unit {
 
   // TODO: Modify damage dealt based on attributes or something
   calcDamageDealt(): number {
-    return 50
+    return GameConstants.DEFAULT_UNIT_DAMAGE
   }
 
   die() {
@@ -233,6 +234,28 @@ export class Unit {
       }
     }
     return this.attackableSquaresPostMove
+  }
+
+  public attackTarget(target: Unit, onComplete: Function) {
+    const damageDealt = this.calcDamageDealt()
+    const counterAttackDmg = target.calcDamageDealt()
+    GameUI.instance.hideUnitStats()
+    const config: ShowAttackModalConfig = {
+      attacker: this,
+      defender: target,
+      damageDealt,
+      counterDamageDealt: counterAttackDmg,
+      onCounterAttackCb: () => {
+        this.takeDamage(counterAttackDmg)
+      },
+      onAttackCb: (attacker: Unit, defender: Unit) => {
+        defender.takeDamage(damageDealt)
+      },
+      onEndCb: () => {
+        onComplete()
+      },
+    }
+    GameUI.instance.showAttackModalAndPlayAttackAnimation(config)
   }
 
   public dehighlight() {
