@@ -44,6 +44,7 @@ export class CPU {
         maxHealth: unitConfig.maxHealth,
         name: unitConfig.name,
         unitType: unitConfig.unitType,
+        baseDamageAmount: unitConfig.baseDamageAmount,
       })
       this.units.push(unit)
     })

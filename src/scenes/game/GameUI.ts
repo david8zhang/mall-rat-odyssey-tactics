@@ -16,6 +16,7 @@ export interface ShowAttackModalConfig {
   attacker: Unit
   defender: Unit
   damageDealt: number
+  canDefenderCounter: boolean
   counterDamageDealt: number
   onCounterAttackCb: Function
   onAttackCb: Function
@@ -366,6 +367,7 @@ export class GameUI extends Phaser.Scene {
       onEndCb,
       onAttackCb,
       damageDealt,
+      canDefenderCounter,
       onCounterAttackCb,
       counterDamageDealt,
     } = attackAnimationConfig
@@ -394,8 +396,8 @@ export class GameUI extends Phaser.Scene {
         this.defenderHealthBar.setVisible(true)
         this.defenderHealthBar.setCurrValue(defender.currHealth)
         this.defenderHealthBar.setMaxValue(defender.maxHealth)
-        console.log('Pre attack attacker position x', this.attackerSprite.x)
 
+        // Play the attack animation
         this.playAttackAnimation({
           attacker,
           defender,
@@ -409,7 +411,7 @@ export class GameUI extends Phaser.Scene {
             onAttackCb(attacker, defender)
           },
           onCompleteCb: () => {
-            if (!defender.isDead) {
+            if (!defender.isDead && canDefenderCounter) {
               this.attackAnimationSprite.setVisible(false)
               // Move the attacker back to original position
               this.tweens.add({

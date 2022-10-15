@@ -19,6 +19,7 @@ export interface InitialUnitConfig {
   attackRange: number
   maxHealth: number
   unitType: UnitTypes
+  baseDamageAmount: number
 }
 
 export interface GameConfig {

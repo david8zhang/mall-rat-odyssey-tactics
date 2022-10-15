@@ -2,3 +2,13 @@ export enum UnitTypes {
   RANGED = 'RANGED',
   PHYSICAL = 'PHYSICAL',
 }
+
+export const DEFAULT_UNIT_MOVE_RANGE = 100
+export const DEFAULT_UNIT_ATTACK_RANGE = 5
+export const DEFAULT_UNIT_MAX_HEALTH = 50
+export const DEFAULT_UNIT_DAMAGE = 10
+
+export const DEFAULT_CPU_UNIT_MOVE_RANGE = 5
+export const DEFAULT_CPU_UNIT_ATTACK_RANGE = 1
+export const DEFAULT_CPU_UNIT_MAX_HEALTH = 50
+export const DEFAULT_CPU_UNIT_DAMAGE = 5

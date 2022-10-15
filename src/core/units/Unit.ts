@@ -11,6 +11,7 @@ export interface UnitConfig {
   }
   moveRange: number
   attackRange: number // Additive to move range (i.e. attack range of 1 and move range of 4 = effective attack range of 5)
+  baseDamageAmount: number
   maxHealth: number
   name: string
   unitType: UnitTypes
@@ -21,6 +22,8 @@ export class Unit {
   private game: Game
   private moveRange: number
   private attackRange: number
+  private baseDamageAmount: number
+
   public moveableSquares: Phaser.GameObjects.Rectangle[] = []
   public possibleAttackableSquares: Phaser.GameObjects.Rectangle[] = []
   public attackableSquaresPostMove: Phaser.GameObjects.Rectangle[] = []
@@ -39,6 +42,7 @@ export class Unit {
       .setDepth(5)
     this.moveRange = unitConfig.moveRange
     this.attackRange = unitConfig.attackRange
+    this.baseDamageAmount = unitConfig.baseDamageAmount
     this.maxHealth = unitConfig.maxHealth
     this.currHealth = this.maxHealth
     this.name = unitConfig.name
@@ -56,7 +60,7 @@ export class Unit {
 
   // TODO: Modify damage dealt based on attributes or something
   calcDamageDealt(): number {
-    return GameConstants.DEFAULT_UNIT_DAMAGE
+    return this.baseDamageAmount
   }
 
   die() {
@@ -179,6 +183,7 @@ export class Unit {
   }
 
   public getAttackableSquaresPostMove() {
+    const attackableSquaresPostMove: number[][] = []
     const cell = this.game.grid.getCellAtWorldPosition(this.sprite.x, this.sprite.y)
     const currCoordinates = [cell.gridRow, cell.gridCol, 0]
     const queue = [currCoordinates]
@@ -217,32 +222,55 @@ export class Unit {
           if (this.unitType === UnitTypes.RANGED && seen[i][j] <= 1) {
             continue
           }
-          const cell = this.game.grid.getCellAtRowCol(i, j)
-          const newRect = this.game.add
-            .rectangle(
-              cell.centerX,
-              cell.centerY,
-              GameConstants.TILE_SIZE,
-              GameConstants.TILE_SIZE,
-              0xff0000,
-              0.25
-            )
-            .setVisible(false)
-            .setDepth(this.sprite.depth - 1)
-          this.attackableSquaresPostMove.push(newRect)
+          attackableSquaresPostMove.push([i, j])
         }
       }
     }
-    return this.attackableSquaresPostMove
+    return attackableSquaresPostMove
+  }
+
+  public saveAttackableSquaresPostMove() {
+    const attackableSquaresPostMove = this.getAttackableSquaresPostMove()
+    attackableSquaresPostMove.forEach((coord: number[]) => {
+      const cell = this.game.grid.getCellAtRowCol(coord[0], coord[1])
+      const newRect = this.game.add
+        .rectangle(
+          cell.centerX,
+          cell.centerY,
+          GameConstants.TILE_SIZE,
+          GameConstants.TILE_SIZE,
+          0xff0000,
+          0.25
+        )
+        .setVisible(false)
+        .setDepth(this.sprite.depth - 1)
+      this.attackableSquaresPostMove.push(newRect)
+    })
+  }
+
+  public hasTargetWithinRange(target: Unit): boolean {
+    const attackableSquaresPostMove = this.getAttackableSquaresPostMove()
+    for (let i = 0; i < attackableSquaresPostMove.length; i++) {
+      const square = attackableSquaresPostMove[i]
+      const targetGridPos = target.getRowCol()
+      if (targetGridPos.row == square[0] && targetGridPos.col == square[1]) {
+        return true
+      }
+    }
+    return false
   }
 
   public attackTarget(target: Unit, onComplete: Function) {
     const damageDealt = this.calcDamageDealt()
     const counterAttackDmg = target.calcDamageDealt()
+
+    // Check if the attacker is within the defenders attack range
+    const canDefenderCounter = target.hasTargetWithinRange(this)
     GameUI.instance.hideUnitStats()
     const config: ShowAttackModalConfig = {
       attacker: this,
       defender: target,
+      canDefenderCounter,
       damageDealt,
       counterDamageDealt: counterAttackDmg,
       onCounterAttackCb: () => {

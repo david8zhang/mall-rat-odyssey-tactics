@@ -248,8 +248,8 @@ export class Player {
   getAttackableEnemies() {
     const enemyUnits = this.game.cpu.getLivingUnits()
     const selectedUnitAttackableSquareCoordinates = new Set<string>([])
-    const attackableSquaresPostMove = this.selectedUnitToMove!.getAttackableSquaresPostMove()
-    attackableSquaresPostMove.forEach((attackableSquare) => {
+    this.selectedUnitToMove!.saveAttackableSquaresPostMove()
+    this.selectedUnitToMove!.attackableSquaresPostMove.forEach((attackableSquare) => {
       const cell = this.game.grid.getCellAtWorldPosition(attackableSquare.x, attackableSquare.y)
       selectedUnitAttackableSquareCoordinates.add(`${cell.gridRow},${cell.gridCol}`)
     })
@@ -338,6 +338,7 @@ export class Player {
         attackRange: unitConfig.attackRange,
         maxHealth: unitConfig.maxHealth,
         unitType: unitConfig.unitType,
+        baseDamageAmount: unitConfig.baseDamageAmount,
       })
       this.units.push(playerUnit)
     })
