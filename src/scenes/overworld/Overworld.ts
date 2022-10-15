@@ -1,8 +1,9 @@
-import { GameConstants } from '~/utils/GameConstants'
-import { OverworldConfig, OverworldLevelConfig } from '~/utils/OverworldConstants'
-import { SceneController } from './SceneController'
+import { GameConstants } from '~/scenes/game/GameConstants'
+import { OverworldLevelConfig } from '~/scenes/overworld/OverworldConstants'
+import { SceneController } from '../SceneController'
 
 export class Overworld extends Phaser.Scene {
+  private static readonly OVERWORLD_BG_COLOR = 0x542c29
   private static readonly LEVEL_COMPLETE_COLOR = 0x00873e
   private static readonly LEVEL_INCOMPLETE_COLOR = 0xff0000
   private static readonly LEVEL_LOCKED_COLOR = 0x333333
@@ -38,6 +39,7 @@ export class Overworld extends Phaser.Scene {
   }
 
   create() {
+    this.cameras.main.setBackgroundColor(Overworld.OVERWORLD_BG_COLOR)
     this.initScale()
     this.initLevelSelectors()
     this.initPlayerOWSprite()

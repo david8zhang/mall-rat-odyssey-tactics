@@ -1,7 +1,8 @@
 import { BehaviorStatus } from '~/core/behavior-tree/BehaviorStatus'
 import { BehaviorTreeNode } from '~/core/behavior-tree/BehaviorTreeNode'
 import { Blackboard } from '~/core/behavior-tree/Blackboard'
-import { Unit } from '~/core/Unit'
+import { Unit } from '~/core/units/Unit'
+import { UnitTypes } from '~/core/units/UnitConstants'
 import { BlackboardKeys } from '../BlackboardKeys'
 
 export class MoveUnitNextToTarget extends BehaviorTreeNode {
@@ -18,12 +19,23 @@ export class MoveUnitNextToTarget extends BehaviorTreeNode {
     const moveableSquares = unitToMove
       .getMoveableSquares()
       .map((square) => `${square[0]},${square[1]}`)
-    const directions = [
-      [0, 1],
-      [0, -1],
-      [1, 0],
-      [-1, 0],
-    ]
+
+    // If the unit type is ranged, we want to move within 2 spots of the attack target, as ranged units are not able to attack
+    // units that are directly next to them
+    const directions =
+      unitToMove.unitType === UnitTypes.PHYSICAL
+        ? [
+            [0, 1],
+            [0, -1],
+            [1, 0],
+            [-1, 0],
+          ]
+        : [
+            [0, 2],
+            [2, 0],
+            [-2, 0],
+            [0, -2],
+          ]
     let squareToMoveTo: number[] | null = null
     directions.forEach((direction) => {
       const { row, col } = playerToTarget.getRowCol()

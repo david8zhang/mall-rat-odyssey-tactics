@@ -3,13 +3,13 @@ import { createSlashAnims } from '~/core/anims/createSlashAnims'
 import { CPU } from '~/core/CPU'
 import { Grid } from '~/core/Grid'
 import { Player } from '~/core/Player'
-import { Unit } from '~/core/Unit'
+import { Unit } from '~/core/units/Unit'
 import { Direction } from '~/utils/Directions'
-import { GameConstants } from '~/utils/GameConstants'
+import { GameConstants } from '~/scenes/game/GameConstants'
 import { Side } from '~/utils/Side'
-import { UnitTypes } from '~/utils/UnitConstants'
+import { UnitTypes } from '~/core/units/UnitConstants'
 import { SceneController } from '../SceneController'
-import { GameUI } from './GameUI'
+import { AttackDirection, GameUI } from './GameUI'
 
 export interface InitialUnitConfig {
   rowColPos: number[]
@@ -180,12 +180,17 @@ export default class Game extends Phaser.Scene {
   }
 
   handleGameOverCondition(gameOverCondition: GameOverConditions) {
-    this.currTurn = Side.PLAYER
+    this.resetAfterSceneEnd()
     GameUI.instance.hideUnitStats()
     GameUI.instance.hideTransitionUI()
     GameUI.instance.showGameOverUI(gameOverCondition, () => {
       SceneController.instance.onSceneCompleted()
     })
+  }
+
+  resetAfterSceneEnd() {
+    this.currTurn = Side.PLAYER
+    GameUI.instance.configureAttackAnimationModal(AttackDirection.LEFT)
   }
 
   getGameOverCondition() {

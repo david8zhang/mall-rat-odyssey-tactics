@@ -4,13 +4,13 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { Cutscene } from './scenes/cutscene/Cutscene'
 import { CutsceneOverlay } from './scenes/cutscene/CutsceneOverlay'
 
-import { Dialog } from './scenes/Dialog'
+import { Dialog } from './scenes/dialog/Dialog'
 import Game from './scenes/game/Game'
 import { Preload } from './scenes/Preload'
 import { SceneController } from './scenes/SceneController'
 import { GameUI } from './scenes/game/GameUI'
-import { GameConstants } from './utils/GameConstants'
-import { Overworld } from './scenes/Overworld'
+import { GameConstants } from './scenes/game/GameConstants'
+import { Overworld } from './scenes/overworld/Overworld'
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,

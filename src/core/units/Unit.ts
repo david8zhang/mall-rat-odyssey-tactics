@@ -1,6 +1,6 @@
 import Game from '~/scenes/game/Game'
-import { GameConstants } from '~/utils/GameConstants'
-import { UnitTypes } from '~/utils/UnitConstants'
+import { GameConstants } from '~/scenes/game/GameConstants'
+import { UnitTypes } from './UnitConstants'
 
 export interface UnitConfig {
   texture: string
@@ -69,8 +69,8 @@ export class Unit {
     const currCoordinates = [cell.gridRow, cell.gridCol, 0]
     const queue = [currCoordinates]
     const seen = new Array(this.game.grid.numRows)
-      .fill(-1)
-      .map(() => new Array(this.game.grid.numCols).fill(-1))
+      .fill(false)
+      .map(() => new Array(this.game.grid.numCols).fill(false))
     while (queue.length > 0) {
       const directions = [
         [0, 1],
@@ -79,8 +79,9 @@ export class Unit {
         [-1, 0],
       ]
       const currNode = queue.shift()
-      if (currNode && seen[currNode[0]][currNode[1]] == -1) {
-        seen[currNode[0]][currNode[1]] = currNode[2]
+      if (currNode && !seen[currNode[0]][currNode[1]]) {
+        seen[currNode[0]][currNode[1]] = true
+        attackableSquares.push([currNode[0], currNode[1]])
         directions.forEach((dir) => {
           const newRow = currNode[0] + dir[0]
           const newCol = currNode[1] + dir[1]

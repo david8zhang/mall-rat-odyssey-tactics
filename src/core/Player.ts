@@ -1,10 +1,10 @@
 import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/game/Game'
 import { AttackDirection, GameUI } from '~/scenes/game/GameUI'
 import { Direction } from '~/utils/Directions'
-import { GameConstants } from '~/utils/GameConstants'
+import { GameConstants } from '~/scenes/game/GameConstants'
 import { Side } from '~/utils/Side'
 import { Cursor } from './Cursor'
-import { Unit } from './Unit'
+import { Unit } from './units/Unit'
 
 export enum ActionState {
   SELECT_UNIT_TO_MOVE = 'select_unit_to_move',

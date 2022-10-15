@@ -1,7 +1,7 @@
 import { BehaviorStatus } from '~/core/behavior-tree/BehaviorStatus'
 import { BehaviorTreeNode } from '~/core/behavior-tree/BehaviorTreeNode'
 import { Blackboard } from '~/core/behavior-tree/Blackboard'
-import { Unit } from '~/core/Unit'
+import { Unit } from '~/core/units/Unit'
 import { GameUI } from '~/scenes/game/GameUI'
 import { BlackboardKeys } from '../BlackboardKeys'
 

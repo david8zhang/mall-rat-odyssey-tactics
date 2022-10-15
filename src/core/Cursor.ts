@@ -1,6 +1,6 @@
 import Game from '~/scenes/game/Game'
 import { Direction } from '~/utils/Directions'
-import { GameConstants } from '~/utils/GameConstants'
+import { GameConstants } from '~/scenes/game/GameConstants'
 import { Cell } from './Cell'
 
 export class Cursor {

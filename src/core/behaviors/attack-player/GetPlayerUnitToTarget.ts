@@ -1,7 +1,7 @@
 import { BehaviorStatus } from '../../behavior-tree/BehaviorStatus'
 import { BehaviorTreeNode } from '../../behavior-tree/BehaviorTreeNode'
 import { Blackboard } from '../../behavior-tree/Blackboard'
-import { Unit } from '../../Unit'
+import { Unit } from '../../units/Unit'
 import { BlackboardKeys } from '../BlackboardKeys'
 
 export class GetPlayerUnitToTarget extends BehaviorTreeNode {

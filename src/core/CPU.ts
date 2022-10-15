@@ -1,6 +1,6 @@
 import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/game/Game'
 import { AttackDirection, GameUI } from '~/scenes/game/GameUI'
-import { GameConstants } from '~/utils/GameConstants'
+import { GameConstants } from '~/scenes/game/GameConstants'
 import { Side } from '~/utils/Side'
 import { BehaviorTreeNode } from './behavior-tree/BehaviorTreeNode'
 import { Blackboard } from './behavior-tree/Blackboard'
@@ -14,7 +14,7 @@ import { MoveUnitToSquare } from './behaviors/move-to-player/MoveUnitToSquare'
 import { PopulateBlackboard } from './behaviors/PopulateBlackboard'
 import { Retreat } from './behaviors/retreat/Retreat'
 import { ShouldRetreat } from './behaviors/retreat/ShouldRetreat'
-import { Unit } from './Unit'
+import { Unit } from './units/Unit'
 
 export class CPU {
   private game: Game
@@ -55,6 +55,9 @@ export class CPU {
   }
 
   startTurn() {
+    this.unitToMoveIndex = 0
+    const livingUnits = this.getLivingUnits()
+    this.unitToMove = livingUnits[this.unitToMoveIndex]
     GameUI.instance.configureAttackAnimationModal(AttackDirection.RIGHT)
     this.moveUnits()
   }
@@ -70,8 +73,6 @@ export class CPU {
 
   switchTurn() {
     this.game.time.delayedCall(500, () => {
-      this.unitToMoveIndex = 0
-      this.unitToMove = this.units[this.unitToMoveIndex]
       this.getLivingUnits().forEach((unit) => {
         unit.setHasMoved(false)
       })

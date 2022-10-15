@@ -1,9 +1,7 @@
-import { CutsceneStateTypes } from './CutsceneConstants'
-import { SpeakerPosition } from './DialogConstants'
-import { GameConstants } from './GameConstants'
-import { UnitTypes } from './UnitConstants'
-
-// Move these interfaces and enums to another file
+import { CutsceneStateTypes } from '../scenes/cutscene/CutsceneConstants'
+import { SpeakerPosition } from '../scenes/dialog/DialogConstants'
+import { GameConstants } from '../scenes/game/GameConstants'
+import { UnitTypes } from '../core/units/UnitConstants'
 
 export enum SceneType {
   CUTSCENE = 'CUTSCENE',
@@ -20,6 +18,11 @@ export interface LevelConfig {
   prereqs: string[]
   levelName: string
   scenes: SceneConfig[]
+}
+
+export interface GameConfig {
+  preGameLevels: LevelConfig[]
+  gameLevels: LevelConfig[]
 }
 
 export const SAMPLE_GAME = {
@@ -204,7 +207,12 @@ export const MCNALDOS_LEVEL = {
   ],
 }
 
-export const FULL_GAME_LEVEL_CONFIG = [
+export const TUTORIAL_LEVEL = {
+  prereqs: [],
+  levelName: 'Tutorial',
+  scenes: [OPENING_CUTSCENE],
+}
+export const FULL_GAME_LEVELS = [
   PIPPIN_DOTS_LEVEL,
   SHOE_CASTLE_LEVEL,
   POP_TOPIC_LEVEL,
@@ -212,9 +220,7 @@ export const FULL_GAME_LEVEL_CONFIG = [
   MCNALDOS_LEVEL,
 ]
 
-export const TUTORIAL_LEVEL = {
-  levelName: 'Tutorial',
-  scenes: [OPENING_CUTSCENE],
+export const ALL_GAME_CONFIG = {
+  preGameLevels: [],
+  gameLevels: FULL_GAME_LEVELS,
 }
-
-export const PRE_GAME_CONFIG = [TUTORIAL_LEVEL]

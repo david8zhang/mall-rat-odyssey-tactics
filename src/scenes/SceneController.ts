@@ -1,15 +1,14 @@
-import { FULL_GAME_LEVEL_CONFIG, PRE_GAME_CONFIG, SceneType } from '~/utils/LevelConfig'
-import { Overworld } from './Overworld'
+import { ALL_GAME_CONFIG, GameConfig, SceneType } from '~/utils/LevelConfig'
+import { Overworld } from './overworld/Overworld'
 
 export class SceneController extends Phaser.Scene {
   public static instance: SceneController
-  public preGameLevels = PRE_GAME_CONFIG
-  public allLevels = FULL_GAME_LEVEL_CONFIG // Each "level" is comprised of a list of scene configs
+  public gameConfig: GameConfig = ALL_GAME_CONFIG
 
   // Index of the current PRE-GAME level index (tutorials, etc.)
   public currPreGameLevelIndex: number = 0
   public currPreGameLevelSubSceneIndex: number = 0
-  public isPreGame: boolean = true
+  public isPreGame: boolean = false
 
   // Index of the current GAME level, as well as scene in the level
   public currLevelIndex: number = 0 // Get the index of the level
@@ -22,7 +21,7 @@ export class SceneController extends Phaser.Scene {
   }
 
   playGameLevelForIndex(levelIndex: number) {
-    this.playLevelScene(this.allLevels, levelIndex, 0)
+    this.playLevelScene(this.gameConfig.gameLevels, levelIndex, 0)
   }
 
   playLevelScene(levels: any[], levelIndex: number, levelSubSceneIndex: number) {
@@ -70,15 +69,21 @@ export class SceneController extends Phaser.Scene {
   }
 
   create() {
-    Overworld.instance.configure(this.allLevels)
+    Overworld.instance.configure(this.gameConfig.gameLevels)
+    this.isPreGame = this.gameConfig.preGameLevels.length > 0
     if (this.isPreGame) {
+      console.log('PLAY PRE GAME STUFF')
       this.playLevelScene(
-        this.preGameLevels,
+        this.gameConfig.preGameLevels,
         this.currPreGameLevelIndex,
         this.currPreGameLevelSubSceneIndex
       )
     } else {
-      this.playLevelScene(this.allLevels, this.currLevelIndex, this.currLevelSubSceneIndex)
+      this.playLevelScene(
+        this.gameConfig.gameLevels,
+        this.currLevelIndex,
+        this.currLevelSubSceneIndex
+      )
     }
   }
 
@@ -88,35 +93,39 @@ export class SceneController extends Phaser.Scene {
 
   onSceneCompleted() {
     if (this.isPreGame) {
-      const currLevel = this.preGameLevels[this.currPreGameLevelIndex]
+      const currLevel = this.gameConfig.preGameLevels[this.currPreGameLevelIndex]
       this.currPreGameLevelSubSceneIndex++
       if (this.currPreGameLevelSubSceneIndex >= currLevel.scenes.length) {
         this.currPreGameLevelSubSceneIndex = 0
         this.currPreGameLevelIndex++
-        if (this.currPreGameLevelIndex >= this.preGameLevels.length) {
+        if (this.currPreGameLevelIndex >= this.gameConfig.preGameLevels.length) {
           this.isPreGame = false
-          this.playLevelScene(this.allLevels, 0, 0)
+          this.playLevelScene(this.gameConfig.gameLevels, 0, 0)
         } else {
           this.playLevelScene(
-            this.preGameLevels,
+            this.gameConfig.preGameLevels,
             this.currPreGameLevelIndex,
             this.currPreGameLevelSubSceneIndex
           )
         }
       }
     } else {
-      const currLevel = this.allLevels[this.currLevelIndex]
+      const currLevel = this.gameConfig.gameLevels[this.currLevelIndex]
       this.currLevelSubSceneIndex++
       if (this.currLevelSubSceneIndex >= currLevel.scenes.length) {
         this.currLevelSubSceneIndex = 0
         this.currLevelIndex++
-        if (this.currLevelIndex >= this.allLevels.length) {
+        if (this.currLevelIndex >= this.gameConfig.gameLevels.length) {
           console.log('GAME FINISHED!')
         } else {
           this.goToOverworldWithCompletedLevel(currLevel.levelName)
         }
       } else {
-        this.playLevelScene(this.allLevels, this.currLevelIndex, this.currLevelSubSceneIndex)
+        this.playLevelScene(
+          this.gameConfig.gameLevels,
+          this.currLevelIndex,
+          this.currLevelSubSceneIndex
+        )
       }
     }
   }

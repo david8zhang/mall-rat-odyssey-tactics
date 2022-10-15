@@ -1,5 +1,5 @@
 import { Scene } from 'phaser'
-import { GameConstants } from '~/utils/GameConstants'
+import { GameConstants } from '~/scenes/game/GameConstants'
 import { UIValueBar } from './UIValueBar'
 
 export enum UnitStatsBoxPosition {

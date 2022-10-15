@@ -1,6 +1,6 @@
 import { Grid } from '~/core/Grid'
-import { CutsceneCharacterConfig, CutsceneStateTypes } from '~/utils/CutsceneConstants'
-import { GameConstants } from '~/utils/GameConstants'
+import { CutsceneCharacterConfig, CutsceneStateTypes } from '~/scenes/cutscene/CutsceneConstants'
+import { GameConstants } from '~/scenes/game/GameConstants'
 import { SceneController } from '../SceneController'
 import { CharacterMoveState } from './states/CharacterMoveState'
 import { CutsceneState } from './states/CutsceneState'

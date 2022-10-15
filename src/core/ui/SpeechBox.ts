@@ -1,6 +1,6 @@
 import { Scene } from 'phaser'
 import TextBox from 'phaser3-rex-plugins/templates/ui/textbox/TextBox'
-import { Dialog } from '~/scenes/Dialog'
+import { Dialog } from '~/scenes/dialog/Dialog'
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 
 export interface SpeechBoxConfig {

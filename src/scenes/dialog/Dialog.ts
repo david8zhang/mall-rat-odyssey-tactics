@@ -1,8 +1,8 @@
 import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { SpeechBox } from '~/core/ui/SpeechBox'
-import { DialogConfig } from '~/utils/DialogConstants'
-import { GameConstants } from '~/utils/GameConstants'
-import { SceneController } from './SceneController'
+import { DialogConfig } from '~/scenes/dialog/DialogConstants'
+import { GameConstants } from '~/scenes/game/GameConstants'
+import { SceneController } from '../SceneController'
 
 export class Dialog extends Phaser.Scene {
   private static readonly DIALOG_WINDOW_WIDTH =

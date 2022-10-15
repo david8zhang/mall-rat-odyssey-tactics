@@ -1,9 +1,9 @@
 import { UINumber } from '~/core/ui/UINumber'
 import { UIValueBar } from '~/core/ui/UIValueBar'
 import { UnitStatsBox, UnitStatsBoxPosition } from '~/core/ui/UnitStatsBox'
-import { Unit } from '~/core/Unit'
+import { Unit } from '~/core/units/Unit'
 import { Direction } from '~/utils/Directions'
-import { GameConstants } from '~/utils/GameConstants'
+import { GameConstants } from '~/scenes/game/GameConstants'
 import { Side } from '~/utils/Side'
 import Game, { GameOverConditions } from './Game'
 
@@ -196,6 +196,7 @@ export class GameUI extends Phaser.Scene {
         )
       },
       onComplete: () => {
+        this.attackModal.setVisible(false)
         onEndCb()
       },
     })
@@ -230,12 +231,14 @@ export class GameUI extends Phaser.Scene {
     onAttackCb: Function
   ) {
     // Start animation to show attack modal
-    this.attackModal.setVisible(true).setOrigin(0)
     this.tweens.add({
       targets: this.attackModal,
       width: { from: 0, to: GameConstants.WINDOW_WIDTH * 0.75 },
       height: { from: 0, to: GameConstants.WINDOW_HEIGHT * 0.5 },
       duration: 500,
+      onStart: () => {
+        this.attackModal.setVisible(true).setOrigin(0)
+      },
       onUpdate: (tween, target, param) => {
         target.setPosition(
           GameConstants.WINDOW_WIDTH / 2 - target.displayWidth / 2,
