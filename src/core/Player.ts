@@ -1,7 +1,7 @@
 import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/game/Game'
 import { AttackDirection, GameUI } from '~/scenes/game/GameUI'
-import { Direction } from '~/utils/Directions'
-import { Side } from '~/utils/Side'
+import { Direction } from '~/config/Directions'
+import { Side } from '~/config/Side'
 import { Cursor } from './Cursor'
 import { Unit } from './units/Unit'
 
@@ -343,7 +343,5 @@ export class Player {
       })
       this.units.push(playerUnit)
     })
-    const playerUnitToFocusOn = this.units[0]
-    this.game.cameras.main.centerOn(playerUnitToFocusOn.x, playerUnitToFocusOn.y)
   }
 }

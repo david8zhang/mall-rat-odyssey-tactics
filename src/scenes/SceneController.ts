@@ -1,4 +1,5 @@
-import { ALL_GAME_CONFIG, GameConfig, SceneType } from '~/utils/LevelConfig'
+import { ALL_GAME_CONFIG, GameConfig } from '~/config/LevelConfig'
+import { SceneType } from '~/config/SceneTypes'
 import { Overworld } from './overworld/Overworld'
 
 export class SceneController extends Phaser.Scene {
@@ -100,6 +101,9 @@ export class SceneController extends Phaser.Scene {
   }
 
   onSceneCompleted() {
+    if (this.gameFinished) {
+      return
+    }
     if (this.isPreGame) {
       const currLevel = this.gameConfig.preGameLevels[this.currPreGameLevelIndex]
       this.currPreGameLevelSubSceneIndex++
@@ -124,7 +128,7 @@ export class SceneController extends Phaser.Scene {
         this.currLevelSubSceneIndex = 0
         this.currLevelIndex++
         if (this.currLevelIndex >= this.gameConfig.gameLevels.length) {
-          console.log('GAME FINISHED!')
+          this.gameFinished = true
         } else {
           this.goToOverworldWithCompletedLevel(currLevel.levelName)
         }

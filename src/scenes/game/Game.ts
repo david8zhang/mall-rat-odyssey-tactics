@@ -4,9 +4,9 @@ import { CPU } from '~/core/CPU'
 import { Grid } from '~/core/Grid'
 import { Player } from '~/core/Player'
 import { Unit } from '~/core/units/Unit'
-import { Direction } from '~/utils/Directions'
+import { Direction } from '~/config/Directions'
 import { GameConstants } from '~/scenes/game/GameConstants'
-import { Side } from '~/utils/Side'
+import { Side } from '~/config/Side'
 import { UnitTypes } from '~/core/units/UnitConstants'
 import { SceneController } from '../SceneController'
 import { AttackDirection, GameUI } from './GameUI'
@@ -25,6 +25,11 @@ export interface InitialUnitConfig {
 export interface GameConfig {
   cpuConfig: InitialUnitConfig[]
   playerConfig: InitialUnitConfig[]
+  camPosition: {
+    row: number
+    col: number
+  }
+  tileMapKey: string
 }
 
 export enum GameOverConditions {
@@ -40,34 +45,37 @@ export default class Game extends Phaser.Scene {
   public cpu!: CPU
   public cameraPanEvent: Phaser.Time.TimerEvent | null = null
   public currTurn: Side = Side.PLAYER
-  private static _instance: Game
+  public static instance: Game
 
   private playerConfig!: InitialUnitConfig[]
   private cpuConfig!: InitialUnitConfig[]
+  private tileMapKey!: string
+  private initialCamPosition!: {
+    row: number
+    col: number
+  }
 
   constructor() {
     super('game')
-    Game._instance = this
-  }
-
-  public static get instance() {
-    return Game._instance
+    Game.instance = this
   }
 
   create() {
     this.initScale()
     createSlashAnims(this.anims)
-    this.initCamera()
     this.initTilemap()
     this.initGrid()
     this.initPlayer()
     this.initCPU()
+    this.initCamera()
   }
 
   init(data: GameConfig) {
-    const { cpuConfig, playerConfig } = data
+    const { cpuConfig, playerConfig, tileMapKey, camPosition } = data
     this.cpuConfig = cpuConfig
     this.playerConfig = playerConfig
+    this.tileMapKey = tileMapKey
+    this.initialCamPosition = camPosition
   }
 
   initScale() {
@@ -76,7 +84,15 @@ export default class Game extends Phaser.Scene {
   }
 
   initCamera() {
+    let camCenterRow = 12
+    let camCenterCol = 12
+    if (this.initialCamPosition) {
+      camCenterRow = this.initialCamPosition.row
+      camCenterCol = this.initialCamPosition.col
+    }
+    const cell = this.grid.getCellAtRowCol(camCenterRow, camCenterCol)
     this.cameras.main.setBounds(0, 0, GameConstants.GAME_WIDTH, GameConstants.GAME_HEIGHT)
+    this.cameras.main.centerOn(cell.centerX, cell.centerY)
   }
 
   getAllLivingUnits() {
@@ -157,7 +173,7 @@ export default class Game extends Phaser.Scene {
 
   initTilemap() {
     this.tileMap = this.make.tilemap({
-      key: 'sample-map',
+      key: this.tileMapKey,
     })
     const tileset = this.tileMap.addTilesetImage('tilemap_packed', 'tilemap_packed')
     this.createLayer('Ground', tileset)

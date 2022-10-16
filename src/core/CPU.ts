@@ -1,6 +1,6 @@
 import Game, { GameOverConditions, InitialUnitConfig } from '~/scenes/game/Game'
 import { AttackDirection, GameUI } from '~/scenes/game/GameUI'
-import { Side } from '~/utils/Side'
+import { Side } from '~/config/Side'
 import { BehaviorTreeNode } from './behavior-tree/BehaviorTreeNode'
 import { Blackboard } from './behavior-tree/Blackboard'
 import { SelectorNode } from './behavior-tree/SelectorNode'

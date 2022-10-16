@@ -73,7 +73,7 @@ export class Dialog extends Phaser.Scene {
     let defaultScale = this.dialogConfig.spriteConfig ? this.dialogConfig.spriteConfig.scale : 1
     const { spriteConfig, screenShakeConfig } = currDialogLine
     if (spriteConfig) {
-      this.speakerSprite.setTexture(spriteConfig.texture)
+      this.speakerSprite.setTexture(spriteConfig.texture!)
       this.speakerSprite.setScale(spriteConfig.scale ? spriteConfig.scale : defaultScale)
     }
     if (screenShakeConfig) {

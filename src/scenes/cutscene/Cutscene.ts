@@ -2,6 +2,7 @@ import { Grid } from '~/core/Grid'
 import { CutsceneCharacterConfig, CutsceneStateTypes } from '~/scenes/cutscene/CutsceneConstants'
 import { GameConstants } from '~/scenes/game/GameConstants'
 import { SceneController } from '../SceneController'
+import { AnimateSpriteState } from './states/AnimateSpriteState'
 import { CharacterMoveState } from './states/CharacterMoveState'
 import { CutsceneState } from './states/CutsceneState'
 import { DialogState } from './states/DialogState'
@@ -33,11 +34,15 @@ export class Cutscene extends Phaser.Scene {
     [key in CutsceneStateTypes]: CutsceneState
   }
 
+  public static instance: Cutscene
+
   constructor() {
     super('cutscene')
+    Cutscene.instance = this
   }
 
   init(data: CutsceneConfig) {
+    this.currStateIndex = 4
     this.cutsceneConfig = data
   }
 
@@ -73,6 +78,7 @@ export class Cutscene extends Phaser.Scene {
     this.stateHandlers = {
       [CutsceneStateTypes.CHARACTER_MOVEMENT]: new CharacterMoveState(this),
       [CutsceneStateTypes.DIALOG]: new DialogState(this),
+      [CutsceneStateTypes.CHARACTER_ANIM]: new AnimateSpriteState(this),
     }
     this.initScale()
     this.initTilemap()
@@ -84,6 +90,7 @@ export class Cutscene extends Phaser.Scene {
 
   initCameraBounds() {
     this.cameras.main.setBounds(0, 0, GameConstants.GAME_WIDTH, GameConstants.GAME_HEIGHT)
+    this.cameras.main.centerOn(GameConstants.GAME_WIDTH / 2, GameConstants.GAME_HEIGHT / 2)
   }
 
   initCutsceneState() {
@@ -117,7 +124,6 @@ export class Cutscene extends Phaser.Scene {
       return
     }
     if (this.isLastState()) {
-      this.currStateIndex = 0
       SceneController.instance.onSceneCompleted()
       return
     }

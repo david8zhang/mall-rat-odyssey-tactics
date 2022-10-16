@@ -9,8 +9,9 @@ export interface DialogLine {
     duration: number
     intensity: number
   }
-  spriteConfig: {
-    texture: string
+  spriteConfig?: {
+    texture?: string
+    charKey?: string
     scale?: number
     position?: SpeakerPosition
   }

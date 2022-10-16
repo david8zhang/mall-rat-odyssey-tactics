@@ -2,6 +2,7 @@ import RexUIPlugin from 'phaser3-rex-plugins/templates/ui/ui-plugin'
 import { SpeechBox } from '~/core/ui/SpeechBox'
 import { DialogLine, SpeakerPosition } from '~/scenes/dialog/DialogConstants'
 import { GameConstants } from '~/scenes/game/GameConstants'
+import { Cutscene } from './Cutscene'
 
 export class CutsceneOverlay extends Phaser.Scene {
   private static readonly SPEECH_BOX_WIDTH = GameConstants.WINDOW_WIDTH - 120
@@ -64,7 +65,7 @@ export class CutsceneOverlay extends Phaser.Scene {
 
   initSpeakerSprite() {
     this.speakerSprite = this.add
-      .sprite(10, GameConstants.WINDOW_HEIGHT / 2 + 50, 'biggie-cheese')
+      .sprite(10, GameConstants.WINDOW_HEIGHT / 2 + 50, '')
       .setVisible(false)
   }
 
@@ -85,14 +86,11 @@ export class CutsceneOverlay extends Phaser.Scene {
 
   showNextDialogLine() {
     const nextDialogLine = this.dialogLines[this.dialogLineIndex]
-    const { spriteConfig } = nextDialogLine
+    const { spriteConfig, screenShakeConfig } = nextDialogLine
     if (spriteConfig) {
+      const texture = Cutscene.instance.characterSpriteMapping[spriteConfig.charKey!].texture.key
       const scale = spriteConfig.scale ? spriteConfig.scale : 1
-      this.speakerSprite
-        .setTexture(spriteConfig.texture)
-        .setScale(scale)
-        .setVisible(true)
-        .setDepth(10)
+      this.speakerSprite.setTexture(texture).setScale(scale).setVisible(true).setDepth(10)
       if (spriteConfig.position === SpeakerPosition.LEFT) {
         this.speakerSprite.setPosition(
           20 + this.speakerSprite.displayWidth / 2,
@@ -104,6 +102,9 @@ export class CutsceneOverlay extends Phaser.Scene {
           GameConstants.WINDOW_HEIGHT / 2 + 25
         )
       }
+    }
+    if (screenShakeConfig) {
+      Cutscene.instance.cameras.main.shake(screenShakeConfig.duration, screenShakeConfig.intensity)
     }
     this.speechBox.setVisible(true)
     this.speechBox.displayText(nextDialogLine.text, 50)

@@ -1,4 +1,4 @@
-import { SAMPLE_GAME } from '~/utils/LevelConfig'
+import { SAMPLE_GAME } from '~/config/LevelConfig'
 
 export class Preload extends Phaser.Scene {
   constructor() {

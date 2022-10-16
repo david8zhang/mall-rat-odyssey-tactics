@@ -2,9 +2,9 @@ import { UINumber } from '~/core/ui/UINumber'
 import { UIValueBar } from '~/core/ui/UIValueBar'
 import { UnitStatsBox, UnitStatsBoxPosition } from '~/core/ui/UnitStatsBox'
 import { Unit } from '~/core/units/Unit'
-import { Direction } from '~/utils/Directions'
+import { Direction } from '~/config/Directions'
 import { GameConstants } from '~/scenes/game/GameConstants'
-import { Side } from '~/utils/Side'
+import { Side } from '~/config/Side'
 import Game, { GameOverConditions } from './Game'
 
 export enum AttackDirection {

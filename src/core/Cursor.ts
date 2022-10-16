@@ -1,5 +1,5 @@
 import Game from '~/scenes/game/Game'
-import { Direction } from '~/utils/Directions'
+import { Direction } from '~/config/Directions'
 import { GameConstants } from '~/scenes/game/GameConstants'
 import { Cell } from './Cell'
 
