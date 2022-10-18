@@ -50,7 +50,7 @@ export class SceneController extends Phaser.Scene {
       case SceneType.GAME: {
         this.scene.stop('overworld')
         this.scene.stop('cutscene')
-        this.scene.stop('cutscene-overlay')
+        this.scene.start('cutscene-overlay')
         this.scene.start('game', currScene.config)
         this.scene.start('game-ui')
         this.scene.stop('dialog')

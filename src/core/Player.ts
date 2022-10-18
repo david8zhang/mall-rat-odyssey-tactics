@@ -23,6 +23,8 @@ export class Player {
 
   public actionState: ActionState = ActionState.SELECT_UNIT_TO_MOVE
   public isPlayingAttackAnimation = false
+  public shouldShowUnitStats: boolean = true
+  public cursorFrozen: boolean = false
 
   constructor(game: Game, playerConfig: InitialUnitConfig[]) {
     this.game = game
@@ -60,6 +62,22 @@ export class Player {
         }
       }
     })
+  }
+
+  unfreezeCursor() {
+    this.cursorFrozen = false
+  }
+
+  freezeCursor() {
+    this.cursorFrozen = true
+  }
+
+  hideCursor() {
+    this.cursor.hide()
+  }
+
+  showCursor() {
+    this.cursor.show()
   }
 
   revertCursorToScroll() {
@@ -125,8 +143,10 @@ export class Player {
   }
 
   moveCursorToRowCol(row: number, col: number) {
-    this.cursor.moveToRowCol(row, col)
-    this.showStatsIfCursorHovered()
+    if (!this.cursorFrozen) {
+      this.cursor.moveToRowCol(row, col)
+      this.showStatsIfCursorHovered()
+    }
   }
 
   moveCursorWithArrows(arrowKeyCode: string) {
@@ -152,18 +172,20 @@ export class Player {
   }
 
   showStatsIfCursorHovered() {
-    const allUnits = this.game.getAllLivingUnits()
-    let isHoveredOnUnit: boolean = false
-    allUnits.forEach((unit) => {
-      const { row, col } = unit.getRowCol()
-      const cursorRowCol = this.cursor.gridRowColPosition
-      if (row === cursorRowCol.row && col === cursorRowCol.col) {
-        isHoveredOnUnit = true
-        GameUI.instance.hoverUnit(unit)
+    if (this.shouldShowUnitStats) {
+      const allUnits = this.game.getAllLivingUnits()
+      let isHoveredOnUnit: boolean = false
+      allUnits.forEach((unit) => {
+        const { row, col } = unit.getRowCol()
+        const cursorRowCol = this.cursor.gridRowColPosition
+        if (row === cursorRowCol.row && col === cursorRowCol.col) {
+          isHoveredOnUnit = true
+          GameUI.instance.hoverUnit(unit)
+        }
+      })
+      if (!isHoveredOnUnit) {
+        GameUI.instance.hideUnitStats()
       }
-    })
-    if (!isHoveredOnUnit) {
-      GameUI.instance.hideUnitStats()
     }
   }
 

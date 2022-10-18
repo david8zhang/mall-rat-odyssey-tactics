@@ -88,7 +88,9 @@ export class CutsceneOverlay extends Phaser.Scene {
     const nextDialogLine = this.dialogLines[this.dialogLineIndex]
     const { spriteConfig, screenShakeConfig } = nextDialogLine
     if (spriteConfig) {
-      const texture = Cutscene.instance.characterSpriteMapping[spriteConfig.charKey!].texture.key
+      const texture = spriteConfig.texture
+        ? spriteConfig.texture
+        : Cutscene.instance.characterSpriteMapping[spriteConfig.charKey!].texture.key
       const scale = spriteConfig.scale ? spriteConfig.scale : 1
       this.speakerSprite.setTexture(texture).setScale(scale).setVisible(true).setDepth(10)
       if (spriteConfig.position === SpeakerPosition.LEFT) {

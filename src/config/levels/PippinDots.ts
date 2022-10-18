@@ -342,6 +342,24 @@ const OPENING_CUTSCENE = {
 const GAME_CONFIG = {
   sceneType: SceneType.GAME,
   config: {
+    preGameDialog: [
+      {
+        text: "There's too many of them! And they've blocked off all the exits!",
+        spriteConfig: {
+          texture: 'rat1',
+          scale: 3,
+          position: SpeakerPosition.LEFT,
+        },
+      },
+      {
+        text: 'This is it then. Fight until your last breath!',
+        spriteConfig: {
+          texture: 'rat1',
+          scale: 3,
+          position: SpeakerPosition.RIGHT,
+        },
+      },
+    ],
     camPosition: {
       row: 7,
       col: 12,
@@ -354,7 +372,7 @@ const GAME_CONFIG = {
         moveRange: 5,
         attackRange: 1,
         maxHealth: 50,
-        baseDamageAmount: 10,
+        baseDamageAmount: 25,
         unitType: UnitTypes.PHYSICAL,
       },
       {
@@ -374,7 +392,7 @@ const GAME_CONFIG = {
         moveRange: 5,
         attackRange: 1,
         maxHealth: 50,
-        baseDamageAmount: 10,
+        baseDamageAmount: 25,
         unitType: UnitTypes.PHYSICAL,
       },
     ],

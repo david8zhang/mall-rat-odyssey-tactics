@@ -10,6 +10,8 @@ import { Side } from '~/config/Side'
 import { UnitTypes } from '~/core/units/UnitConstants'
 import { SceneController } from '../SceneController'
 import { AttackDirection, GameUI } from './GameUI'
+import { DialogLine } from '../dialog/DialogConstants'
+import { CutsceneOverlay } from '../cutscene/CutsceneOverlay'
 
 export interface InitialUnitConfig {
   rowColPos: number[]
@@ -23,6 +25,7 @@ export interface InitialUnitConfig {
 }
 
 export interface GameConfig {
+  preGameDialog?: DialogLine[]
   cpuConfig: InitialUnitConfig[]
   playerConfig: InitialUnitConfig[]
   camPosition: {
@@ -54,6 +57,8 @@ export default class Game extends Phaser.Scene {
     row: number
     col: number
   }
+  public shouldHideCursor: boolean = false
+  public preGameDialogLines: DialogLine[] | null = null
 
   constructor() {
     super('game')
@@ -68,14 +73,36 @@ export default class Game extends Phaser.Scene {
     this.initPlayer()
     this.initCPU()
     this.initCamera()
+    this.handlePreGameDialogLines()
   }
 
   init(data: GameConfig) {
-    const { cpuConfig, playerConfig, tileMapKey, camPosition } = data
+    const { cpuConfig, playerConfig, tileMapKey, camPosition, preGameDialog } = data
     this.cpuConfig = cpuConfig
     this.playerConfig = playerConfig
     this.tileMapKey = tileMapKey
     this.initialCamPosition = camPosition
+    if (preGameDialog) {
+      this.preGameDialogLines = preGameDialog
+    }
+  }
+
+  handlePreGameDialogLines() {
+    if (this.preGameDialogLines) {
+      this.player.hideCursor()
+      this.scene.bringToTop('cutscene-overlay')
+      this.player.freezeCursor()
+      this.player.shouldShowUnitStats = false
+      CutsceneOverlay.instance.setDialogLines(this.preGameDialogLines)
+      CutsceneOverlay.instance.setOnDialogFinishedCallback(() => {
+        this.player.showCursor()
+        this.player.unfreezeCursor()
+        this.player.shouldShowUnitStats = true
+      })
+      this.time.delayedCall(500, () => {
+        CutsceneOverlay.instance.showNextDialogLine()
+      })
+    }
   }
 
   initScale() {
