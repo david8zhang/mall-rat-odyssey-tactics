@@ -343,8 +343,8 @@ const OPENING_CUTSCENE = {
 
 const GAME_CONFIG = {
   sceneType: SceneType.GAME,
-  shouldProceedOnDefeat: true,
   config: {
+    shouldProceedOnDefeat: true,
     preGameDialog: [
       {
         text: "There's too many of them! And they've blocked off all the exits!",
@@ -817,8 +817,8 @@ const POST_GAME_CUTSCENE = {
         type: CutsceneStateTypes.CHARACTER_MOVEMENT,
         config: {
           soldier1: {
-            row: -2,
-            col: -3,
+            rowDiff: -2,
+            colDiff: -3,
           },
         },
       },

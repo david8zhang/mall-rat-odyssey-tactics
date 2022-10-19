@@ -118,12 +118,20 @@ export class Cutscene extends Phaser.Scene {
     return this.currStateIndex == this.cutsceneConfig.states.length
   }
 
+  cleanupCutscene() {
+    Object.keys(this.characterSpriteMapping).forEach((key: string) => {
+      this.characterSpriteMapping[key].destroy()
+    })
+    this.characterSpriteMapping = {}
+  }
+
   // On each tick of the clock, go to the next state of the cutscene and move each character accordingly
   goToNextState() {
     if (!this.canGoToNextState) {
       return
     }
     if (this.isLastState()) {
+      this.cleanupCutscene()
       SceneController.instance.onSceneCompleted()
       return
     }
