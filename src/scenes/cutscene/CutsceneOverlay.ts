@@ -92,6 +92,7 @@ export class CutsceneOverlay extends Phaser.Scene {
         ? spriteConfig.texture
         : Cutscene.instance.characterSpriteMapping[spriteConfig.charKey!].texture.key
       const scale = spriteConfig.scale ? spriteConfig.scale : 1
+      console.log('Sprite texture: ', texture)
       this.speakerSprite.setTexture(texture).setScale(scale).setVisible(true).setDepth(10)
       if (spriteConfig.position === SpeakerPosition.LEFT) {
         this.speakerSprite.setPosition(

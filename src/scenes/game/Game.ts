@@ -25,6 +25,7 @@ export interface InitialUnitConfig {
 }
 
 export interface GameConfig {
+  shouldProceedOnDefeat: boolean
   preGameDialog?: DialogLine[]
   cpuConfig: InitialUnitConfig[]
   playerConfig: InitialUnitConfig[]
@@ -58,6 +59,7 @@ export default class Game extends Phaser.Scene {
     col: number
   }
   public shouldHideCursor: boolean = false
+  public shouldProceedOnDefeat: boolean = false
   public preGameDialogLines: DialogLine[] | null = null
 
   constructor() {
@@ -77,11 +79,19 @@ export default class Game extends Phaser.Scene {
   }
 
   init(data: GameConfig) {
-    const { cpuConfig, playerConfig, tileMapKey, camPosition, preGameDialog } = data
+    const {
+      cpuConfig,
+      playerConfig,
+      tileMapKey,
+      camPosition,
+      preGameDialog,
+      shouldProceedOnDefeat,
+    } = data
     this.cpuConfig = cpuConfig
     this.playerConfig = playerConfig
     this.tileMapKey = tileMapKey
     this.initialCamPosition = camPosition
+    this.shouldProceedOnDefeat = shouldProceedOnDefeat
     if (preGameDialog) {
       this.preGameDialogLines = preGameDialog
     }
@@ -228,7 +238,7 @@ export default class Game extends Phaser.Scene {
     GameUI.instance.hideUnitStats()
     GameUI.instance.hideTransitionUI()
     GameUI.instance.showGameOverUI(gameOverCondition, () => {
-      if (gameOverCondition === GameOverConditions.PLAYER_WIN) {
+      if (gameOverCondition === GameOverConditions.PLAYER_WIN || this.shouldProceedOnDefeat) {
         SceneController.instance.onSceneCompleted()
       } else {
         SceneController.instance.restartCurrentLevel()

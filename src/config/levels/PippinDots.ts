@@ -1,6 +1,8 @@
+import { Scene } from 'phaser'
 import { UnitTypes } from '~/core/units/UnitConstants'
 import { CutsceneStateTypes } from '~/scenes/cutscene/CutsceneConstants'
 import { AnimationTypes } from '~/scenes/cutscene/states/AnimateSpriteState'
+import { CutsceneState } from '~/scenes/cutscene/states/CutsceneState'
 import { SpeakerPosition } from '~/scenes/dialog/DialogConstants'
 import { SceneType } from '../SceneTypes'
 
@@ -341,6 +343,7 @@ const OPENING_CUTSCENE = {
 
 const GAME_CONFIG = {
   sceneType: SceneType.GAME,
+  shouldProceedOnDefeat: true,
   config: {
     preGameDialog: [
       {
@@ -380,9 +383,9 @@ const GAME_CONFIG = {
         texture: 'dottie',
         name: 'Pr. Dottie',
         moveRange: 3,
-        attackRange: 0,
+        attackRange: 1,
         maxHealth: 25,
-        baseDamageAmount: 0,
+        baseDamageAmount: 5,
         unitType: UnitTypes.PHYSICAL,
       },
       {
@@ -492,8 +495,387 @@ const GAME_CONFIG = {
   },
 }
 
+const POST_GAME_CUTSCENE = {
+  sceneType: SceneType.CUTSCENE,
+  config: {
+    initialState: {
+      characterConfigs: {
+        dottie: {
+          row: 12,
+          col: 12,
+          texture: 'dottie',
+        },
+        invader1: {
+          row: 10,
+          col: 12,
+          texture: 'rat2',
+        },
+        invader2: {
+          row: 12,
+          col: 11,
+          texture: 'rat2',
+        },
+        invader3: {
+          row: 12,
+          col: 13,
+          texture: 'rat2',
+        },
+        soldier1: {
+          row: 12,
+          col: 0,
+          texture: 'rat1',
+        },
+        soldier2: {
+          row: 14,
+          col: 0,
+          texture: 'rat1',
+        },
+        soldier3: {
+          row: 11,
+          col: 0,
+          texture: 'rat1',
+        },
+        soldier4: {
+          row: 13,
+          col: 0,
+          texture: 'rat1',
+        },
+        soldier5: {
+          row: 15,
+          col: 0,
+          texture: 'rat1',
+        },
+        citizen1: {
+          row: 13,
+          col: 0,
+          texture: 'rat1',
+        },
+      },
+    },
+    states: [
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          dottie: {
+            sortOrder: 0,
+            animType: AnimationTypes.SHAKE_SIDE_TO_SIDE,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Unhand me you filthy pests!',
+            spriteConfig: {
+              charKey: 'dottie',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          invader1: {
+            rowDiff: 1,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: "You're only making this harder for yourself, princess.",
+            spriteConfig: {
+              charKey: 'invader1',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+          {
+            text: 'Cooperate with us and you may yet see your pitiful little friends again',
+            spriteConfig: {
+              charKey: 'invader1',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+          {
+            text: 'Resist, and you will suffer!',
+            spriteConfig: {
+              charKey: 'invader1',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: "My soldiers will come for me! And then you'll pay for your treachery!",
+            spriteConfig: {
+              charKey: 'dottie',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Let them come and meet the same fate as their comrades lying dead in the dirt.',
+            spriteConfig: {
+              charKey: 'invader1',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          invader1: {
+            rowDiff: -1,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: "Rats! Move out! We must make haste! We don't want to keep HIM waiting",
+            spriteConfig: {
+              charKey: 'invader1',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          invader1: {
+            colDiff: 100,
+          },
+          invader2: {
+            colDiff: 100,
+          },
+          invader3: {
+            colDiff: 100,
+          },
+          dottie: {
+            colDiff: 100,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Quickly! Come quickly!',
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          citizen1: {
+            colDiff: 12,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          soldier1: {
+            colDiff: 11,
+          },
+          soldier2: {
+            colDiff: 11,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: "No...we're too late!",
+            spriteConfig: {
+              charKey: 'soldier1',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          soldier1: {
+            rowDiff: -2,
+            colDiff: 1,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Martin...Lawrence... you fought with honor my brothers..',
+            spriteConfig: {
+              charKey: 'soldier1',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          soldier2: {
+            colDiff: 3,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          soldier2: {
+            colDiff: -5,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Sir! The princess is not among the dead here.',
+            spriteConfig: {
+              charKey: 'soldier2',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+          {
+            text: 'The invaders must have taken her.',
+            spriteConfig: {
+              charKey: 'soldier2',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          soldier1: {
+            rowDiff: 2,
+            colDiff: -1,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Then we shall chase that scum across',
+            spriteConfig: {
+              charKey: 'soldier1',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'all of West Field',
+            spriteConfig: {
+              charKey: 'soldier1',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'We will not rest until the Princess is returned!',
+            spriteConfig: {
+              charKey: 'soldier1',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          soldier1: {
+            row: -2,
+            col: -3,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Soldiers of Pippin Dots! To me!',
+            spriteConfig: {
+              charKey: 'soldier1',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'We march to the land of Pop Topic!',
+            spriteConfig: {
+              charKey: 'soldier1',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          soldier1: {
+            colDiff: 100,
+          },
+          soldier2: {
+            colDiff: 100,
+          },
+          citizen1: {
+            rowDiff: 5,
+          },
+          soldier3: {
+            colDiff: 100,
+          },
+          soldier4: {
+            colDiff: 100,
+          },
+          soldier5: {
+            colDiff: 100,
+          },
+        },
+      },
+    ],
+  },
+}
+
 export const PIPPIN_DOTS_LEVEL = {
   prereqs: [],
   levelName: 'Pippin Dots',
-  scenes: [OPENING_CUTSCENE, GAME_CONFIG],
+  scenes: [
+    // OPENING_CUTSCENE,
+    // GAME_CONFIG,
+    POST_GAME_CUTSCENE,
+  ],
 }

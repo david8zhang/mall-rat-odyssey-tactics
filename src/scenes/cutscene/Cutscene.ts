@@ -42,7 +42,7 @@ export class Cutscene extends Phaser.Scene {
   }
 
   init(data: CutsceneConfig) {
-    this.currStateIndex = 5
+    this.currStateIndex = 0
     this.cutsceneConfig = data
   }
 
