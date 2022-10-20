@@ -6,6 +6,7 @@ import { AnimateSpriteState } from './states/AnimateSpriteState'
 import { CharacterMoveState } from './states/CharacterMoveState'
 import { CutsceneState } from './states/CutsceneState'
 import { DialogState } from './states/DialogState'
+import { ScreenEffectState } from './states/ScreenEffectState'
 
 export interface CutsceneConfig {
   initialState: {
@@ -79,6 +80,7 @@ export class Cutscene extends Phaser.Scene {
       [CutsceneStateTypes.CHARACTER_MOVEMENT]: new CharacterMoveState(this),
       [CutsceneStateTypes.DIALOG]: new DialogState(this),
       [CutsceneStateTypes.CHARACTER_ANIM]: new AnimateSpriteState(this),
+      [CutsceneStateTypes.SCREEN_EFFECT]: new ScreenEffectState(this),
     }
     this.initScale()
     this.initTilemap()

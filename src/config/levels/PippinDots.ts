@@ -1,8 +1,7 @@
-import { Scene } from 'phaser'
 import { UnitTypes } from '~/core/units/UnitConstants'
 import { CutsceneStateTypes } from '~/scenes/cutscene/CutsceneConstants'
 import { AnimationTypes } from '~/scenes/cutscene/states/AnimateSpriteState'
-import { CutsceneState } from '~/scenes/cutscene/states/CutsceneState'
+import { ScreenEffects } from '~/scenes/cutscene/states/ScreenEffectState'
 import { SpeakerPosition } from '~/scenes/dialog/DialogConstants'
 import { SceneType } from '../SceneTypes'
 
@@ -134,7 +133,23 @@ const OPENING_CUTSCENE = {
         type: CutsceneStateTypes.DIALOG,
         config: [
           {
-            text: 'Welcome rats of Pippin Dots to the fourth annual Ice Cream Bonanza!',
+            text: 'Welcome rats of Pippin Dots to the annual Icy Dots Bonanza!',
+            spriteConfig: {
+              charKey: 'dottie',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+          {
+            text: 'Unfortunately, my brother, Royal Prince Pippin could not be here with us this year during the great Channeling of the machine',
+            spriteConfig: {
+              charKey: 'dottie',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+          {
+            text: 'However, I have received news that he and his expedition have slain the great Winged Menace, which will terrorize us no longer!',
             spriteConfig: {
               charKey: 'dottie',
               scale: 3,
@@ -142,6 +157,85 @@ const OPENING_CUTSCENE = {
             },
           },
         ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          citizenRat1: {
+            sortOrder: 0,
+            animType: AnimationTypes.JUMP_UP_AND_DOWN,
+          },
+          citizenRat2: {
+            sortOrder: 1,
+            animType: AnimationTypes.JUMP_UP_AND_DOWN,
+            delay: 50,
+          },
+          citizenRat3: {
+            sortOrder: 2,
+            animType: AnimationTypes.JUMP_UP_AND_DOWN,
+            delay: 100,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Indeed! We shall celebrate his victory with a bountiful feast of Icy Dots!',
+            spriteConfig: {
+              charKey: 'dottie',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          dottie: {
+            rowDiff: -3,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Now as you all know, I require complete silence as I channel the great Machine...',
+            spriteConfig: {
+              charKey: 'dottie',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          dottie: {
+            sortOrder: 0,
+            animType: AnimationTypes.JUMP_UP_AND_DOWN,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: '*Beep* Boop Boooop~',
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.SCREEN_EFFECT,
+        config: {
+          effectType: ScreenEffects.FLASH_COLOR,
+          config: {
+            color: 0x0000ff,
+          },
+        },
       },
       {
         type: CutsceneStateTypes.DIALOG,
@@ -269,9 +363,11 @@ const OPENING_CUTSCENE = {
         config: {
           guardRat1: {
             colDiff: 1,
+            rowDiff: -2,
           },
           guardRat2: {
             colDiff: -1,
+            rowDiff: -2,
           },
         },
       },
@@ -520,7 +616,7 @@ const POST_GAME_CUTSCENE = {
           col: 13,
           texture: 'rat2',
         },
-        soldier1: {
+        pippin: {
           row: 12,
           col: 0,
           texture: 'rat1',
@@ -616,7 +712,7 @@ const POST_GAME_CUTSCENE = {
         type: CutsceneStateTypes.DIALOG,
         config: [
           {
-            text: "My soldiers will come for me! And then you'll pay for your treachery!",
+            text: "My brother will come for me! And then you'll pay for your treachery!",
             spriteConfig: {
               charKey: 'dottie',
               scale: 3,
@@ -629,7 +725,7 @@ const POST_GAME_CUTSCENE = {
         type: CutsceneStateTypes.DIALOG,
         config: [
           {
-            text: 'Let them come and meet the same fate as their comrades lying dead in the dirt.',
+            text: "Let him come! We'll leave him like the rest of your friends here!",
             spriteConfig: {
               charKey: 'invader1',
               scale: 3,
@@ -680,7 +776,7 @@ const POST_GAME_CUTSCENE = {
         type: CutsceneStateTypes.DIALOG,
         config: [
           {
-            text: 'Quickly! Come quickly!',
+            text: 'Over here your highness! Come quickly!',
           },
         ],
       },
@@ -695,7 +791,7 @@ const POST_GAME_CUTSCENE = {
       {
         type: CutsceneStateTypes.CHARACTER_MOVEMENT,
         config: {
-          soldier1: {
+          pippin: {
             colDiff: 11,
           },
           soldier2: {
@@ -709,7 +805,7 @@ const POST_GAME_CUTSCENE = {
           {
             text: "No...we're too late!",
             spriteConfig: {
-              charKey: 'soldier1',
+              charKey: 'pippin',
               scale: 3,
               position: SpeakerPosition.LEFT,
             },
@@ -719,7 +815,7 @@ const POST_GAME_CUTSCENE = {
       {
         type: CutsceneStateTypes.CHARACTER_MOVEMENT,
         config: {
-          soldier1: {
+          pippin: {
             rowDiff: -2,
             colDiff: 1,
           },
@@ -731,7 +827,7 @@ const POST_GAME_CUTSCENE = {
           {
             text: 'Martin...Lawrence... you fought with honor my brothers..',
             spriteConfig: {
-              charKey: 'soldier1',
+              charKey: 'pippin',
               scale: 3,
               position: SpeakerPosition.LEFT,
             },
@@ -758,7 +854,7 @@ const POST_GAME_CUTSCENE = {
         type: CutsceneStateTypes.DIALOG,
         config: [
           {
-            text: 'Sir! The princess is not among the dead here.',
+            text: 'Your highness! The princess is not among the dead here.',
             spriteConfig: {
               charKey: 'soldier2',
               scale: 3,
@@ -778,7 +874,7 @@ const POST_GAME_CUTSCENE = {
       {
         type: CutsceneStateTypes.CHARACTER_MOVEMENT,
         config: {
-          soldier1: {
+          pippin: {
             rowDiff: 2,
             colDiff: -1,
           },
@@ -790,15 +886,15 @@ const POST_GAME_CUTSCENE = {
           {
             text: 'Then we shall chase that scum across',
             spriteConfig: {
-              charKey: 'soldier1',
+              charKey: 'pippin',
               scale: 3,
               position: SpeakerPosition.LEFT,
             },
           },
           {
-            text: 'all of West Field',
+            text: 'all of West Field...',
             spriteConfig: {
-              charKey: 'soldier1',
+              charKey: 'pippin',
               scale: 3,
               position: SpeakerPosition.LEFT,
             },
@@ -806,7 +902,7 @@ const POST_GAME_CUTSCENE = {
           {
             text: 'We will not rest until the Princess is returned!',
             spriteConfig: {
-              charKey: 'soldier1',
+              charKey: 'pippin',
               scale: 3,
               position: SpeakerPosition.LEFT,
             },
@@ -816,7 +912,7 @@ const POST_GAME_CUTSCENE = {
       {
         type: CutsceneStateTypes.CHARACTER_MOVEMENT,
         config: {
-          soldier1: {
+          pippin: {
             rowDiff: -2,
             colDiff: -3,
           },
@@ -828,7 +924,7 @@ const POST_GAME_CUTSCENE = {
           {
             text: 'Soldiers of Pippin Dots! To me!',
             spriteConfig: {
-              charKey: 'soldier1',
+              charKey: 'pippin',
               scale: 3,
               position: SpeakerPosition.LEFT,
             },
@@ -836,7 +932,7 @@ const POST_GAME_CUTSCENE = {
           {
             text: 'We march to the land of Pop Topic!',
             spriteConfig: {
-              charKey: 'soldier1',
+              charKey: 'pippin',
               scale: 3,
               position: SpeakerPosition.LEFT,
             },
@@ -846,7 +942,7 @@ const POST_GAME_CUTSCENE = {
       {
         type: CutsceneStateTypes.CHARACTER_MOVEMENT,
         config: {
-          soldier1: {
+          pippin: {
             colDiff: 100,
           },
           soldier2: {
@@ -873,9 +969,5 @@ const POST_GAME_CUTSCENE = {
 export const PIPPIN_DOTS_LEVEL = {
   prereqs: [],
   levelName: 'Pippin Dots',
-  scenes: [
-    // OPENING_CUTSCENE,
-    // GAME_CONFIG,
-    POST_GAME_CUTSCENE,
-  ],
+  scenes: [POST_GAME_CUTSCENE],
 }
