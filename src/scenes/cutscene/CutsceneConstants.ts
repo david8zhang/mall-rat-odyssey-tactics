@@ -5,6 +5,7 @@ export enum CutsceneStateTypes {
   CHARACTER_MOVEMENT = 'CHARACTER_MOVEMENT',
   CHARACTER_ANIM = 'CHARACTER_ANIM',
   SCREEN_EFFECT = 'SCREEN_EFFECT',
+  TRANSITION = 'TRANSITION',
 }
 
 export interface CutSceneDialogLine {

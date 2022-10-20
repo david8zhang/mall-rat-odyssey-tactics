@@ -759,7 +759,7 @@ const POST_GAME_CUTSCENE = {
         type: CutsceneStateTypes.DIALOG,
         config: [
           {
-            text: "Rats! Move out! We must make haste! We don't want to keep HIM waiting",
+            text: "Rats! Move out! We must make haste! We don't want to keep HIM waiting...",
             spriteConfig: {
               charKey: 'invader1',
               scale: 3,

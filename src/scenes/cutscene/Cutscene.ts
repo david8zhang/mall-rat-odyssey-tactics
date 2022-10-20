@@ -7,6 +7,7 @@ import { CharacterMoveState } from './states/CharacterMoveState'
 import { CutsceneState } from './states/CutsceneState'
 import { DialogState } from './states/DialogState'
 import { ScreenEffectState } from './states/ScreenEffectState'
+import { TransitionState } from './states/TransitionState'
 
 export interface CutsceneConfig {
   initialState: {
@@ -81,12 +82,13 @@ export class Cutscene extends Phaser.Scene {
       [CutsceneStateTypes.DIALOG]: new DialogState(this),
       [CutsceneStateTypes.CHARACTER_ANIM]: new AnimateSpriteState(this),
       [CutsceneStateTypes.SCREEN_EFFECT]: new ScreenEffectState(this),
+      [CutsceneStateTypes.TRANSITION]: new TransitionState(this),
     }
     this.initScale()
     this.initTilemap()
     this.initGrid()
     this.initMouseClickListener()
-    this.initCutsceneState()
+    this.initCutsceneState(this.cutsceneConfig.initialState)
     this.initCameraBounds()
   }
 
@@ -95,8 +97,11 @@ export class Cutscene extends Phaser.Scene {
     this.cameras.main.centerOn(GameConstants.GAME_WIDTH / 2, GameConstants.GAME_HEIGHT / 2)
   }
 
-  initCutsceneState() {
-    const { initialState } = this.cutsceneConfig
+  public initCutsceneState(initialState: {
+    characterConfigs: {
+      [key: string]: CutsceneCharacterConfig
+    }
+  }) {
     Object.keys(initialState.characterConfigs).map((characterId: string) => {
       const characterConfig = initialState.characterConfigs[characterId]
       const cell = this.grid.getCellAtRowCol(characterConfig.row, characterConfig.col)
@@ -112,6 +117,13 @@ export class Cutscene extends Phaser.Scene {
     })
   }
 
+  resetCharacterConfigs() {
+    Object.keys(this.characterSpriteMapping).forEach((key: string) => {
+      this.characterSpriteMapping[key].destroy()
+    })
+    this.characterSpriteMapping = {}
+  }
+
   createLayer(layerName: string, tileset: Phaser.Tilemaps.Tileset) {
     this.tileMap.createLayer(layerName, tileset)
   }
@@ -121,10 +133,7 @@ export class Cutscene extends Phaser.Scene {
   }
 
   cleanupCutscene() {
-    Object.keys(this.characterSpriteMapping).forEach((key: string) => {
-      this.characterSpriteMapping[key].destroy()
-    })
-    this.characterSpriteMapping = {}
+    this.resetCharacterConfigs()
   }
 
   // On each tick of the clock, go to the next state of the cutscene and move each character accordingly

@@ -347,6 +347,7 @@ export class Player {
   }
 
   initUnits(playerConfig: InitialUnitConfig[]) {
+    console.log(playerConfig)
     playerConfig.forEach((unitConfig) => {
       const rowColPos = unitConfig.rowColPos
       const cell = this.game.grid.getCellAtRowCol(rowColPos[0], rowColPos[1])

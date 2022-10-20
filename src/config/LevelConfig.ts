@@ -96,7 +96,7 @@ export const SAMPLE_GAME = {
   ],
 }
 
-export const GAME_LEVELS = [PIPPIN_DOTS_LEVEL, POP_TOPIC_LEVEL]
+export const GAME_LEVELS = [POP_TOPIC_LEVEL]
 export const ALL_GAME_CONFIG = {
   preGameLevels: [],
   gameLevels: GAME_LEVELS,

@@ -1,5 +1,3 @@
-import { SAMPLE_GAME } from '~/config/LevelConfig'
-
 export class Preload extends Phaser.Scene {
   constructor() {
     super('preload')
@@ -17,7 +15,9 @@ export class Preload extends Phaser.Scene {
     this.load.image('rat1', 'rat1.png')
     this.load.image('rat2', 'rat2.png')
     this.load.image('dottie', 'dottie.png')
+    this.load.image('pippin', 'pippin.png')
     this.load.image('pop-topic-rat', 'pop-topic-rat.png')
+    this.load.image('pop-topic-soldier', 'pop-topic-soldier.png')
   }
 
   loadDialogUI() {
@@ -32,9 +32,10 @@ export class Preload extends Phaser.Scene {
   }
 
   loadTilemap() {
-    this.load.tilemapTiledJSON('sample-map', 'sample-map.json')
-    this.load.tilemapTiledJSON('cutscene-map', 'cutscene-map.json')
-    this.load.image('tilemap_packed', 'tilemap_packed.png')
+    this.load.tilemapTiledJSON('sample-map', 'tilemaps/sample-map.json')
+    this.load.tilemapTiledJSON('cutscene-map', 'tilemaps/cutscene-map.json')
+    this.load.tilemapTiledJSON('pop-topic-map', 'tilemaps/pop-topic-map.json')
+    this.load.image('tilemap_packed', 'tilemaps/tilemap_packed.png')
   }
 
   loadAnimations() {
