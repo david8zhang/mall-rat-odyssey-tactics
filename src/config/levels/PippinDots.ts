@@ -241,6 +241,19 @@ const OPENING_CUTSCENE = {
         type: CutsceneStateTypes.DIALOG,
         config: [
           {
+            text: 'Let the Icy Dots feats begin!',
+            spriteConfig: {
+              charKey: 'dottie',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
             text: '~CRASH!!!',
             screenShakeConfig: {
               duration: 500,
@@ -969,5 +982,5 @@ const POST_GAME_CUTSCENE = {
 export const PIPPIN_DOTS_LEVEL = {
   prereqs: [],
   levelName: 'Pippin Dots',
-  scenes: [POST_GAME_CUTSCENE],
+  scenes: [OPENING_CUTSCENE, GAME_CONFIG, POST_GAME_CUTSCENE],
 }
