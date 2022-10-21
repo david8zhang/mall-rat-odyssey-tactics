@@ -20,9 +20,9 @@ export interface UnitConfig {
 
 export class Unit {
   public sprite: Phaser.GameObjects.Sprite
-  private game: Game
-  private moveRange: number
-  private attackRange: number
+  public game: Game
+  public moveRange: number
+  public attackRange: number
   private baseDamageAmount: number
 
   public moveableSquares: Phaser.GameObjects.Rectangle[] = []
@@ -168,6 +168,11 @@ export class Unit {
     })
   }
 
+  focusCamera() {
+    const currGridPos = this.getRowCol()
+    this.game.panCameraIfNecessary(currGridPos.row, currGridPos.col)
+  }
+
   highlightMoveableSquares() {
     const moveableSquares = this.getMoveableSquares()
     moveableSquares.forEach((moveableSquare) => {
@@ -193,6 +198,13 @@ export class Unit {
       return false
     }
     return tile.layer.name === 'Walls'
+  }
+
+  public isSquareWithinAttackRange(row: number, col: number) {
+    const attackableSquares = new Set(
+      this.getAttackableSquaresPreMove().map((square) => `${square[0]},${square[1]}`)
+    )
+    return attackableSquares.has(`${row},${col}`)
   }
 
   public getAttackableSquaresPostMove() {
@@ -359,6 +371,10 @@ export class Unit {
       this.sprite.x - (this.sprite.displayWidth - 2) / 2,
       this.sprite.y - this.sprite.displayHeight / 2
     )
+  }
+
+  public isPosWithinGridBounds(row: number, col: number) {
+    return row >= 0 && row < this.game.grid.numRows && col >= 0 && col < this.game.grid.numCols
   }
 
   setHasMoved(hasMoved: boolean) {

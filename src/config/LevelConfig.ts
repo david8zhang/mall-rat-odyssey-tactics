@@ -11,6 +11,7 @@ import {
 } from '../core/units/UnitConstants'
 import { PIPPIN_DOTS_LEVEL } from './levels/PippinDots'
 import { POP_TOPIC_LEVEL } from './levels/PopTopic'
+import { SHOE_CASTLE_LEVEL } from './levels/ShoeCastle'
 import { SceneType } from './SceneTypes'
 
 export interface SceneConfig {
@@ -96,7 +97,7 @@ export const SAMPLE_GAME = {
   ],
 }
 
-export const GAME_LEVELS = [POP_TOPIC_LEVEL]
+export const GAME_LEVELS = [POP_TOPIC_LEVEL, SHOE_CASTLE_LEVEL]
 export const ALL_GAME_CONFIG = {
   preGameLevels: [],
   gameLevels: GAME_LEVELS,

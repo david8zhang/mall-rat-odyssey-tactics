@@ -88,8 +88,8 @@ export class Cutscene extends Phaser.Scene {
     this.initTilemap()
     this.initGrid()
     this.initMouseClickListener()
-    this.initCutsceneState(this.cutsceneConfig.initialState)
     this.initCameraBounds()
+    this.initCutsceneState(this.cutsceneConfig.initialState)
   }
 
   initCameraBounds() {
@@ -101,10 +101,30 @@ export class Cutscene extends Phaser.Scene {
     characterConfigs: {
       [key: string]: CutsceneCharacterConfig
     }
+    camPosition?: { row: number; col: number }
   }) {
+    if (initialState.camPosition) {
+      const cell = this.grid.getCellAtRowCol(
+        initialState.camPosition.row,
+        initialState.camPosition.col
+      )
+      this.cameras.main.centerOn(cell.centerX, cell.centerY)
+    }
     Object.keys(initialState.characterConfigs).map((characterId: string) => {
       const characterConfig = initialState.characterConfigs[characterId]
-      const cell = this.grid.getCellAtRowCol(characterConfig.row, characterConfig.col)
+      let boundRow = characterConfig.row
+      let boundCol = characterConfig.col
+      if (boundRow < 0) {
+        boundRow = 0
+      } else if (boundRow >= this.grid.numRows) {
+        boundRow = this.grid.numRows - 1
+      }
+      if (boundCol < 0) {
+        boundCol = 0
+      } else if (boundCol >= this.grid.numCols) {
+        boundCol = this.grid.numCols - 1
+      }
+      const cell = this.grid.getCellAtRowCol(boundRow, boundCol)
       const characterSprite = this.add.sprite(
         cell.centerX,
         cell.centerY,

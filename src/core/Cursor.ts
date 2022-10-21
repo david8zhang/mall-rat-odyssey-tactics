@@ -60,7 +60,7 @@ export class Cursor {
         break
       }
     }
-    this.panCameraIfNecessary(this.gridRowColPosition.row, this.gridRowColPosition.col)
+    this.game.panCameraIfNecessary(this.gridRowColPosition.row, this.gridRowColPosition.col)
   }
 
   setCursorTint(tintColor: number) {
@@ -84,28 +84,5 @@ export class Cursor {
     this.sprite.setPosition(cell.centerX, cell.centerY)
     console.log(`Moved cursor to: ${row}, ${col}`)
     this.gridRowColPosition = { row, col }
-  }
-
-  panCameraIfNecessary(targetRow: number, targetCol: number) {
-    const camera = this.game.cameras.main
-    const cell = this.game.grid.getCellAtRowCol(targetRow, targetCol)
-
-    const cameraLeftBound = camera.midPoint.x - camera.width / 2
-    const cameraRightBound = camera.midPoint.x + camera.width / 2
-    const cameraUpperBound = camera.midPoint.y - camera.height / 2
-    const cameraLowerBound = camera.midPoint.y + camera.height / 2
-
-    if (cell.centerX <= cameraLeftBound) {
-      camera.scrollX -= GameConstants.TILE_SIZE
-    }
-    if (cell.centerX >= cameraRightBound) {
-      camera.scrollX += GameConstants.TILE_SIZE
-    }
-    if (cell.centerY >= cameraLowerBound) {
-      camera.scrollY += GameConstants.TILE_SIZE
-    }
-    if (cell.centerY <= cameraUpperBound) {
-      camera.scrollY -= GameConstants.TILE_SIZE
-    }
   }
 }

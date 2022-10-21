@@ -8,7 +8,7 @@ import { BlackboardKeys } from '../BlackboardKeys'
 export class AttackPlayerUnit extends BehaviorTreeNode {
   private cpu: CPU
   constructor(blackboard: Blackboard, cpu: CPU) {
-    super('attackPlayerUnit', blackboard)
+    super('AttackPlayerUnit', blackboard)
     this.cpu = cpu
   }
 

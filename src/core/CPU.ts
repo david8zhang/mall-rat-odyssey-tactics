@@ -11,8 +11,6 @@ import { MoveUnitNextToTarget } from './behaviors/attack-player/MoveUnitNextToTa
 import { GetSquareToMove } from './behaviors/move-to-player/GetSquareToMove'
 import { MoveUnitToSquare } from './behaviors/move-to-player/MoveUnitToSquare'
 import { PopulateBlackboard } from './behaviors/PopulateBlackboard'
-import { Retreat } from './behaviors/retreat/Retreat'
-import { ShouldRetreat } from './behaviors/retreat/ShouldRetreat'
 import { Unit } from './units/Unit'
 import { Cursor } from './Cursor'
 
@@ -115,25 +113,17 @@ export class CPU {
     const topLevelSequenceNode = new SequenceNode('TopLevel', blackboard, [
       new PopulateBlackboard(blackboard, this),
       new SelectorNode(
-        'AdvanceOrRetreat',
+        'AttackOrMove',
         blackboard,
-        new SequenceNode('RetreatSequence', blackboard, [
-          new ShouldRetreat(blackboard),
-          new Retreat(blackboard),
+        new SequenceNode('AttackSequence', blackboard, [
+          new GetPlayerUnitToTarget(blackboard),
+          new MoveUnitNextToTarget(blackboard),
+          new AttackPlayerUnit(blackboard, this),
         ]),
-        new SelectorNode(
-          'AttackOrMove',
-          blackboard,
-          new SequenceNode('AttackSequence', blackboard, [
-            new GetPlayerUnitToTarget(blackboard),
-            new MoveUnitNextToTarget(blackboard),
-            new AttackPlayerUnit(blackboard, this),
-          ]),
-          new SequenceNode('MoveSequence', blackboard, [
-            new GetSquareToMove(blackboard),
-            new MoveUnitToSquare(blackboard),
-          ])
-        )
+        new SequenceNode('MoveSequence', blackboard, [
+          new GetSquareToMove(blackboard),
+          new MoveUnitToSquare(blackboard),
+        ])
       ),
     ])
     this.behaviorTree = topLevelSequenceNode

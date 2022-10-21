@@ -1,6 +1,7 @@
 import { UnitTypes } from '~/core/units/UnitConstants'
 import { CutsceneStateTypes } from '~/scenes/cutscene/CutsceneConstants'
 import { AnimationTypes } from '~/scenes/cutscene/states/AnimateSpriteState'
+import { CutsceneState } from '~/scenes/cutscene/states/CutsceneState'
 import { SpeakerPosition } from '~/scenes/dialog/DialogConstants'
 import { SceneType } from '../SceneTypes'
 
@@ -12,17 +13,17 @@ const OPENING_CUTSCENE = {
         mai: {
           row: 5,
           col: 10,
-          texture: 'pop-topic-rat',
+          texture: 'pt-boss',
         },
         kimiko: {
           row: 5,
           col: 12,
-          texture: 'pop-topic-rat',
+          texture: 'pt-boss',
         },
-        roman: {
+        rowan: {
           row: 5,
           col: 14,
-          texture: 'pop-topic-rat',
+          texture: 'pt-boss',
         },
         ptSoldier1: {
           row: 11,
@@ -475,7 +476,7 @@ const OPENING_CUTSCENE = {
   },
 }
 
-const GAME_CONFIG = {
+const FIRST_LEVEL = {
   sceneType: SceneType.GAME,
   config: {
     preGameDialog: [
@@ -573,8 +574,8 @@ const GAME_CONFIG = {
         rowColPos: [5, 5],
         texture: 'pop-topic-soldier',
         name: 'Enemy 1',
-        moveRange: 5,
-        attackRange: 1,
+        moveRange: 3,
+        attackRange: 4,
         maxHealth: 50,
         baseDamageAmount: 10,
         unitType: UnitTypes.RANGED,
@@ -583,8 +584,8 @@ const GAME_CONFIG = {
         rowColPos: [4, 6],
         texture: 'pop-topic-soldier',
         name: 'Enemy 2',
-        moveRange: 5,
-        attackRange: 1,
+        moveRange: 3,
+        attackRange: 4,
         maxHealth: 50,
         baseDamageAmount: 10,
         unitType: UnitTypes.RANGED,
@@ -623,8 +624,8 @@ const GAME_CONFIG = {
         rowColPos: [4, 17],
         texture: 'pop-topic-soldier',
         name: 'Enemy 6',
-        moveRange: 5,
-        attackRange: 1,
+        moveRange: 3,
+        attackRange: 4,
         maxHealth: 50,
         baseDamageAmount: 10,
         unitType: UnitTypes.RANGED,
@@ -633,8 +634,8 @@ const GAME_CONFIG = {
         rowColPos: [5, 18],
         texture: 'pop-topic-soldier',
         name: 'Enemy 7',
-        moveRange: 5,
-        attackRange: 1,
+        moveRange: 3,
+        attackRange: 4,
         maxHealth: 50,
         baseDamageAmount: 10,
         unitType: UnitTypes.RANGED,
@@ -644,8 +645,526 @@ const GAME_CONFIG = {
   },
 }
 
+export const FIRST_LEVEL_VICTORY_CUTSCENE = {
+  sceneType: SceneType.CUTSCENE,
+  config: {
+    initialState: {
+      characterConfigs: {
+        mai: {
+          row: 5,
+          col: 10,
+          texture: 'pt-boss',
+        },
+        kimiko: {
+          row: 5,
+          col: 12,
+          texture: 'pt-boss',
+        },
+        rowan: {
+          row: 5,
+          col: 14,
+          texture: 'pt-boss',
+        },
+        pippin: {
+          row: 100,
+          col: 12,
+          texture: 'pippin',
+        },
+        soldier1: {
+          row: 100,
+          col: 9,
+          texture: 'rat1',
+        },
+        soldier2: {
+          row: 100,
+          col: 10,
+          texture: 'rat1',
+        },
+        soldier3: {
+          row: 100,
+          col: 14,
+          texture: 'rat1',
+        },
+        soldier4: {
+          row: 100,
+          col: 15,
+          texture: 'rat1',
+        },
+      },
+    },
+    states: [
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          pippin: {
+            rowDiff: -8,
+          },
+          soldier1: {
+            rowDiff: -6,
+          },
+          soldier2: {
+            rowDiff: -7,
+          },
+          soldier3: {
+            rowDiff: -7,
+          },
+          soldier4: {
+            rowDiff: -6,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'So, you managed to get past our defenses...',
+            spriteConfig: {
+              charKey: 'mai',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'No matter...My sisters and I will crush you!',
+            spriteConfig: {
+              charKey: 'mai',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+    ],
+  },
+}
+
+export const SECOND_LEVEL = {
+  sceneType: SceneType.GAME,
+  config: {
+    preGameDialog: [
+      {
+        text: 'Your highness! They appear to have a much larger attack range than our previous foes...',
+        spriteConfig: {
+          texture: 'rat1',
+          scale: 3,
+          position: SpeakerPosition.RIGHT,
+        },
+      },
+      {
+        text: 'I recommend we try to close the distance as quickly as we can!',
+        spriteConfig: {
+          texture: 'rat1',
+          scale: 3,
+          position: SpeakerPosition.RIGHT,
+        },
+      },
+    ],
+    camPosition: {
+      row: 12,
+      col: 12,
+    },
+    playerConfig: [
+      {
+        rowColPos: [18, 9],
+        texture: 'rat1',
+        name: 'Soldier 1',
+        moveRange: 5,
+        attackRange: 1,
+        maxHealth: 50,
+        baseDamageAmount: 25,
+        unitType: UnitTypes.PHYSICAL,
+      },
+      {
+        rowColPos: [17, 10],
+        texture: 'rat1',
+        name: 'Soldier 1',
+        moveRange: 5,
+        attackRange: 1,
+        maxHealth: 50,
+        baseDamageAmount: 25,
+        unitType: UnitTypes.PHYSICAL,
+      },
+      {
+        rowColPos: [16, 12],
+        texture: 'pippin',
+        name: 'Pippin',
+        moveRange: 5,
+        attackRange: 1,
+        maxHealth: 50,
+        baseDamageAmount: 25,
+        unitType: UnitTypes.PHYSICAL,
+      },
+      {
+        rowColPos: [17, 14],
+        texture: 'rat1',
+        name: 'Soldier 1',
+        moveRange: 5,
+        attackRange: 1,
+        maxHealth: 50,
+        baseDamageAmount: 25,
+        unitType: UnitTypes.PHYSICAL,
+      },
+      {
+        rowColPos: [18, 15],
+        texture: 'rat1',
+        name: 'Soldier 1',
+        moveRange: 5,
+        attackRange: 1,
+        maxHealth: 50,
+        baseDamageAmount: 25,
+        unitType: UnitTypes.PHYSICAL,
+      },
+    ],
+    cpuConfig: [
+      {
+        rowColPos: [5, 10],
+        texture: 'pt-boss',
+        name: 'Mai',
+        moveRange: 4,
+        attackRange: 4,
+        maxHealth: 125,
+        baseDamageAmount: 20,
+        unitType: UnitTypes.RANGED,
+      },
+      {
+        rowColPos: [5, 12],
+        texture: 'pt-boss',
+        name: 'Kimiko',
+        moveRange: 4,
+        attackRange: 4,
+        maxHealth: 125,
+        baseDamageAmount: 20,
+        unitType: UnitTypes.RANGED,
+      },
+      {
+        rowColPos: [5, 14],
+        texture: 'pt-boss',
+        name: 'Rowan',
+        moveRange: 4,
+        attackRange: 4,
+        maxHealth: 125,
+        baseDamageAmount: 20,
+        unitType: UnitTypes.RANGED,
+      },
+    ],
+    tileMapKey: 'cutscene-map',
+  },
+}
+
+const SECOND_LEVEL_VICTORY_CUTSCENE = {
+  sceneType: SceneType.CUTSCENE,
+  config: {
+    initialState: {
+      characterConfigs: {
+        mai: {
+          row: 1,
+          col: 12,
+          texture: 'pt-boss',
+        },
+        kimiko: {
+          row: 1,
+          col: 11,
+          texture: 'pt-boss',
+        },
+        rowan: {
+          row: 1,
+          col: 13,
+          texture: 'pt-boss',
+        },
+        pippin: {
+          row: 3,
+          col: 12,
+          texture: 'pippin',
+        },
+        soldier1: {
+          row: 3,
+          col: 10,
+          texture: 'rat1',
+        },
+        soldier2: {
+          row: 3,
+          col: 14,
+          texture: 'rat1',
+        },
+        soldier3: {
+          row: 1,
+          col: 9,
+          texture: 'rat1',
+        },
+        soldier4: {
+          row: 1,
+          col: 15,
+          texture: 'rat1',
+        },
+      },
+      camPosition: {
+        row: 1,
+        col: 12,
+      },
+    },
+    states: [
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          mai: {
+            sortOrder: 0,
+            animType: AnimationTypes.SHAKE_SIDE_TO_SIDE,
+          },
+          kimiko: {
+            sortOrder: 1,
+            animType: AnimationTypes.SHAKE_SIDE_TO_SIDE,
+            delay: 10,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Okay! We yield! We yield!',
+            spriteConfig: {
+              charKey: 'mai',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          pippin: {
+            rowDiff: -1,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Tell us everything you know about the kidnappers who took my sister!',
+            spriteConfig: {
+              charKey: 'pippin',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          mai: {
+            rowDiff: -1,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Okay! We made a deal with them!',
+            spriteConfig: {
+              charKey: 'mai',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'They used the back entrance around Pop Topic as a shortcut!',
+            spriteConfig: {
+              charKey: 'mai',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: "Who are 'they'?!",
+            spriteConfig: {
+              charKey: 'pippin',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+          {
+            text: 'And where did they come from?',
+            spriteConfig: {
+              charKey: 'pippin',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          rowan: {
+            colDiff: -1,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: "We don't know exactly who 'they' are.",
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'All we know is their leader is incredibly powerful...',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'We cut a deal with him in order to survive.',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'He calls himself...Naldo',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          mai: {
+            sortOrder: 0,
+            animType: AnimationTypes.JUMP_UP_AND_DOWN,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Rowan! Shut up!',
+            spriteConfig: {
+              charKey: 'mai',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'He said he would kill us if we spoke his name to another!',
+            spriteConfig: {
+              charKey: 'mai',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          rowan: {
+            animType: AnimationTypes.SHAKE_SIDE_TO_SIDE,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: "No! I've been quiet long enough!",
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'All day I listen to you two bicker!',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'Naldo may be powerful, but maybe this Pippin Dots kid has a chance!',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: "After all, he got this far didn't he? He defeated all of us!",
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          rowan: {
+            animType: AnimationTypes.JUMP_UP_AND_DOWN,
+            sortOrder: 0,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Listen! Go to the Shoe Castle.',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'Naldo and his cronies went that way after taking your sister!',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: "We don't know where Naldo came from, but maybe they do!",
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+    ],
+  },
+}
+
 export const POP_TOPIC_LEVEL = {
   prereqs: ['Pippin Dots'],
   levelName: 'Pop Topic',
-  scenes: [GAME_CONFIG],
+  scenes: [SECOND_LEVEL_VICTORY_CUTSCENE],
 }
