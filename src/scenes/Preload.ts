@@ -18,6 +18,10 @@ export class Preload extends Phaser.Scene {
     this.load.image('pippin', 'pippin.png')
     this.load.image('pt-boss', 'pt-boss.png')
     this.load.image('pop-topic-soldier', 'pop-topic-soldier.png')
+    this.load.image('dropp', 'dropp.png')
+    this.load.image('copp', 'copp.png')
+    this.load.image('shoe-castle-soldier', 'shoe-castle-soldier.png')
+    this.load.image('mac', 'mac.png')
   }
 
   loadDialogUI() {

@@ -5,6 +5,7 @@ export interface CharacterMoveConfig {
   [charKey: string]: {
     rowDiff: number
     colDiff: number
+    speed?: number
   }
 }
 
@@ -28,7 +29,7 @@ export class CharacterMoveState extends CutsceneState {
   }
 
   moveToNewCell(
-    moveConfig: { rowDiff?: number; colDiff?: number },
+    moveConfig: { rowDiff?: number; colDiff?: number; speed?: number },
     spriteTarget: Phaser.GameObjects.Sprite,
     onCompleteCb: Function
   ) {
@@ -50,9 +51,9 @@ export class CharacterMoveState extends CutsceneState {
     } else if (newCol >= this.cutscene.grid.numCols) {
       newCol = this.cutscene.grid.numCols - 1
     }
-
+    const speed = moveConfig.speed ? moveConfig.speed : 100
     const newCellHoriz = this.cutscene.grid.getCellAtRowCol(newRow, prevCell.gridCol)
-    const timeDuration = Math.abs(newCellHoriz.gridRow - prevCell.gridRow) * 100
+    const timeDuration = Math.abs(newCellHoriz.gridRow - prevCell.gridRow) * speed
     this.cutscene.tweens.add({
       targets: spriteTarget,
       x: { from: prevCell.centerX, to: newCellHoriz.centerX },
@@ -60,7 +61,7 @@ export class CharacterMoveState extends CutsceneState {
       duration: timeDuration,
       onComplete: () => {
         const newCellVert = this.cutscene.grid.getCellAtRowCol(newCellHoriz.gridRow, newCol)
-        const timeDuration = Math.abs(newCellVert.gridCol - prevCell.gridCol) * 100
+        const timeDuration = Math.abs(newCellVert.gridCol - prevCell.gridCol) * speed
         this.cutscene.tweens.add({
           targets: spriteTarget,
           x: { from: newCellHoriz.centerX, to: newCellVert.centerX },

@@ -1,8 +1,10 @@
 import { GameConstants } from '~/scenes/game/GameConstants'
+import { Cutscene } from '../Cutscene'
 import { CutsceneState } from './CutsceneState'
 
 export enum ScreenEffects {
   FLASH_COLOR = 'FLASH_COLOR',
+  SHAKE_COLOR = 'SHAKE_COLOR',
 }
 
 export interface ScreenEffectConfig {
@@ -13,16 +15,17 @@ export interface ScreenEffectConfig {
 export class ScreenEffectState extends CutsceneState {
   public static readonly SCREEN_EFFECT_MAPPING = {
     [ScreenEffects.FLASH_COLOR]: ScreenEffectState.flashColor,
+    [ScreenEffects.SHAKE_COLOR]: ScreenEffectState.shakeWithColor,
   }
 
   public static flashColor(config: any, onCompleteCb: Function) {
-    const scene = config.scene as Phaser.Scene
+    const scene = config.scene as Cutscene
     const invisibleRectangle = scene.add
       .rectangle(
         GameConstants.GAME_WIDTH / 2,
         GameConstants.GAME_HEIGHT / 2,
-        GameConstants.WINDOW_WIDTH,
-        GameConstants.WINDOW_HEIGHT,
+        GameConstants.GAME_WIDTH,
+        GameConstants.GAME_HEIGHT,
         config.color
       )
       .setVisible(false)
@@ -44,6 +47,37 @@ export class ScreenEffectState extends CutsceneState {
         invisibleRectangle.destroy()
         onCompleteCb()
       },
+    })
+  }
+
+  public static shakeWithColor(config: any, onCompletedCb: Function) {
+    const scene = config.scene as Cutscene
+    const invisibleRectangle = scene.add
+      .rectangle(
+        GameConstants.GAME_WIDTH / 2,
+        GameConstants.GAME_HEIGHT / 2,
+        GameConstants.GAME_WIDTH,
+        GameConstants.GAME_HEIGHT,
+        config.color
+      )
+      .setVisible(true)
+      .setDepth(1000)
+      .setAlpha(0.5)
+    scene.cameras.main.shake(1000, 0.005, false, (_, progress) => {
+      if (progress == 1) {
+        scene.tweens.add({
+          targets: [invisibleRectangle],
+          alpha: {
+            from: 0.5,
+            to: 0,
+          },
+          duration: 500,
+          onComplete: () => {
+            invisibleRectangle.destroy()
+            onCompletedCb()
+          },
+        })
+      }
     })
   }
 

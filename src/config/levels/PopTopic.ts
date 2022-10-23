@@ -564,7 +564,7 @@ const FIRST_LEVEL = {
         name: 'Pippin',
         moveRange: 5,
         attackRange: 1,
-        maxHealth: 50,
+        maxHealth: 75,
         baseDamageAmount: 25,
         unitType: UnitTypes.PHYSICAL,
       },
@@ -790,7 +790,7 @@ export const SECOND_LEVEL = {
         name: 'Pippin',
         moveRange: 5,
         attackRange: 1,
-        maxHealth: 50,
+        maxHealth: 75,
         baseDamageAmount: 25,
         unitType: UnitTypes.PHYSICAL,
       },
@@ -971,7 +971,15 @@ const SECOND_LEVEL_VICTORY_CUTSCENE = {
             },
           },
           {
-            text: 'They used the back entrance around Pop Topic as a shortcut!',
+            text: 'They gave us these lace gloves and bracelets!',
+            spriteConfig: {
+              charKey: 'mai',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: "It's the source of our dark magic!",
             spriteConfig: {
               charKey: 'mai',
               scale: 3,
@@ -1029,15 +1037,7 @@ const SECOND_LEVEL_VICTORY_CUTSCENE = {
             },
           },
           {
-            text: 'We cut a deal with him in order to survive.',
-            spriteConfig: {
-              charKey: 'rowan',
-              scale: 3,
-              position: SpeakerPosition.LEFT,
-            },
-          },
-          {
-            text: 'He calls himself...Naldo',
+            text: 'He calls himself...Naldo!',
             spriteConfig: {
               charKey: 'rowan',
               scale: 3,
@@ -1104,7 +1104,50 @@ const SECOND_LEVEL_VICTORY_CUTSCENE = {
             },
           },
           {
-            text: 'Naldo may be powerful, but maybe this Pippin Dots kid has a chance!',
+            text: 'We let Naldo manipulate us with these...trinkets!',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          mai: {
+            animType: AnimationTypes.SHAKE_SIDE_TO_SIDE,
+            sortOrder: 0,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: "You don't know what you're trifling with, Rowan!",
+            spriteConfig: {
+              charKey: 'mai',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+          {
+            text: 'What if he finds out and comes for us?!',
+            spriteConfig: {
+              charKey: 'mai',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'He may be powerful, but maybe this Pippin Dots kid has a chance!',
             spriteConfig: {
               charKey: 'rowan',
               scale: 3,

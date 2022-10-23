@@ -90,6 +90,19 @@ export class Cutscene extends Phaser.Scene {
     this.initMouseClickListener()
     this.initCameraBounds()
     this.initCutsceneState(this.cutsceneConfig.initialState)
+    this.initDebugKeyListener()
+  }
+
+  initDebugKeyListener() {
+    this.input.keyboard.on('keydown', (e) => {
+      if (e.code === 'Period') {
+        Object.keys(this.characterSpriteMapping).forEach((key) => {
+          const sprite = this.characterSpriteMapping[key]
+          const cell = this.grid.getCellAtWorldPosition(sprite.x, sprite.y)
+          console.log(`${key}: ${cell.gridRow}, ${cell.gridCol}`)
+        })
+      }
+    })
   }
 
   initCameraBounds() {
@@ -103,13 +116,11 @@ export class Cutscene extends Phaser.Scene {
     }
     camPosition?: { row: number; col: number }
   }) {
+    let cell = this.grid.getCellAtRowCol(12, 12)
     if (initialState.camPosition) {
-      const cell = this.grid.getCellAtRowCol(
-        initialState.camPosition.row,
-        initialState.camPosition.col
-      )
-      this.cameras.main.centerOn(cell.centerX, cell.centerY)
+      cell = this.grid.getCellAtRowCol(initialState.camPosition.row, initialState.camPosition.col)
     }
+    this.cameras.main.centerOn(cell.centerX, cell.centerY)
     Object.keys(initialState.characterConfigs).map((characterId: string) => {
       const characterConfig = initialState.characterConfigs[characterId]
       let boundRow = characterConfig.row
