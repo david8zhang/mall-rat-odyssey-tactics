@@ -1,7 +1,6 @@
 import { UnitTypes } from '~/core/units/UnitConstants'
 import { CutsceneStateTypes } from '~/scenes/cutscene/CutsceneConstants'
 import { AnimationTypes } from '~/scenes/cutscene/states/AnimateSpriteState'
-import { CutsceneState } from '~/scenes/cutscene/states/CutsceneState'
 import { SpeakerPosition } from '~/scenes/dialog/DialogConstants'
 import { SceneType } from '../SceneTypes'
 

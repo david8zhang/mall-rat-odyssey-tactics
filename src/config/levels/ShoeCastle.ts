@@ -1814,6 +1814,215 @@ export const SECOND_LEVEL_VICTORY_CUTSCENE = {
           },
         },
       },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Here they come!',
+            spriteConfig: {
+              charKey: 'soldier2',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: "This isn't looking good!",
+            spriteConfig: {
+              charKey: 'soldier2',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: "There's way too many of them!",
+            spriteConfig: {
+              charKey: 'soldier2',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          rowan: {
+            rowDiff: 5,
+            colDiff: 2,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          rowan: {
+            sortOrder: 0,
+            animType: AnimationTypes.JUMP_UP_AND_DOWN,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Here! Take these!',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+          {
+            text: 'I swiped them from back there...',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_MOVEMENT,
+        config: {
+          pippin: {
+            rowDiff: -1,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'These are the shoes they were wearing!',
+            spriteConfig: {
+              charKey: 'pippin',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'Yes! These should let you run right past these guys!',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          pippin: {
+            sortOrder: 0,
+            animType: AnimationTypes.SHAKE_SIDE_TO_SIDE,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: "But there's only one pair of them!",
+            spriteConfig: {
+              charKey: 'pippin',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'Your highness! Take them quickly!',
+            spriteConfig: {
+              charKey: 'soldier2',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: "There's no time! We'll hold them off long enough!",
+            spriteConfig: {
+              charKey: 'soldier3',
+              scale: 3,
+              position: SpeakerPosition.RIGHT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.CHARACTER_ANIM,
+        config: {
+          pippin: {
+            sortOrder: 0,
+            animType: AnimationTypes.SHAKE_SIDE_TO_SIDE,
+          },
+        },
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: 'We need to hurry!',
+            spriteConfig: {
+              charKey: 'rowan',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.DIALOG,
+        config: [
+          {
+            text: '...',
+            spriteConfig: {
+              charKey: 'pippin',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'Mac...',
+            spriteConfig: {
+              charKey: 'pippin',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'Naldo!',
+            spriteConfig: {
+              charKey: 'pippin',
+              scale: 3,
+              position: SpeakerPosition.LEFT,
+            },
+          },
+          {
+            text: 'All of you will pay!',
+            spriteConfig: {
+              charKey: 'pippin',
+              scale: 3,
+              postiion: SpeakerPosition.LEFT,
+            },
+            screenShakeConfig: {
+              duration: 500,
+              intensity: 0.005,
+            },
+          },
+        ],
+      },
+      {
+        type: CutsceneStateTypes.SCREEN_EFFECT,
+        config: {
+          effectType: ScreenEffects.FADE_TO_BLACK,
+        },
+      },
     ],
   },
 }
@@ -1821,5 +2030,5 @@ export const SECOND_LEVEL_VICTORY_CUTSCENE = {
 export const SHOE_CASTLE_LEVEL = {
   prereqs: ['Pop Topic'],
   levelName: 'Shoe Castle',
-  scenes: [OPENING_CUTSCENE],
+  scenes: [SECOND_LEVEL_VICTORY_CUTSCENE],
 }

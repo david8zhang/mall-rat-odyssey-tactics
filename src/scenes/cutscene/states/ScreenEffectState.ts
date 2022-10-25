@@ -5,6 +5,7 @@ import { CutsceneState } from './CutsceneState'
 export enum ScreenEffects {
   FLASH_COLOR = 'FLASH_COLOR',
   SHAKE_COLOR = 'SHAKE_COLOR',
+  FADE_TO_BLACK = 'FADE_TO_BLACK',
 }
 
 export interface ScreenEffectConfig {
@@ -16,6 +17,7 @@ export class ScreenEffectState extends CutsceneState {
   public static readonly SCREEN_EFFECT_MAPPING = {
     [ScreenEffects.FLASH_COLOR]: ScreenEffectState.flashColor,
     [ScreenEffects.SHAKE_COLOR]: ScreenEffectState.shakeWithColor,
+    [ScreenEffects.FADE_TO_BLACK]: ScreenEffectState.fadeToBlack,
   }
 
   public static flashColor(config: any, onCompleteCb: Function) {
@@ -77,6 +79,15 @@ export class ScreenEffectState extends CutsceneState {
             onCompletedCb()
           },
         })
+      }
+    })
+  }
+
+  public static fadeToBlack(config: any, onCompleteCb: Function) {
+    const scene = config.scene as Cutscene
+    scene.cameras.main.fadeOut(1000, 0, 0, 0, (_, progress) => {
+      if (progress === 1) {
+        onCompleteCb()
       }
     })
   }
