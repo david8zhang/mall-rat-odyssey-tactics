@@ -22,6 +22,7 @@ export interface InitialUnitConfig {
   maxHealth: number
   unitType: UnitTypes
   baseDamageAmount: number
+  maxExtraMoves?: number
 }
 
 export interface GameConfig {

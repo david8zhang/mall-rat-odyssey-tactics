@@ -1,6 +1,7 @@
 import { UnitTypes } from '~/core/units/UnitConstants'
 import { CutsceneStateTypes } from '~/scenes/cutscene/CutsceneConstants'
 import { AnimationTypes } from '~/scenes/cutscene/states/AnimateSpriteState'
+import { ScreenEffects } from '~/scenes/cutscene/states/ScreenEffectState'
 import { SpeakerPosition } from '~/scenes/dialog/DialogConstants'
 import { SceneType } from '../SceneTypes'
 
@@ -526,6 +527,7 @@ const FIRST_LEVEL = {
         maxHealth: 50,
         baseDamageAmount: 25,
         unitType: UnitTypes.PHYSICAL,
+        maxExtraMoves: 1,
       },
       {
         rowColPos: [18, 9],
@@ -1201,6 +1203,12 @@ const SECOND_LEVEL_VICTORY_CUTSCENE = {
           },
         ],
       },
+      {
+        type: CutsceneStateTypes.SCREEN_EFFECT,
+        config: {
+          effectType: ScreenEffects.FADE_TO_BLACK,
+        },
+      },
     ],
   },
 }
@@ -1208,5 +1216,12 @@ const SECOND_LEVEL_VICTORY_CUTSCENE = {
 export const POP_TOPIC_LEVEL = {
   prereqs: ['Pippin Dots'],
   levelName: 'Pop Topic',
-  scenes: [SECOND_LEVEL_VICTORY_CUTSCENE],
+  scenes: [
+    FIRST_LEVEL,
+    // OPENING_CUTSCENE,
+    // FIRST_LEVEL,
+    // FIRST_LEVEL_VICTORY_CUTSCENE,
+    // SECOND_LEVEL,
+    // SECOND_LEVEL_VICTORY_CUTSCENE,
+  ],
 }

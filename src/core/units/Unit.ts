@@ -16,6 +16,7 @@ export interface UnitConfig {
   maxHealth: number
   name: string
   unitType: UnitTypes
+  maxExtraMoves?: number
 }
 
 export class Unit {
@@ -28,7 +29,6 @@ export class Unit {
   public moveableSquares: Phaser.GameObjects.Rectangle[] = []
   public possibleAttackableSquares: Phaser.GameObjects.Rectangle[] = []
   public attackableSquaresPostMove: Phaser.GameObjects.Rectangle[] = []
-  public hasMoved: boolean = false
   public isDead: boolean = false
   public unitType: UnitTypes
 
@@ -36,6 +36,10 @@ export class Unit {
   public maxHealth: number
   public name: string
   public miniHPBar: UIValueBar
+
+  public hasMoved: boolean = false
+  public maxExtraMoves: number = 0
+  public currExtraMoves: number = 0
 
   constructor(game: Game, unitConfig: UnitConfig) {
     this.game = game
@@ -58,6 +62,11 @@ export class Unit {
       borderWidth: 0,
       shouldChangeColor: true,
     })
+
+    if (unitConfig.maxExtraMoves) {
+      this.maxExtraMoves = unitConfig.maxExtraMoves
+      this.currExtraMoves = this.maxExtraMoves
+    }
   }
 
   public highlight() {
@@ -234,7 +243,7 @@ export class Unit {
           const attackRange =
             this.unitType === UnitTypes.RANGED ? this.attackRange + 1 : this.attackRange
           if (this.game.grid.withinBounds(newRow, newCol) && newDistance <= attackRange) {
-            if (!this.wallTileAtPosition(newRow, newCol)) {
+            if (this.unitType === UnitTypes.RANGED || !this.wallTileAtPosition(newRow, newCol)) {
               queue.push([newRow, newCol, newDistance])
             }
           }
@@ -321,8 +330,11 @@ export class Unit {
     })
   }
 
-  private completeMove() {
+  public tintSpriteHasMoved() {
     this.sprite.setTint(0x777777)
+  }
+
+  public clearAllSquareTints() {
     this.moveableSquares.forEach((square) => {
       square.destroy()
     })
@@ -377,10 +389,16 @@ export class Unit {
     return row >= 0 && row < this.game.grid.numRows && col >= 0 && col < this.game.grid.numCols
   }
 
+  reduceMoveCount() {
+    this.currExtraMoves--
+  }
+
   setHasMoved(hasMoved: boolean) {
     if (hasMoved) {
-      this.completeMove()
+      this.tintSpriteHasMoved()
+      this.clearAllSquareTints()
     } else {
+      this.currExtraMoves = this.maxExtraMoves
       this.sprite.clearTint()
     }
     this.hasMoved = hasMoved

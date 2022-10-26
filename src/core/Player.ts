@@ -194,7 +194,12 @@ export class Player {
       this.isPlayingAttackAnimation = true
       const selectedUnitToAttack = this.attackableEnemyUnits[this.selectedAttackableUnitIndex]
       this.selectedUnitToMove!.attackTarget(selectedUnitToAttack, () => {
-        this.completeUnitAction()
+        if (this.selectedUnitToMove!.currExtraMoves > 0) {
+          this.selectedUnitToMove!.reduceMoveCount()
+          this.completeUnitExtraMove()
+        } else {
+          this.completeUnitAction()
+        }
         this.isPlayingAttackAnimation = false
       })
     }
@@ -202,6 +207,15 @@ export class Player {
 
   getLivingUnits() {
     return this.units.filter((unit) => !unit.isDead)
+  }
+
+  completeUnitExtraMove() {
+    const { row, col } = this.selectedUnitToMove!.getRowCol()
+    this.selectedUnitToMove?.clearAllSquareTints()
+    this.moveCursorToRowCol(row, col)
+    this.actionState = ActionState.SELECT_UNIT_TO_MOVE
+    this.cursor.clearCursorTint()
+    this.selectedUnitToMove = null
   }
 
   completeUnitAction() {
@@ -363,6 +377,7 @@ export class Player {
         maxHealth: unitConfig.maxHealth,
         unitType: unitConfig.unitType,
         baseDamageAmount: unitConfig.baseDamageAmount,
+        maxExtraMoves: unitConfig.maxExtraMoves,
       })
       this.units.push(playerUnit)
     })
