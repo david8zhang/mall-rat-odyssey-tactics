@@ -19,6 +19,9 @@ export class PopulateBlackboard extends BehaviorTreeNode {
     this.blackboard.setData(BlackboardKeys.ON_UNIT_MOVE_COMPLETE_CB, () => {
       this.cpu.onUnitMoveComplete()
     })
+    this.blackboard.setData(BlackboardKeys.ON_UNIT_ATTACK_COMPLETE_CB, () => {
+      this.cpu.onUnitAttackComplete()
+    })
     return BehaviorStatus.SUCCESS
   }
 }

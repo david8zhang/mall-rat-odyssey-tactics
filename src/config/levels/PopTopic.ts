@@ -527,7 +527,6 @@ const FIRST_LEVEL = {
         maxHealth: 50,
         baseDamageAmount: 25,
         unitType: UnitTypes.PHYSICAL,
-        maxExtraMoves: 1,
       },
       {
         rowColPos: [18, 9],

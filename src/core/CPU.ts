@@ -50,6 +50,7 @@ export class CPU {
         name: unitConfig.name,
         unitType: unitConfig.unitType,
         baseDamageAmount: unitConfig.baseDamageAmount,
+        maxExtraMoves: unitConfig.maxExtraMoves,
       })
       this.units.push(unit)
     })
@@ -77,6 +78,12 @@ export class CPU {
     })
   }
 
+  moveCurrUnitAgain() {
+    this.game.time.delayedCall(500, () => {
+      this.moveUnits()
+    })
+  }
+
   switchTurn() {
     this.game.time.delayedCall(500, () => {
       this.getLivingUnits().forEach((unit) => {
@@ -88,6 +95,17 @@ export class CPU {
 
   moveUnits() {
     this.behaviorTree.tick()
+  }
+
+  onUnitAttackComplete() {
+    if (this.unitToMove) {
+      if (this.unitToMove.currExtraMoves > 0) {
+        this.unitToMove.reduceMoveCount()
+        this.moveCurrUnitAgain()
+      } else {
+        this.onUnitMoveComplete()
+      }
+    }
   }
 
   onUnitMoveComplete() {

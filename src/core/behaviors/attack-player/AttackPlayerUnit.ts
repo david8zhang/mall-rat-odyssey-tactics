@@ -15,8 +15,8 @@ export class AttackPlayerUnit extends BehaviorTreeNode {
   public process(): BehaviorStatus {
     const playerUnitToTarget = this.blackboard.getData(BlackboardKeys.PLAYER_UNIT_TO_TARGET) as Unit
     const unitToMove = this.blackboard.getData(BlackboardKeys.CURR_UNIT_TO_MOVE) as Unit
-    const onActionCallback = this.blackboard.getData(
-      BlackboardKeys.ON_UNIT_MOVE_COMPLETE_CB
+    const onAttackCb = this.blackboard.getData(
+      BlackboardKeys.ON_UNIT_ATTACK_COMPLETE_CB
     ) as Function
 
     const targetGridPos = playerUnitToTarget.getRowCol()
@@ -25,8 +25,8 @@ export class AttackPlayerUnit extends BehaviorTreeNode {
     this.cpu.game.time.delayedCall(500, () => {
       this.cpu.attackCrosshair.hide()
       unitToMove.attackTarget(playerUnitToTarget, () => {
-        if (onActionCallback) {
-          onActionCallback()
+        if (onAttackCb) {
+          onAttackCb()
         }
       })
     })

@@ -795,8 +795,9 @@ const FIRST_LEVEL = {
         moveRange: 8,
         attackRange: 1,
         maxHealth: 75,
-        baseDamageAmount: 10,
+        baseDamageAmount: 7.5,
         unitType: UnitTypes.PHYSICAL,
+        maxExtraMoves: 1,
       },
       {
         rowColPos: [6, 12],
@@ -805,8 +806,9 @@ const FIRST_LEVEL = {
         moveRange: 8,
         attackRange: 1,
         maxHealth: 75,
-        baseDamageAmount: 10,
+        baseDamageAmount: 7.5,
         unitType: UnitTypes.PHYSICAL,
+        maxExtraMoves: 1,
       },
       {
         rowColPos: [6, 13],
@@ -815,8 +817,9 @@ const FIRST_LEVEL = {
         moveRange: 8,
         attackRange: 1,
         maxHealth: 75,
-        baseDamageAmount: 10,
+        baseDamageAmount: 7.5,
         unitType: UnitTypes.PHYSICAL,
+        maxExtraMoves: 1,
       },
       {
         rowColPos: [5, 8],
@@ -825,8 +828,9 @@ const FIRST_LEVEL = {
         moveRange: 8,
         attackRange: 1,
         maxHealth: 75,
-        baseDamageAmount: 10,
+        baseDamageAmount: 7.5,
         unitType: UnitTypes.PHYSICAL,
+        maxExtraMoves: 1,
       },
       {
         rowColPos: [5, 7],
@@ -835,8 +839,9 @@ const FIRST_LEVEL = {
         moveRange: 8,
         attackRange: 1,
         maxHealth: 75,
-        baseDamageAmount: 10,
+        baseDamageAmount: 7.5,
         unitType: UnitTypes.PHYSICAL,
+        maxExtraMoves: 1,
       },
       {
         rowColPos: [5, 16],
@@ -845,8 +850,9 @@ const FIRST_LEVEL = {
         moveRange: 8,
         attackRange: 1,
         maxHealth: 75,
-        baseDamageAmount: 10,
+        baseDamageAmount: 7.5,
         unitType: UnitTypes.PHYSICAL,
+        maxExtraMoves: 1,
       },
       {
         rowColPos: [5, 17],
@@ -855,8 +861,9 @@ const FIRST_LEVEL = {
         moveRange: 8,
         attackRange: 1,
         maxHealth: 75,
-        baseDamageAmount: 10,
+        baseDamageAmount: 7.5,
         unitType: UnitTypes.PHYSICAL,
+        maxExtraMoves: 1,
       },
     ],
     tileMapKey: 'cutscene-map',
@@ -2030,5 +2037,5 @@ export const SECOND_LEVEL_VICTORY_CUTSCENE = {
 export const SHOE_CASTLE_LEVEL = {
   prereqs: ['Pop Topic'],
   levelName: 'Shoe Castle',
-  scenes: [SECOND_LEVEL_VICTORY_CUTSCENE],
+  scenes: [FIRST_LEVEL],
 }
