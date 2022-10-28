@@ -15,6 +15,7 @@ export class SceneController extends Phaser.Scene {
   public currLevelIndex: number = 0 // Get the index of the level
   public currLevelSubSceneIndex: number = 0 // Get the index of the scene config within each level
   public gameFinished: boolean = false
+  public showedGameFinishedText: boolean = false
 
   constructor() {
     super('scene-controller')
@@ -100,6 +101,15 @@ export class SceneController extends Phaser.Scene {
     )
   }
 
+  showGameFinished() {
+    this.scene.stop('cutscene')
+    this.scene.stop('cutscene-overlay')
+    this.scene.stop('game')
+    this.scene.stop('game-ui')
+    this.scene.stop('dialog')
+    this.scene.start('game-finished')
+  }
+
   onSceneCompleted() {
     if (this.gameFinished) {
       return
@@ -129,6 +139,7 @@ export class SceneController extends Phaser.Scene {
         this.currLevelIndex++
         if (this.currLevelIndex >= this.gameConfig.gameLevels.length) {
           this.gameFinished = true
+          this.showGameFinished()
         } else {
           this.goToOverworldWithCompletedLevel(currLevel.levelName)
         }

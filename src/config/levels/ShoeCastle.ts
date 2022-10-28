@@ -1180,6 +1180,7 @@ export const SECOND_LEVEL = {
         maxHealth: 125,
         baseDamageAmount: 25,
         unitType: UnitTypes.PHYSICAL,
+        maxExtraMoves: 2,
       },
       {
         rowColPos: [7, 14],
@@ -1190,6 +1191,7 @@ export const SECOND_LEVEL = {
         maxHealth: 125,
         baseDamageAmount: 25,
         unitType: UnitTypes.PHYSICAL,
+        maxExtraMoves: 2,
       },
     ],
     tileMapKey: 'cutscene-map',
@@ -2037,5 +2039,11 @@ export const SECOND_LEVEL_VICTORY_CUTSCENE = {
 export const SHOE_CASTLE_LEVEL = {
   prereqs: ['Pop Topic'],
   levelName: 'Shoe Castle',
-  scenes: [FIRST_LEVEL],
+  scenes: [
+    OPENING_CUTSCENE,
+    FIRST_LEVEL,
+    FIRST_LEVEL_VICTORY_CUTSCENE,
+    SECOND_LEVEL,
+    SECOND_LEVEL_VICTORY_CUTSCENE,
+  ],
 }

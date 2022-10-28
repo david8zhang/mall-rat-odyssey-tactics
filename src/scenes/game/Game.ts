@@ -77,6 +77,17 @@ export default class Game extends Phaser.Scene {
     this.initCPU()
     this.initCamera()
     this.handlePreGameDialogLines()
+    this.initSkipListener()
+  }
+
+  initSkipListener() {
+    this.input.keyboard.on('keydown', (e) => {
+      if (e.code === 'KeyM') {
+        console.log('Skipping!')
+        SceneController.instance.onSceneCompleted()
+        return
+      }
+    })
   }
 
   init(data: GameConfig) {

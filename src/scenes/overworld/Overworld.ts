@@ -110,7 +110,7 @@ export class Overworld extends Phaser.Scene {
   }
 
   initPlayerOWSprite() {
-    this.playerSprite = this.add.sprite(100, 100, 'rat1').setVisible(false)
+    this.playerSprite = this.add.sprite(100, 100, 'pippin').setVisible(false)
     this.cameras.main.startFollow(this.playerSprite)
   }
 

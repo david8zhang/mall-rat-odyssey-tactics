@@ -1216,11 +1216,10 @@ export const POP_TOPIC_LEVEL = {
   prereqs: ['Pippin Dots'],
   levelName: 'Pop Topic',
   scenes: [
+    OPENING_CUTSCENE,
     FIRST_LEVEL,
-    // OPENING_CUTSCENE,
-    // FIRST_LEVEL,
-    // FIRST_LEVEL_VICTORY_CUTSCENE,
-    // SECOND_LEVEL,
-    // SECOND_LEVEL_VICTORY_CUTSCENE,
+    FIRST_LEVEL_VICTORY_CUTSCENE,
+    SECOND_LEVEL,
+    SECOND_LEVEL_VICTORY_CUTSCENE,
   ],
 }

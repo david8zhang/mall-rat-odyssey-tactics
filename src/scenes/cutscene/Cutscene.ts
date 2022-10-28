@@ -102,6 +102,12 @@ export class Cutscene extends Phaser.Scene {
           console.log(`${key}: ${cell.gridRow}, ${cell.gridCol}`)
         })
       }
+      if (e.code === 'KeyM') {
+        console.log('Skipping!')
+        this.cleanupCutscene()
+        SceneController.instance.onSceneCompleted()
+        return
+      }
     })
   }
 
