@@ -12,6 +12,7 @@ import { GameUI } from './scenes/game/GameUI'
 import { GameConstants } from './scenes/game/GameConstants'
 import { Overworld } from './scenes/overworld/Overworld'
 import { GameFinished } from './scenes/GameFinishedScene'
+import { Start } from './scenes/StartScene'
 
 const config: Phaser.Types.Core.GameConfig = {
   type: Phaser.AUTO,
@@ -34,6 +35,7 @@ const config: Phaser.Types.Core.GameConfig = {
   },
   scene: [
     Preload,
+    Start,
     SceneController,
     Dialog,
     Cutscene,
